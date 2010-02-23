@@ -1,0 +1,429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>DatabaseLibrary - Documentation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+  body {
+    background: white;
+    color: black;
+  }
+
+  /* Generic Table Styles */
+  table {
+    background: white;
+    border: 1px solid black;
+    border-collapse: collapse;
+    empty-cells: show;
+    margin: 0.3em 0em;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 0.2em;
+  }
+  th {
+    background: #C6C6C6;
+  }
+  td {
+    vertical-align: top;
+  }    
+
+  /* Columns */
+  td.kw {
+    font-weight: bold;
+  }
+  td.arg {
+    width: 300px;
+    font-style: italic;
+  }
+  td.doc {
+  }
+
+  /* Tables in documentation */
+  table.doc {
+    border: 1px solid gray;
+    background: transparent;
+    border-collapse: collapse;
+    empty-cells: show;
+    font-size: 0.85em;
+    font-family: arial,helvetica,sans-serif;
+  }
+  table.doc td {
+    border: 1px solid gray;
+    padding: 0.1em 0.3em;
+    height: 1.2em;
+  }
+
+  /* Paragraphs */
+  .libdoc, .links {
+    width: 800px;
+  }
+
+  /* Misc */
+  a.name, span.name {  
+    font-style: italic;
+    background: #f4f4f4;
+    text-decoration: none;
+  }
+  a:link, a:visited {
+    color: blue;
+  }
+  a:hover, a:active {
+    text-decoration: underline;
+    color: purple;
+  }
+  .footer {
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<h1>DatabaseLibrary - Documentation</h1>
+
+<h2 id="introduction">Introduction</h2>
+<p class='libdoc'>This library supports database-related testing using the Robot Framework. It allows to establish a connection to a certain database to perform tests on the content of certain tables and/or views in that database. A possible scenario for its usage is a Web-Application that is storing data to the database based on some user actions (probably a quite common scenario). The actions in the Web-Application could be triggered using some tests based on Selenium and in the same test it will then be possible to check if the proper data has ended up in the database as expected. Of course there are various other scenarios where this library might be used.<br />
+<br />
+As this library is written in Java support for a lot of different database systems is possible. This only requires the corresponding driver-classes (usually in the form of a JAR from the database provider) and the knowledge of a proper JDBC connection-string.<br />
+<br />
+TESTED DATABASES AND SAMPLE CONNECTION STRINGS TO BE ADDED HERE.<br />
+<br />
+The examples in the description of the keywords is based on a database table named "MySampleTable" that has the following layout:<br />
+<br />
+MySampleTable:<br />
+<table border="1" class="doc">
+<tr>
+<td>COLUMN</td>
+<td>TYPE</td>
+</tr>
+<tr>
+<td>Id</td>
+<td>Number</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>String</td>
+</tr>
+<tr>
+<td>EMail</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Postings</td>
+<td>Number</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Number</td>
+</tr>
+<tr>
+<td>LastPosting</td>
+<td>Timestamp</td>
+</tr>
+</table>
+<br />
+NOTE: A lot of keywords that are targeted for Tables will work equally with Views as this is often no difference if Select-statements are performed.<br />
+</p>
+
+
+<h2>Shortcuts</h2>
+<div class='links'>
+<a href="#Check Content For Row Identified By Rownum" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Rownum</a>&nbsp;
+<a href="#Check Content For Row Identified By Where Clause" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Where&nbsp;Clause</a>&nbsp;
+<a href="#Connect To Database" title="Establish the connection to the database. This is mandatory before any of the other keywords can be used and should be ideally done during the suite setup phase. To avoid problems ensure to close the connection again using the disconnect-keyword.">Connect&nbsp;To&nbsp;Database</a>&nbsp;
+<a href="#Delete All Rows From Table" title="Deletes the entire content of the given database table. This keyword is useful to start tests in a clean state. Use this keyword with care as accidently execution of this keyword in a productive system will cause heavy loss of data. There will be no rollback possible.">Delete&nbsp;All&nbsp;Rows&nbsp;From&nbsp;Table</a>&nbsp;
+<a href="#Disconnect From Database" title="Releases the existing connection to the database. In addition this keyword will log any SQLWarnings that might have been occurred on the connection.">Disconnect&nbsp;From&nbsp;Database</a>&nbsp;
+<a href="#Export Data From Table" title="Exports the data from the given table into a file that is stored at the given location. The where-clause can (and should) be used to narrow the amount of rows that is exported this way. The file is stored in some simple XML-format and can be imported again to the database using the &quot;Import Data From File&quot; keyword. This way it is possible to store a set of testdata permanently retrieving it for example from some Live- or Demosystem. This keyword will probably have some issues if millions of rows are exported/imported using it.">Export&nbsp;Data&nbsp;From&nbsp;Table</a>&nbsp;
+<a href="#Get Transaction Isolation Level" title="Returns a String value that contains the name of the transaction isolation level of the connection that is used for executing the tests. Possible return vlaues are: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.">Get&nbsp;Transaction&nbsp;Isolation&nbsp;Level</a>&nbsp;
+<a href="#Import Data From File" title="This keyword reads data from a XML-file and stores the corresponding data to the database. The file must have been created using the &quot;Export Data From Table&quot; keyword or it must be created manually in the exact format. The XML-file contains not only the data as such, but also the name of the schema and table from which the data was exported. The same information is used for the import.">Import&nbsp;Data&nbsp;From&nbsp;File</a>&nbsp;
+<a href="#Read Single Value From Table" title="Reads a single value from the given table and column based on the where-clause passed to the test. If the where-clause identifies more or less than exactly one row in that table this will result in an error for this teststep. Otherwise the selected value will be returned.">Read&nbsp;Single&nbsp;Value&nbsp;From&nbsp;Table</a>&nbsp;
+<a href="#Table Must Be Empty" title="Checks that the given table has no rows. It is a convinience way of using the &quot;Table Must Contain Number OF Rows&quot; with zero for the amount of rows.">Table&nbsp;Must&nbsp;Be&nbsp;Empty</a>&nbsp;
+<a href="#Table Must Contain Less Than Number Of Rows" title="This keyword checks that a given table contains less than the given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain anything between 0 and 1000 rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;Less&nbsp;Than&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
+<a href="#Table Must Contain More Than Number Of Rows" title="This keyword checks that a given table contains more than the given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain 100 or more rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;More&nbsp;Than&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
+<a href="#Table Must Contain Number Of Rows" title="This keyword checks that a given table contains a given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain exactly 14 rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
+<a href="#Table Must Exist" title="Checks that a table with the given name exists. If the table does not exist the test will fail.">Table&nbsp;Must&nbsp;Exist</a>&nbsp;
+<a href="#Tables Must Contain Same Amount Of Rows" title="This keyword checks that two given database tables have the same amount of rows.">Tables&nbsp;Must&nbsp;Contain&nbsp;Same&nbsp;Amount&nbsp;Of&nbsp;Rows</a>&nbsp;
+<a href="#Transaction Isolation Level Must Be" title="Can be used to check that the database connection used for executing tests has the proper transaction isolation level. The string parameter accepts the following values in a case-insensitive manner: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.">Transaction&nbsp;Isolation&nbsp;Level&nbsp;Must&nbsp;Be</a>&nbsp;
+<a href="#Update Column Values In Table" title="Updates the given table to change the values of a given column to a new Value for those rows selected by the given where-clause.">Update&nbsp;Column&nbsp;Values&nbsp;In&nbsp;Table</a>&nbsp;
+</div>
+
+<h2>Keywords</h2>
+<table class="keywords">
+<tr>
+  <th class="kw">Keyword</th>
+  <th class="arg">Arguments</th>
+  <th class="doc">Documentation</th>
+</tr>
+<tr>
+  <td class="kw"><a name="Check Content For Row Identified By Rownum"></a>Check Content For Row Identified By Rownum</td>
+  <td class="arg">columnNames, expectedValues, tableName, rowNum</td>
+  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Check Content for Row Identified by Rownum</td>
+<td>Name, EMail</td>
+<td>John Doe, john.doe@x-files</td>
+<td>MySampleTable</td>
+<td>4</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Check Content For Row Identified By Where Clause"></a>Check Content For Row Identified By Where Clause</td>
+  <td class="arg">spaltennamen, erwarteteWerte, tabellenname, whereClause</td>
+  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
+<br />
+If the where-clause will select more or less than exactly one row the test will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Check Content for Row Identified by Rownum</td>
+<td>Name,EMail</td>
+<td>John Doe,john.doe@x-files</td>
+<td>MySampleTable</td>
+<td>Postings=14</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Connect To Database"></a>Connect To Database</td>
+  <td class="arg">driverClassName, connectString, dbUser, dbPassword</td>
+  <td class="doc">Establish the connection to the database. This is mandatory before any of the other keywords can be used and should be ideally done during the suite setup phase. To avoid problems ensure to close the connection again using the disconnect-keyword.<br />
+<br />
+It must be ensured that the JAR-file containing the given driver can be found from the CLASSPATH when starting robot. Furthremore it must be noted that the connection string is database-specific and must be valid of course.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Connect To Database</td>
+<td>com.mysql.jdbc.Driver</td>
+<td>jdbc:mysql://my.host.name/myinstance</td>
+<td>UserName</td>
+<td>ThePassword</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Delete All Rows From Table"></a>Delete All Rows From Table</td>
+  <td class="arg">tableName</td>
+  <td class="doc">Deletes the entire content of the given database table. This keyword is useful to start tests in a clean state. Use this keyword with care as accidently execution of this keyword in a productive system will cause heavy loss of data. There will be no rollback possible.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Delete All Rows From Table</td>
+<td>MySampleTable</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Disconnect From Database"></a>Disconnect From Database</td>
+  <td class="arg"></td>
+  <td class="doc">Releases the existing connection to the database. In addition this keyword will log any SQLWarnings that might have been occurred on the connection.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Disconnect from Database</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Export Data From Table"></a>Export Data From Table</td>
+  <td class="arg">tableName, filePath, whereClause</td>
+  <td class="doc">Exports the data from the given table into a file that is stored at the given location. The where-clause can (and should) be used to narrow the amount of rows that is exported this way. The file is stored in some simple XML-format and can be imported again to the database using the "Import Data From File" keyword. This way it is possible to store a set of testdata permanently retrieving it for example from some Live- or Demosystem. This keyword will probably have some issues if millions of rows are exported/imported using it.<br />
+<br />
+The keyword returns the amount of rows written to the XML-file.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>${ROWSEXPORTED}=</td>
+<td>MySampleTable</td>
+<td>/tmp/mysampletable.xml</td>
+<td>Timestamp &gt; sysdate-50</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Get Transaction Isolation Level"></a>Get Transaction Isolation Level</td>
+  <td class="arg"></td>
+  <td class="doc">Returns a String value that contains the name of the transaction isolation level of the connection that is used for executing the tests. Possible return vlaues are: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>${TI_LEVEL}=</td>
+<td>Get Transaction Isolation Level</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Import Data From File"></a>Import Data From File</td>
+  <td class="arg">filePath</td>
+  <td class="doc">This keyword reads data from a XML-file and stores the corresponding data to the database. The file must have been created using the "Export Data From Table" keyword or it must be created manually in the exact format. The XML-file contains not only the data as such, but also the name of the schema and table from which the data was exported. The same information is used for the import.<br />
+<br />
+The keyword returns the amount of rows that have been successfully stored to the database table.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>${ROWSIMPORTED}=</td>
+<td>/tmp/mysampletable.xml</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Read Single Value From Table"></a>Read Single Value From Table</td>
+  <td class="arg">tableName, columnName, whereClause</td>
+  <td class="doc">Reads a single value from the given table and column based on the where-clause passed to the test. If the where-clause identifies more or less than exactly one row in that table this will result in an error for this teststep. Otherwise the selected value will be returned.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>${VALUE}=</td>
+<td>Read single Value from Table</td>
+<td>MySampleTable</td>
+<td>EMail</td>
+<td>Name='John Doe'</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Table Must Be Empty"></a>Table Must Be Empty</td>
+  <td class="arg">tableName</td>
+  <td class="doc">Checks that the given table has no rows. It is a convinience way of using the "Table Must Contain Number OF Rows" with zero for the amount of rows.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Table Must Be Empty</td>
+<td>MySampleTable</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Table Must Contain Less Than Number Of Rows"></a>Table Must Contain Less Than Number Of Rows</td>
+  <td class="arg">tableName, rowNum</td>
+  <td class="doc">This keyword checks that a given table contains less than the given amount of rows. For the example this means that the table "MySampleTable" must contain anything between 0 and 1000 rows, otherwise the teststep will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Table Must Contain Less Than Number Of Rows</td>
+<td>MySampleTable</td>
+<td>1001</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Table Must Contain More Than Number Of Rows"></a>Table Must Contain More Than Number Of Rows</td>
+  <td class="arg">tableName, rowNum</td>
+  <td class="doc">This keyword checks that a given table contains more than the given amount of rows. For the example this means that the table "MySampleTable" must contain 100 or more rows, otherwise the teststep will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Table Must Contain More Than Number Of Rows</td>
+<td>MySampleTable</td>
+<td>99</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Table Must Contain Number Of Rows"></a>Table Must Contain Number Of Rows</td>
+  <td class="arg">tableName, rowNum</td>
+  <td class="doc">This keyword checks that a given table contains a given amount of rows. For the example this means that the table "MySampleTable" must contain exactly 14 rows, otherwise the teststep will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Table Must Contain Number Of Rows</td>
+<td>MySampleTable</td>
+<td>14</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Table Must Exist"></a>Table Must Exist</td>
+  <td class="arg">tableName</td>
+  <td class="doc">Checks that a table with the given name exists. If the table does not exist the test will fail.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Table Must Exist</td>
+<td>MySampleTable</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Tables Must Contain Same Amount Of Rows"></a>Tables Must Contain Same Amount Of Rows</td>
+  <td class="arg">firstTableName, secondTableName</td>
+  <td class="doc">This keyword checks that two given database tables have the same amount of rows.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Tables Must Contain Same Amount Of Rows</td>
+<td>MySampleTable</td>
+<td>MyCompareTable</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Transaction Isolation Level Must Be"></a>Transaction Isolation Level Must Be</td>
+  <td class="arg">levelName</td>
+  <td class="doc">Can be used to check that the database connection used for executing tests has the proper transaction isolation level. The string parameter accepts the following values in a case-insensitive manner: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Transaction Isolation Level Must Be</td>
+<td>TRANSACTION_READ_COMMITTED</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Update Column Values In Table"></a>Update Column Values In Table</td>
+  <td class="arg">tableName, columnName, newValue, whereClause</td>
+  <td class="doc">Updates the given table to change the values of a given column to a new Value for those rows selected by the given where-clause.<br />
+<br />
+Example:<br />
+<table border="1" class="doc">
+<tr>
+<td>Update Column Values in Table</td>
+<td>MySampleTable</td>
+<td>State</td>
+<td>0</td>
+<td>LastPosting &lt; sysdate-100</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<p class="footer">
+Altogether 17 keywords.<br />
+Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
+on 2010-02-12 18:33:18.
+</p>
+</body>
+</html>
