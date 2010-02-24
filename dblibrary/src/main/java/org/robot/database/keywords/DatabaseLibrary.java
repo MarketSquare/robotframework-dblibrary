@@ -22,7 +22,9 @@ import java.sql.Statement;
  * (usually in the form of a JAR from the database provider) and the knowledge
  * of a proper JDBC connection-string.
  * 
- * TESTED DATABASES AND SAMPLE CONNECTION STRINGS TO BE ADDED HERE.
+ * Tests have been performed with the following databases:
+ * Database | Driver Name | Sample Connection String | Download Driver |
+ * MySql    | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |
  * 
  * The examples in the description of the keywords is based on a database table
  * named "MySampleTable" that has the following layout:
