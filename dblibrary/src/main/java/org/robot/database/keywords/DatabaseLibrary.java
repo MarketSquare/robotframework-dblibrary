@@ -22,9 +22,10 @@ import java.sql.Statement;
  * (usually in the form of a JAR from the database provider) and the knowledge
  * of a proper JDBC connection-string.
  * 
- * Tests have been performed with the following databases:
- * Database | Driver Name | Sample Connection String | Download Driver |
- * MySql    | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |
+ * Tests have been performed with the following databases: Database | Driver
+ * Name | Sample Connection String | Download Driver | MySql |
+ * com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname |
+ * http://dev.mysql.com/downloads/connector/j/ |
  * 
  * The examples in the description of the keywords is based on a database table
  * named "MySampleTable" that has the following layout:
@@ -55,9 +56,15 @@ public class DatabaseLibrary {
 	 * Example: | Connect To Database | com.mysql.jdbc.Driver |
 	 * jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |
 	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * 
 	 */
 	public void connectToDatabase(String driverClassName, String connectString,
-			String dbUser, String dbPassword) throws Exception {
+			String dbUser, String dbPassword) throws SQLException,
+			InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 
 		Class.forName(driverClassName).newInstance();
 		setConnection(DriverManager.getConnection(connectString, dbUser,
@@ -212,7 +219,7 @@ public class DatabaseLibrary {
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
 			String expectedValues, String tableName, String rowNum)
 			throws Exception {
-		
+
 		String sqlString = "select " + columnNames + " from " + tableName;
 
 		String[] columns = columnNames.split(",");
@@ -237,14 +244,15 @@ public class DatabaseLibrary {
 					}
 
 					if (!fieldValue.equals(values[i])) {
-						throw new Exception("Value found: '" + fieldValue + "'. Expected: '" + values[i] + "'");
+						throw new Exception("Value found: '" + fieldValue
+								+ "'. Expected: '" + values[i] + "'");
 					}
 				}
 			}
 		}
 
 		rs.close();
-		stmt.close();		
+		stmt.close();
 	}
 
 	/**
@@ -373,15 +381,32 @@ public class DatabaseLibrary {
 	}
 
 	private long getNumberOfRows(String tableName) throws SQLException {
-		String sql = "select count(*) from " + tableName;
-		Statement stmt = getConnection().createStatement();
-		stmt.executeQuery(sql);
-		ResultSet rs = (ResultSet) stmt.getResultSet();
-		rs.next();
-		long num = rs.getLong("count(*)");
-		rs.close();
-		stmt.close();
 
+		// Let's first try with count(*), but this is not supported by all databases.
+		// In this case an exception will be thrown and we will read the amount
+		// of records the "hard way".
+		long num = -1;
+		try {
+			String sql = "select count(*) from " + tableName;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			rs.next();
+			num = rs.getLong("count(*)");
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			String sql = "select * from " + tableName;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			num = 0;
+			while (rs.next()) {
+				num++;
+			}
+			rs.close();
+			stmt.close();			
+		}
 		return num;
 	}
 }
