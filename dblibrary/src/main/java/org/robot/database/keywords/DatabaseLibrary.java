@@ -82,6 +82,7 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	public void disconnectFromDatabase() throws SQLException {
+		System.out.println("SQL Warnings on this connection: " + getConnection().getWarnings());
 		getConnection().close();
 	}
 
@@ -90,31 +91,35 @@ public class DatabaseLibrary {
 	 * exist the test will fail.
 	 * 
 	 * NOTE: Some database expect the table names to be written all in 
-	 *       uppercase letters to be found.
+	 *       upper case letters to be found.
 	 * 
 	 * Example: | Table Must Exist | MySampleTable |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 * @throws Exception 
 	 * 
 	 */
-	public void tableMustExist(String tableName) throws Exception {
+	public void tableMustExist(String tableName) throws SQLException, DatabaseLibraryException  {
 	    
 	    DatabaseMetaData dbm = getConnection().getMetaData();
 	    ResultSet rs = dbm.getTables(null, null, tableName, null);
 	    if (!rs.next()) {
-	      throw new Exception("Table: " + tableName + " was not found"); 
+	      throw new DatabaseLibraryException("Table: " + tableName + " was not found"); 
 	    }
 	}
 
 	/**
-	 * Checks that the given table has no rows. It is a convinience way of using
-	 * the "Table Must Contain Number OF Rows" with zero for the amount of rows.
+	 * Checks that the given table has no rows. It is a convenience way of using
+	 * the "Table Must Contain Number Of Rows" with zero for the amount of rows.
 	 * 
 	 * Example: | Table Must Be Empty | MySampleTable |
+	 * @throws DatabaseLibraryException 
+	 * @throws SQLException 
 	 * 
 	 * @throws Exception
 	 * 
 	 */
-	public void tableMustBeEmpty(String tableName) throws Exception {
+	public void tableMustBeEmpty(String tableName) throws SQLException, DatabaseLibraryException  {
 		tableMustContainNumberOfRows(tableName, 0);
 	}
 
@@ -143,15 +148,17 @@ public class DatabaseLibrary {
 	 * exactly 14 rows, otherwise the teststep will fail.
 	 * 
 	 * Example: | Table Must Contain Number Of Rows | MySampleTable | 14 |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 * 
 	 * @throws Exception
 	 */
-	public void tableMustContainNumberOfRows(String tableName, long rowNum)
-			throws Exception {
+	public void tableMustContainNumberOfRows(String tableName, long rowNum) throws SQLException, DatabaseLibraryException
+			 {
 
-		long num = getNumberOfRows(tableName);
+		long num = getNumberOfRows(tableName, (rowNum+1));
 		if (num != rowNum) {
-			throw new Exception("Expecting " + rowNum + " rows, fetched: "
+			throw new DatabaseLibraryException("Expecting " + rowNum + " rows, fetched: "
 					+ num);
 		}
 	}
@@ -163,13 +170,15 @@ public class DatabaseLibrary {
 	 * 
 	 * Example: | Table Must Contain More Than Number Of Rows | MySampleTable |
 	 * 99 |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 */
 	public void tableMustContainMoreThanNumberOfRows(String tableName,
-			long rowNum) throws Exception {
+			long rowNum) throws SQLException, DatabaseLibraryException  {
 
-		long num = getNumberOfRows(tableName);
+		long num = getNumberOfRows(tableName, rowNum+1);
 		if (num <= rowNum) {
-			throw new Exception("Expecting more than" + rowNum
+			throw new DatabaseLibraryException("Expecting more than" + rowNum
 					+ " rows, fetched: " + num);
 		}
 	}
@@ -182,13 +191,15 @@ public class DatabaseLibrary {
 	 * 
 	 * Example: | Table Must Contain Less Than Number Of Rows | MySampleTable |
 	 * 1001 |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 */
 	public void tableMustContainLessThanNumberOfRows(String tableName,
-			long rowNum) throws Exception {
+			long rowNum) throws SQLException, DatabaseLibraryException  {
 
-		long num = getNumberOfRows(tableName);
+		long num = getNumberOfRows(tableName, rowNum);
 		if (num >= rowNum) {
-			throw new Exception("Expecting less than" + rowNum
+			throw new DatabaseLibraryException("Expecting less than" + rowNum
 					+ " rows, fetched: " + num);
 		}
 	}
@@ -199,15 +210,17 @@ public class DatabaseLibrary {
 	 * 
 	 * Example: | Tables Must Contain Same Amount Of Rows | MySampleTable |
 	 * MyCompareTable |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 */
 	public void tablesMustContainSameAmountOfRows(String firstTableName,
-			String secondTableName) throws Exception {
+			String secondTableName) throws SQLException, DatabaseLibraryException  {
 
 		long firstNum = getNumberOfRows(firstTableName);
 		long secondNum = getNumberOfRows(secondTableName);
 
 		if (firstNum != secondNum) {
-			throw new Exception("Expecting same amount of rows, but table "
+			throw new DatabaseLibraryException("Expecting same amount of rows, but table "
 					+ firstTableName + " has " + firstNum + " rows and table "
 					+ secondTableName + " has " + secondNum + " rows!");
 		}
@@ -225,11 +238,13 @@ public class DatabaseLibrary {
 	 * 
 	 * Example: | Check Content for Row Identified by Rownum | Name, EMail |
 	 * John Doe, john.doe@x-files | MySampleTable | 4 |
+	 * @throws SQLException 
+	 * @throws DatabaseLibraryException 
 	 * 
 	 */
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
-			String expectedValues, String tableName, String rowNum)
-			throws Exception {
+			String expectedValues, String tableName, String rowNum) throws SQLException, DatabaseLibraryException
+			 {
 
 		String sqlString = "select " + columnNames + " from " + tableName;
 
@@ -255,7 +270,7 @@ public class DatabaseLibrary {
 					}
 
 					if (!fieldValue.equals(values[i])) {
-						throw new Exception("Value found: '" + fieldValue
+						throw new DatabaseLibraryException("Value found: '" + fieldValue
 								+ "'. Expected: '" + values[i] + "'");
 					}
 				}
@@ -284,8 +299,7 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	public void checkContentForRowIdentifiedByWhereClause(String spaltennamen,
-			String erwarteteWerte, String tabellenname, String whereClause)
-			throws Exception {
+			String erwarteteWerte, String tabellenname, String whereClause) {
 	}
 
 	/**
@@ -297,7 +311,7 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	public void updateColumnValuesInTable(String tableName, String columnName,
-			String newValue, String whereClause) throws SQLException {
+			String newValue, String whereClause) {
 	}
 
 	/**
@@ -311,7 +325,7 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	public String readSingleValueFromTable(String tableName, String columnName,
-			String whereClause) throws Exception {
+			String whereClause) {
 		return "";
 	}
 
@@ -352,11 +366,42 @@ public class DatabaseLibrary {
 		return connection;
 	}
 
+	private long getNumberOfRows(String tableName, long limit) throws SQLException {
+
+		// Let's first try with count(*), but this is not supported by all databases.
+		// In this case an exception will be thrown and we will read the amount
+		// of records the "hard way", but luckily limited by the amount of rows expected,
+		// so that this might not be too bad.
+		long num = -1;
+		try {
+			String sql = "select count(*) from " + tableName;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			rs.next();
+			num = rs.getLong("count(*)");
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			String sql = "select * from " + tableName;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			num = 0;
+			while ((rs.next()) && (num < limit)) {
+				num++;
+			}
+			rs.close();
+			stmt.close();			
+		}
+		return num;
+	}
+	
 	private long getNumberOfRows(String tableName) throws SQLException {
 
 		// Let's first try with count(*), but this is not supported by all databases.
 		// In this case an exception will be thrown and we will read the amount
-		// of records the "hard way".
+		// of records the "hard way"
 		long num = -1;
 		try {
 			String sql = "select count(*) from " + tableName;
