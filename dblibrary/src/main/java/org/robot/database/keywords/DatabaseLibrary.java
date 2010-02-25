@@ -1,6 +1,7 @@
 package org.robot.database.keywords;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,10 +23,11 @@ import java.sql.Statement;
  * (usually in the form of a JAR from the database provider) and the knowledge
  * of a proper JDBC connection-string.
  * 
- * Tests have been performed with the following databases: Database | Driver
- * Name | Sample Connection String | Download Driver | MySql |
- * com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname |
- * http://dev.mysql.com/downloads/connector/j/ |
+ * The following table lists some examples of drivers and connection strings
+ * for some popular databases. 
+ * Database | Driver Name | Sample Connection String | Download Driver | MySql |
+ * com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |
+ * oracle.jdbc.driver.OracleDriver | jdbc:oracle:thin:@servername:port:dbname | http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html |
  * 
  * The examples in the description of the keywords is based on a database table
  * named "MySampleTable" that has the following layout:
@@ -87,11 +89,20 @@ public class DatabaseLibrary {
 	 * Checks that a table with the given name exists. If the table does not
 	 * exist the test will fail.
 	 * 
+	 * NOTE: Some database expect the table names to be written all in 
+	 *       uppercase letters to be found.
+	 * 
 	 * Example: | Table Must Exist | MySampleTable |
+	 * @throws Exception 
 	 * 
 	 */
-	public void tableMustExist(String tableName) {
-
+	public void tableMustExist(String tableName) throws Exception {
+	    
+	    DatabaseMetaData dbm = getConnection().getMetaData();
+	    ResultSet rs = dbm.getTables(null, null, tableName, null);
+	    if (!rs.next()) {
+	      throw new Exception("Table: " + tableName + " was not found"); 
+	    }
 	}
 
 	/**
