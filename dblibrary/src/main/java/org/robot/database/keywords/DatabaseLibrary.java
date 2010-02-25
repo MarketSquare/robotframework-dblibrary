@@ -25,7 +25,7 @@ import java.sql.Statement;
  * 
  * The following table lists some examples of drivers and connection strings
  * for some popular databases. 
- * | Database | Driver Name | Sample Connection String | Download Driver | MySql |
+ * | Database | Driver Name | Sample Connection String | Download Driver |
  * | MySql | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |
  * | Oracle | oracle.jdbc.driver.OracleDriver | jdbc:oracle:thin:@servername:port:dbname | http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html |
  * 
@@ -335,7 +335,7 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	public String readSingleValueFromTable(String tableName, String columnName,
-			String whereClause) {
+			String whereClause) throws SQLException {
 		return "";
 	}
 
