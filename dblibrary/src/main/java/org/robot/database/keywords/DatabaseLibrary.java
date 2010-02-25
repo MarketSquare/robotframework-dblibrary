@@ -316,45 +316,6 @@ public class DatabaseLibrary {
 	}
 
 	/**
-	 * Exports the data from the given table into a file that is stored at the
-	 * given location. The where-clause can (and should) be used to narrow the
-	 * amount of rows that is exported this way. The file is stored in some
-	 * simple XML-format and can be imported again to the database using the
-	 * "Import Data From File" keyword. This way it is possible to store a set
-	 * of testdata permanently retrieving it for example from some Live- or
-	 * Demosystem. This keyword will probably have some issues if millions of
-	 * rows are exported/imported using it.
-	 * 
-	 * The keyword returns the amount of rows written to the XML-file.
-	 * 
-	 * Example: | ${ROWSEXPORTED}= | MySampleTable | /tmp/mysampletable.xml |
-	 * Timestamp > sysdate-50 |
-	 * 
-	 */
-	public int exportDataFromTable(String tableName, String filePath,
-			String whereClause) {
-		return 0;
-	}
-
-	/**
-	 * This keyword reads data from a XML-file and stores the corresponding data
-	 * to the database. The file must have been created using the
-	 * "Export Data From Table" keyword or it must be created manually in the
-	 * exact format. The XML-file contains not only the data as such, but also
-	 * the name of the schema and table from which the data was exported. The
-	 * same information is used for the import.
-	 * 
-	 * The keyword returns the amount of rows that have been successfully stored
-	 * to the database table.
-	 * 
-	 * Example: | ${ROWSIMPORTED}= | /tmp/mysampletable.xml |
-	 * 
-	 */
-	public int importDataFromFile(String filePath) {
-		return 0;
-	}
-
-	/**
 	 * Can be used to check that the database connection used for executing
 	 * tests has the proper transaction isolation level. The string parameter
 	 * accepts the following values in a case-insensitive manner:
