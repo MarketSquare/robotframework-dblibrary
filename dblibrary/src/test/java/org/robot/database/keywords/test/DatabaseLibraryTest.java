@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -18,6 +17,11 @@ public class DatabaseLibraryTest {
 
 	private static Server hsqldbServer = null;
 
+	
+	//
+	// Setup and Teardown on class-level
+	//
+	
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// Start the HSQLDB
@@ -43,10 +47,13 @@ public class DatabaseLibraryTest {
 		hsqldbServer.shutdown();
 	}
 
+	
+	//
+	// Database Connection
+	//
+	
 	@Test
 	public void checkConnectToDatabase() {
-
-		System.out.println("Check connectToDatabase with valid parameter...");
 		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
 			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
@@ -59,8 +66,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
-
-		System.out.println("Check connectionToDatabase with wrong username...");
 		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
 			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
@@ -76,9 +81,13 @@ public class DatabaseLibraryTest {
 		}
 	}
 
+	
+	//
+	// Check Table Must be Empty
+	//
+	
 	@Test
-	public void checkTableMustBeEmptyOnEmptyTable() {
-		System.out.println("Check tableMustBeEmpty on empty table...");
+	public void checkTableMustBeEmpty_OnEmptyTable() {
 		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
 			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
@@ -94,6 +103,30 @@ public class DatabaseLibraryTest {
 			e.printStackTrace();
 			fail();
 		}
-
 	}
+
+	
+	//
+	// Check Table must Exists
+	//
+	
+	@Test
+	public void checkTableMustExist_ThatExists() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary.tableMustExist("EMPTYTABLE");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+			
 }
