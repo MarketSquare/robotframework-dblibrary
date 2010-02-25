@@ -85,7 +85,30 @@
 <br />
 As this library is written in Java support for a lot of different database systems is possible. This only requires the corresponding driver-classes (usually in the form of a JAR from the database provider) and the knowledge of a proper JDBC connection-string.<br />
 <br />
-TESTED DATABASES AND SAMPLE CONNECTION STRINGS TO BE ADDED HERE.<br />
+The following table lists some examples of drivers and connection strings for some popular databases.<br />
+<table border="1" class="doc">
+<tr>
+<td>Database</td>
+<td>Driver Name</td>
+<td>Sample Connection String</td>
+<td>Download Driver</td>
+<td>MySql</td>
+</tr>
+<tr>
+<td>MySql</td>
+<td>com.mysql.jdbc.Driver</td>
+<td>jdbc:mysql://servername/dbname</td>
+<td><a href="http://dev.mysql.com/downloads/connector/j/">http://dev.mysql.com/downloads/connector/j/</a></td>
+<td></td>
+</tr>
+<tr>
+<td>Oracle</td>
+<td>oracle.jdbc.driver.OracleDriver</td>
+<td>jdbc:oracle:thin:@servername:port:dbname</td>
+<td><a href="http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html">http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html</a></td>
+<td></td>
+</tr>
+</table>
 <br />
 The examples in the description of the keywords is based on a database table named "MySampleTable" that has the following layout:<br />
 <br />
@@ -132,11 +155,10 @@ NOTE: A lot of keywords that are targeted for Tables will work equally with View
 <a href="#Connect To Database" title="Establish the connection to the database. This is mandatory before any of the other keywords can be used and should be ideally done during the suite setup phase. To avoid problems ensure to close the connection again using the disconnect-keyword.">Connect&nbsp;To&nbsp;Database</a>&nbsp;
 <a href="#Delete All Rows From Table" title="Deletes the entire content of the given database table. This keyword is useful to start tests in a clean state. Use this keyword with care as accidently execution of this keyword in a productive system will cause heavy loss of data. There will be no rollback possible.">Delete&nbsp;All&nbsp;Rows&nbsp;From&nbsp;Table</a>&nbsp;
 <a href="#Disconnect From Database" title="Releases the existing connection to the database. In addition this keyword will log any SQLWarnings that might have been occurred on the connection.">Disconnect&nbsp;From&nbsp;Database</a>&nbsp;
-<a href="#Export Data From Table" title="Exports the data from the given table into a file that is stored at the given location. The where-clause can (and should) be used to narrow the amount of rows that is exported this way. The file is stored in some simple XML-format and can be imported again to the database using the &quot;Import Data From File&quot; keyword. This way it is possible to store a set of testdata permanently retrieving it for example from some Live- or Demosystem. This keyword will probably have some issues if millions of rows are exported/imported using it.">Export&nbsp;Data&nbsp;From&nbsp;Table</a>&nbsp;
+<a href="#Get Connection" title="">Get&nbsp;Connection</a>&nbsp;
 <a href="#Get Transaction Isolation Level" title="Returns a String value that contains the name of the transaction isolation level of the connection that is used for executing the tests. Possible return vlaues are: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.">Get&nbsp;Transaction&nbsp;Isolation&nbsp;Level</a>&nbsp;
-<a href="#Import Data From File" title="This keyword reads data from a XML-file and stores the corresponding data to the database. The file must have been created using the &quot;Export Data From Table&quot; keyword or it must be created manually in the exact format. The XML-file contains not only the data as such, but also the name of the schema and table from which the data was exported. The same information is used for the import.">Import&nbsp;Data&nbsp;From&nbsp;File</a>&nbsp;
 <a href="#Read Single Value From Table" title="Reads a single value from the given table and column based on the where-clause passed to the test. If the where-clause identifies more or less than exactly one row in that table this will result in an error for this teststep. Otherwise the selected value will be returned.">Read&nbsp;Single&nbsp;Value&nbsp;From&nbsp;Table</a>&nbsp;
-<a href="#Table Must Be Empty" title="Checks that the given table has no rows. It is a convinience way of using the &quot;Table Must Contain Number OF Rows&quot; with zero for the amount of rows.">Table&nbsp;Must&nbsp;Be&nbsp;Empty</a>&nbsp;
+<a href="#Table Must Be Empty" title="Checks that the given table has no rows. It is a convenience way of using the &quot;Table Must Contain Number Of Rows&quot; with zero for the amount of rows.">Table&nbsp;Must&nbsp;Be&nbsp;Empty</a>&nbsp;
 <a href="#Table Must Contain Less Than Number Of Rows" title="This keyword checks that a given table contains less than the given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain anything between 0 and 1000 rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;Less&nbsp;Than&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
 <a href="#Table Must Contain More Than Number Of Rows" title="This keyword checks that a given table contains more than the given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain 100 or more rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;More&nbsp;Than&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
 <a href="#Table Must Contain Number Of Rows" title="This keyword checks that a given table contains a given amount of rows. For the example this means that the table &quot;MySampleTable&quot; must contain exactly 14 rows, otherwise the teststep will fail.">Table&nbsp;Must&nbsp;Contain&nbsp;Number&nbsp;Of&nbsp;Rows</a>&nbsp;
@@ -168,6 +190,8 @@ Example:<br />
 <td>4</td>
 </tr>
 </table>
+<br />
+@throws SQLException @throws DatabaseLibraryException<br />
 </td>
 </tr>
 <tr>
@@ -194,7 +218,7 @@ Example:<br />
   <td class="arg">driverClassName, connectString, dbUser, dbPassword</td>
   <td class="doc">Establish the connection to the database. This is mandatory before any of the other keywords can be used and should be ideally done during the suite setup phase. To avoid problems ensure to close the connection again using the disconnect-keyword.<br />
 <br />
-It must be ensured that the JAR-file containing the given driver can be found from the CLASSPATH when starting robot. Furthremore it must be noted that the connection string is database-specific and must be valid of course.<br />
+It must be ensured that the JAR-file containing the given driver can be found from the CLASSPATH when starting robot. Furthermore it must be noted that the connection string is database-specific and must be valid of course.<br />
 <br />
 Example:<br />
 <table border="1" class="doc">
@@ -206,6 +230,8 @@ Example:<br />
 <td>ThePassword</td>
 </tr>
 </table>
+<br />
+@throws ClassNotFoundException @throws IllegalAccessException @throws InstantiationException<br />
 </td>
 </tr>
 <tr>
@@ -220,6 +246,8 @@ Example:<br />
 <td>MySampleTable</td>
 </tr>
 </table>
+<br />
+@throws SQLException<br />
 </td>
 </tr>
 <tr>
@@ -236,22 +264,9 @@ Example:<br />
 </td>
 </tr>
 <tr>
-  <td class="kw"><a name="Export Data From Table"></a>Export Data From Table</td>
-  <td class="arg">tableName, filePath, whereClause</td>
-  <td class="doc">Exports the data from the given table into a file that is stored at the given location. The where-clause can (and should) be used to narrow the amount of rows that is exported this way. The file is stored in some simple XML-format and can be imported again to the database using the "Import Data From File" keyword. This way it is possible to store a set of testdata permanently retrieving it for example from some Live- or Demosystem. This keyword will probably have some issues if millions of rows are exported/imported using it.<br />
-<br />
-The keyword returns the amount of rows written to the XML-file.<br />
-<br />
-Example:<br />
-<table border="1" class="doc">
-<tr>
-<td>${ROWSEXPORTED}=</td>
-<td>MySampleTable</td>
-<td>/tmp/mysampletable.xml</td>
-<td>Timestamp &gt; sysdate-50</td>
-</tr>
-</table>
-</td>
+  <td class="kw"><a name="Get Connection"></a>Get Connection</td>
+  <td class="arg"></td>
+  <td class="doc"></td>
 </tr>
 <tr>
   <td class="kw"><a name="Get Transaction Isolation Level"></a>Get Transaction Isolation Level</td>
@@ -263,22 +278,6 @@ Example:<br />
 <tr>
 <td>${TI_LEVEL}=</td>
 <td>Get Transaction Isolation Level</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-  <td class="kw"><a name="Import Data From File"></a>Import Data From File</td>
-  <td class="arg">filePath</td>
-  <td class="doc">This keyword reads data from a XML-file and stores the corresponding data to the database. The file must have been created using the "Export Data From Table" keyword or it must be created manually in the exact format. The XML-file contains not only the data as such, but also the name of the schema and table from which the data was exported. The same information is used for the import.<br />
-<br />
-The keyword returns the amount of rows that have been successfully stored to the database table.<br />
-<br />
-Example:<br />
-<table border="1" class="doc">
-<tr>
-<td>${ROWSIMPORTED}=</td>
-<td>/tmp/mysampletable.xml</td>
 </tr>
 </table>
 </td>
@@ -303,7 +302,7 @@ Example:<br />
 <tr>
   <td class="kw"><a name="Table Must Be Empty"></a>Table Must Be Empty</td>
   <td class="arg">tableName</td>
-  <td class="doc">Checks that the given table has no rows. It is a convinience way of using the "Table Must Contain Number OF Rows" with zero for the amount of rows.<br />
+  <td class="doc">Checks that the given table has no rows. It is a convenience way of using the "Table Must Contain Number Of Rows" with zero for the amount of rows.<br />
 <br />
 Example:<br />
 <table border="1" class="doc">
@@ -312,7 +311,8 @@ Example:<br />
 <td>MySampleTable</td>
 </tr>
 </table>
-</td>
+<br />
+@throws DatabaseLibraryException @throws SQLException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain Less Than Number Of Rows"></a>Table Must Contain Less Than Number Of Rows</td>
@@ -327,7 +327,8 @@ Example:<br />
 <td>1001</td>
 </tr>
 </table>
-</td>
+<br />
+@throws SQLException @throws DatabaseLibraryException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain More Than Number Of Rows"></a>Table Must Contain More Than Number Of Rows</td>
@@ -342,7 +343,8 @@ Example:<br />
 <td>99</td>
 </tr>
 </table>
-</td>
+<br />
+@throws SQLException @throws DatabaseLibraryException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain Number Of Rows"></a>Table Must Contain Number Of Rows</td>
@@ -350,6 +352,7 @@ Example:<br />
   <td class="doc">This keyword checks that a given table contains a given amount of rows. For the example this means that the table "MySampleTable" must contain exactly 14 rows, otherwise the teststep will fail.<br />
 <br />
 Example:<br />
+<br />
 <table border="1" class="doc">
 <tr>
 <td>Table Must Contain Number Of Rows</td>
@@ -357,12 +360,14 @@ Example:<br />
 <td>14</td>
 </tr>
 </table>
-</td>
+@throws SQLException @throws DatabaseLibraryException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Exist"></a>Table Must Exist</td>
   <td class="arg">tableName</td>
   <td class="doc">Checks that a table with the given name exists. If the table does not exist the test will fail.<br />
+<br />
+NOTE: Some database expect the table names to be written all in upper case letters to be found.<br />
 <br />
 Example:<br />
 <table border="1" class="doc">
@@ -371,7 +376,8 @@ Example:<br />
 <td>MySampleTable</td>
 </tr>
 </table>
-</td>
+<br />
+@throws SQLException @throws DatabaseLibraryException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Tables Must Contain Same Amount Of Rows"></a>Tables Must Contain Same Amount Of Rows</td>
@@ -386,7 +392,8 @@ Example:<br />
 <td>MyCompareTable</td>
 </tr>
 </table>
-</td>
+<br />
+@throws SQLException @throws DatabaseLibraryException</td>
 </tr>
 <tr>
   <td class="kw"><a name="Transaction Isolation Level Must Be"></a>Transaction Isolation Level Must Be</td>
@@ -421,9 +428,9 @@ Example:<br />
 </tr>
 </table>
 <p class="footer">
-Altogether 17 keywords.<br />
+Altogether 16 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2010-02-12 18:33:18.
+on 2010-02-25 19:13:32.
 </p>
 </body>
 </html>
