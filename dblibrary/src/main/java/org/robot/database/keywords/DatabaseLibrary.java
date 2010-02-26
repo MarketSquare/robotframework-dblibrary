@@ -64,7 +64,7 @@ public class DatabaseLibrary {
 	 * found from the CLASSPATH when starting robot. Furthermore it must be
 	 * noted that the connection string is database-specific and must be valid
 	 * of course.
-	 *
+	 * 
 	 * <pre>
 	 * Example: 
 	 * | Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |
@@ -89,14 +89,15 @@ public class DatabaseLibrary {
 	 * Releases the existing connection to the database. In addition this
 	 * keyword will log any SQLWarnings that might have been occurred on the
 	 * connection.
-	 *
+	 * 
 	 * <pre>
 	 * Example: 
 	 * | Disconnect from Database |
 	 * </pre>
 	 */
 	public void disconnectFromDatabase() throws SQLException {
-		System.out.println("SQL Warnings on this connection: " + getConnection().getWarnings());
+		System.out.println("SQL Warnings on this connection: "
+				+ getConnection().getWarnings());
 		getConnection().close();
 	}
 
@@ -104,24 +105,26 @@ public class DatabaseLibrary {
 	 * Checks that a table with the given name exists. If the table does not
 	 * exist the test will fail.
 	 * 
-	 * NOTE: Some database expect the table names to be written all in 
-	 *       upper case letters to be found.
-	 *
+	 * NOTE: Some database expect the table names to be written all in upper
+	 * case letters to be found.
+	 * 
 	 * <pre>
 	 * Example: 
 	 * | Table Must Exist | MySampleTable |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
-	public void tableMustExist(String tableName) throws SQLException, DatabaseLibraryException  {
-	    
-	    DatabaseMetaData dbm = getConnection().getMetaData();
-	    ResultSet rs = dbm.getTables(null, null, tableName, null);
-	    if (!rs.next()) {
-	      throw new DatabaseLibraryException("Table: " + tableName + " was not found"); 
-	    }
+	public void tableMustExist(String tableName) throws SQLException,
+			DatabaseLibraryException {
+
+		DatabaseMetaData dbm = getConnection().getMetaData();
+		ResultSet rs = dbm.getTables(null, null, tableName, null);
+		if (!rs.next()) {
+			throw new DatabaseLibraryException("Table: " + tableName
+					+ " was not found");
+		}
 	}
 
 	/**
@@ -133,10 +136,11 @@ public class DatabaseLibrary {
 	 * | Table Must Be Empty | MySampleTable |
 	 * </pre>
 	 * 
-	 * @throws DatabaseLibraryException 
-	 * @throws SQLException 
+	 * @throws DatabaseLibraryException
+	 * @throws SQLException
 	 */
-	public void tableMustBeEmpty(String tableName) throws SQLException, DatabaseLibraryException  {
+	public void tableMustBeEmpty(String tableName) throws SQLException,
+			DatabaseLibraryException {
 		tableMustContainNumberOfRows(tableName, 0);
 	}
 
@@ -171,16 +175,16 @@ public class DatabaseLibrary {
 	 * | Table Must Contain Number Of Rows | MySampleTable | 14 |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
-	public void tableMustContainNumberOfRows(String tableName, long rowNum) throws SQLException, DatabaseLibraryException
-			 {
+	public void tableMustContainNumberOfRows(String tableName, long rowNum)
+			throws SQLException, DatabaseLibraryException {
 
-		long num = getNumberOfRows(tableName, (rowNum+1));
+		long num = getNumberOfRows(tableName, (rowNum + 1));
 		if (num != rowNum) {
-			throw new DatabaseLibraryException("Expecting " + rowNum + " rows, fetched: "
-					+ num);
+			throw new DatabaseLibraryException("Expecting " + rowNum
+					+ " rows, fetched: " + num);
 		}
 	}
 
@@ -194,13 +198,13 @@ public class DatabaseLibrary {
 	 * | Table Must Contain More Than Number Of Rows | MySampleTable | 99 |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
 	public void tableMustContainMoreThanNumberOfRows(String tableName,
-			long rowNum) throws SQLException, DatabaseLibraryException  {
+			long rowNum) throws SQLException, DatabaseLibraryException {
 
-		long num = getNumberOfRows(tableName, rowNum+1);
+		long num = getNumberOfRows(tableName, rowNum + 1);
 		if (num <= rowNum) {
 			throw new DatabaseLibraryException("Expecting more than" + rowNum
 					+ " rows, fetched: " + num);
@@ -218,11 +222,11 @@ public class DatabaseLibrary {
 	 * | Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
 	public void tableMustContainLessThanNumberOfRows(String tableName,
-			long rowNum) throws SQLException, DatabaseLibraryException  {
+			long rowNum) throws SQLException, DatabaseLibraryException {
 
 		long num = getNumberOfRows(tableName, rowNum);
 		if (num >= rowNum) {
@@ -240,19 +244,22 @@ public class DatabaseLibrary {
 	 * | Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
 	public void tablesMustContainSameAmountOfRows(String firstTableName,
-			String secondTableName) throws SQLException, DatabaseLibraryException  {
+			String secondTableName) throws SQLException,
+			DatabaseLibraryException {
 
 		long firstNum = getNumberOfRows(firstTableName);
 		long secondNum = getNumberOfRows(secondTableName);
 
 		if (firstNum != secondNum) {
-			throw new DatabaseLibraryException("Expecting same amount of rows, but table "
-					+ firstTableName + " has " + firstNum + " rows and table "
-					+ secondTableName + " has " + secondNum + " rows!");
+			throw new DatabaseLibraryException(
+					"Expecting same amount of rows, but table "
+							+ firstTableName + " has " + firstNum
+							+ " rows and table " + secondTableName + " has "
+							+ secondNum + " rows!");
 		}
 	}
 
@@ -265,18 +272,18 @@ public class DatabaseLibrary {
 	 * corresponding values are then read from that row in the given table and
 	 * compared to the expected values. If all values match the teststep will
 	 * pass, otherwise it will fail.
-	 *
+	 * 
 	 * <pre>
 	 * Example: 
 	 * | Check Content for Row Identified by Rownum | Name, EMail | John Doe, john.doe@x-files | MySampleTable | 4 |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
-			String expectedValues, String tableName, long rowNum) throws SQLException, DatabaseLibraryException
-			 {
+			String expectedValues, String tableName, long rowNum)
+			throws SQLException, DatabaseLibraryException {
 
 		String sqlString = "select " + columnNames + " from " + tableName;
 
@@ -302,11 +309,19 @@ public class DatabaseLibrary {
 					}
 
 					if (!fieldValue.equals(values[i])) {
-						throw new DatabaseLibraryException("Value found: '" + fieldValue
-								+ "'. Expected: '" + values[i] + "'");
+						throw new DatabaseLibraryException("Value found: '"
+								+ fieldValue + "'. Expected: '" + values[i]
+								+ "'");
 					}
 				}
+				break;
 			}
+		}
+
+		// Rownum does not exist
+		if (count != rowNum) {
+			throw new DatabaseLibraryException(
+					"Given rownum does not exist for statement: " + sqlString);
 		}
 
 		rs.close();
@@ -325,27 +340,68 @@ public class DatabaseLibrary {
 	 * 
 	 * If the where-clause will select more or less than exactly one row the
 	 * test will fail.
-	 *
+	 * 
 	 * <pre>
 	 * Example: 
 	 * | Check Content for Row Identified by Rownum | Name,EMail | John Doe,john.doe@x-files | MySampleTable | Postings=14 |
 	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
-	public void checkContentForRowIdentifiedByWhereClause(String spaltennamen,
-			String erwarteteWerte, String tabellenname, String whereClause) {
-	}
+	public void checkContentForRowIdentifiedByWhereClause(String columnNames,
+			String expectedValues, String tableName, String whereClause)
+			throws SQLException, DatabaseLibraryException {
 
-	/**
-	 * Updates the given table to change the values of a given column to a new
-	 * Value for those rows selected by the given where-clause.
-	 *
-	 * <pre>
-	 * Example: 
-	 * | Update Column Values in Table | MySampleTable | State | 0 | LastPosting < sysdate-100 |
-	 * </pre>
-	 */
-	public void updateColumnValuesInTable(String tableName, String columnName,
-			String newValue, String whereClause) {
+		String sqlString = "select " + columnNames + " from " + tableName
+				+ " where " + whereClause;
+
+		String[] columns = columnNames.split(",");
+		String[] values = expectedValues.split("\\|");
+
+		Statement stmt = getConnection().createStatement();
+		stmt.executeQuery(sqlString);
+		ResultSet rs = (ResultSet) stmt.getResultSet();
+
+		long count = 0;
+		while (rs.next()) {
+			count++;
+			if (count == 1) {
+
+				for (int i = 0; i < columns.length; i++) {
+					String fieldValue = rs.getString(columns[i]);
+					System.out.println(columns[i] + " -> " + fieldValue);
+
+					if (values[i].equals("(NULL)")) {
+						values[i] = "";
+					}
+
+					if (!fieldValue.equals(values[i])) {
+						throw new DatabaseLibraryException("Value found: '"
+								+ fieldValue + "'. Expected: '" + values[i]
+								+ "'");
+					}
+				}
+			}
+
+			// Throw exception if more than one row is selected by the given
+			// "where-clause"
+			if (count > 1) {
+				throw new DatabaseLibraryException(
+						"More than one row fetched by given where-clause for statement: "
+								+ sqlString);
+			}
+		}
+
+		// Throw exception if no rrow was fetched by given where-clause
+		if (count == 0) {
+			throw new DatabaseLibraryException(
+					"No row fetched by given where-clause for statement: "
+							+ sqlString);
+		}
+
+		rs.close();
+		stmt.close();
 	}
 
 	/**
@@ -362,7 +418,20 @@ public class DatabaseLibrary {
 	 */
 	public String readSingleValueFromTable(String tableName, String columnName,
 			String whereClause) throws SQLException {
-		return "";
+
+		String ret = "";
+
+		String sql = "select " + columnName + " from " + tableName + " where "
+				+ whereClause;
+		Statement stmt = getConnection().createStatement();
+		stmt.executeQuery(sql);
+		ResultSet rs = (ResultSet) stmt.getResultSet();
+		rs.next();
+		ret = rs.getString(columnName);
+		rs.close();
+		stmt.close();
+
+		return ret;
 	}
 
 	/**
@@ -378,44 +447,45 @@ public class DatabaseLibrary {
 	 * | Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
-	 * @throws DatabaseLibraryException 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
 	 */
-	public void transactionIsolationLevelMustBe(String levelName) throws SQLException, DatabaseLibraryException {
+	public void transactionIsolationLevelMustBe(String levelName)
+			throws SQLException, DatabaseLibraryException {
 
 		String transactionName = "";
-		
-	    int transactionIsolation = getConnection().getTransactionIsolation();
 
-		
-	    switch (transactionIsolation) {
-	    
-	    	case Connection.TRANSACTION_NONE: 
-	    		transactionName = "TRANSACTION_NONE";
-	    		break;
-	    
-	    	case Connection.TRANSACTION_READ_COMMITTED: 
-	    		transactionName = "TRANSACTION_READ_COMMITTED";
-	    		break;
-	    		
-	    	case Connection.TRANSACTION_READ_UNCOMMITTED: 
-	    		transactionName = "TRANSACTION_READ_UNCOMMITTED";
-	    		break;	    	
-	    		
-	    	case Connection.TRANSACTION_REPEATABLE_READ: 
-	    		transactionName = "TRANSACTION_REPEATABLE_READ";
-	    		break;	    	
-	    		
-	    	case Connection.TRANSACTION_SERIALIZABLE: 
-	    		transactionName = "TRANSACTION_SERIALIZABLE";
-	    		break;	    	
-	    }	    	    
-	    
-	    if (!transactionName.equals(levelName)) {
-	    	throw new DatabaseLibraryException("Expected Transaction Isolation Level: " 
-	    			+ levelName + " Level found: " + transactionName);
-	    }
-	    
+		int transactionIsolation = getConnection().getTransactionIsolation();
+
+		switch (transactionIsolation) {
+
+		case Connection.TRANSACTION_NONE:
+			transactionName = "TRANSACTION_NONE";
+			break;
+
+		case Connection.TRANSACTION_READ_COMMITTED:
+			transactionName = "TRANSACTION_READ_COMMITTED";
+			break;
+
+		case Connection.TRANSACTION_READ_UNCOMMITTED:
+			transactionName = "TRANSACTION_READ_UNCOMMITTED";
+			break;
+
+		case Connection.TRANSACTION_REPEATABLE_READ:
+			transactionName = "TRANSACTION_REPEATABLE_READ";
+			break;
+
+		case Connection.TRANSACTION_SERIALIZABLE:
+			transactionName = "TRANSACTION_SERIALIZABLE";
+			break;
+		}
+
+		if (!transactionName.equals(levelName)) {
+			throw new DatabaseLibraryException(
+					"Expected Transaction Isolation Level: " + levelName
+							+ " Level found: " + transactionName);
+		}
+
 	}
 
 	/**
@@ -430,37 +500,117 @@ public class DatabaseLibrary {
 	 * | ${TI_LEVEL}= | Get Transaction Isolation Level |
 	 * </pre>
 	 * 
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public String getTransactionIsolationLevel() throws SQLException {
 
 		String ret = "";
-		
-	    int transactionIsolation = getConnection().getTransactionIsolation();
-		
-	    switch (transactionIsolation) {
-	    
-	    	case Connection.TRANSACTION_NONE: 
-	    		ret = "TRANSACTION_NONE";
-	    		break;
-	    
-	    	case Connection.TRANSACTION_READ_COMMITTED: 
-	    		ret = "TRANSACTION_READ_COMMITTED";
-	    		break;
-	    		
-	    	case Connection.TRANSACTION_READ_UNCOMMITTED: 
-	    		ret = "TRANSACTION_READ_UNCOMMITTED";
-	    		break;	    	
-	    		
-	    	case Connection.TRANSACTION_REPEATABLE_READ: 
-	    		ret = "TRANSACTION_REPEATABLE_READ";
-	    		break;	    	
-	    		
-	    	case Connection.TRANSACTION_SERIALIZABLE: 
-	    		ret = "TRANSACTION_SERIALIZABLE";
-	    		break;	    	
-	    }	    
-	    
+
+		int transactionIsolation = getConnection().getTransactionIsolation();
+
+		switch (transactionIsolation) {
+
+		case Connection.TRANSACTION_NONE:
+			ret = "TRANSACTION_NONE";
+			break;
+
+		case Connection.TRANSACTION_READ_COMMITTED:
+			ret = "TRANSACTION_READ_COMMITTED";
+			break;
+
+		case Connection.TRANSACTION_READ_UNCOMMITTED:
+			ret = "TRANSACTION_READ_UNCOMMITTED";
+			break;
+
+		case Connection.TRANSACTION_REPEATABLE_READ:
+			ret = "TRANSACTION_REPEATABLE_READ";
+			break;
+
+		case Connection.TRANSACTION_SERIALIZABLE:
+			ret = "TRANSACTION_SERIALIZABLE";
+			break;
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Checks that the primary key columns of a given table match the columns
+	 * given as a comma-separated list. Note that the given list must be ordered
+	 * by the name of the columns. Upper and lower case for the columns as such
+	 * is ignored by comparing the values after converting both to lower case.
+	 * 
+	 * NOTE: Some database expect the table names to be written all in upper
+	 * case letters to be found.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | ${KEYS}=| Check Primary Key Columns For Table | MySampleTable | Id,Name |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException 
+	 * @throws DatabaseLibraryException
+	 */
+	public void getCheckPrimaryKeyColumnsForTable(String tableName,
+			String columnList) throws SQLException, DatabaseLibraryException {
+
+		String keys = "";
+
+		DatabaseMetaData dbm = getConnection().getMetaData();
+		ResultSet rs = dbm.getPrimaryKeys(null, null, tableName);
+
+		while (rs.next()) {
+			keys = rs.getString("COLUMN_NAME") + ",";
+		}
+
+		// Remove the last ","
+		if (keys.length() > 0) {
+			keys = keys.substring(0, keys.length() - 1);
+		}
+
+		columnList = columnList.toLowerCase();
+		keys = keys.toLowerCase();
+
+		if (!columnList.equals(keys)) {
+			throw new DatabaseLibraryException("Given column list: "
+					+ columnList + " Keys found: " + keys);
+		}
+
+	}
+
+	/**
+	 * Returns a comma-separated list of the primary keys defined for the given
+	 * table. The list if ordered by the name of the columns.
+	 * 
+	 * NOTE: Some database expect the table names to be written all in upper
+	 * case letters to be found.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | ${KEYS}=| Get Primary Key Columns For Table | MySampleTable |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	public String getPrimaryKeyColumnsForTable(String tableName)
+			throws SQLException {
+
+		String ret = "";
+
+		DatabaseMetaData dbm = getConnection().getMetaData();
+		ResultSet rs = dbm.getPrimaryKeys(null, null, tableName);
+
+		while (rs.next()) {
+			ret = rs.getString("COLUMN_NAME") + ",";
+		}
+
+		// Remove the last ","
+		if (ret.length() > 0) {
+			ret = ret.substring(0, ret.length() - 1);
+		}
+
 		return ret;
 	}
 
@@ -472,11 +622,14 @@ public class DatabaseLibrary {
 		return connection;
 	}
 
-	private long getNumberOfRows(String tableName, long limit) throws SQLException {
+	private long getNumberOfRows(String tableName, long limit)
+			throws SQLException {
 
-		// Let's first try with count(*), but this is not supported by all databases.
+		// Let's first try with count(*), but this is not supported by all
+		// databases.
 		// In this case an exception will be thrown and we will read the amount
-		// of records the "hard way", but luckily limited by the amount of rows expected,
+		// of records the "hard way", but luckily limited by the amount of rows
+		// expected,
 		// so that this might not be too bad.
 		long num = -1;
 		try {
@@ -498,14 +651,15 @@ public class DatabaseLibrary {
 				num++;
 			}
 			rs.close();
-			stmt.close();			
+			stmt.close();
 		}
 		return num;
 	}
-	
+
 	private long getNumberOfRows(String tableName) throws SQLException {
 
-		// Let's first try with count(*), but this is not supported by all databases.
+		// Let's first try with count(*), but this is not supported by all
+		// databases.
 		// In this case an exception will be thrown and we will read the amount
 		// of records the "hard way"
 		long num = -1;
@@ -528,7 +682,7 @@ public class DatabaseLibrary {
 				num++;
 			}
 			rs.close();
-			stmt.close();			
+			stmt.close();
 		}
 		return num;
 	}
