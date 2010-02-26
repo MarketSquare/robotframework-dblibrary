@@ -613,6 +613,33 @@ public class DatabaseLibrary {
 
 		return ret;
 	}
+	
+	/**
+	 * Executes the given SQL without any further modifications.
+	 * The given SQL must be valid for the database that is used.
+	 * The main purpose of this keyword is building some contents in the database
+	 * used for later testing.
+	 * 
+	 * NOTE: Use this method with care as you might cause damage to your database,
+	 * especially when using this in a productive environment.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Execute SQL | CREATE TABLE MyTable (Num INTEGER) |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	public void executeSQL(String sqlString)
+			throws SQLException {
+
+		Statement stmt = getConnection().createStatement();
+		stmt.execute(sqlString);
+	}
+	
+	
+	
 
 	private void setConnection(Connection connection) {
 		this.connection = connection;
