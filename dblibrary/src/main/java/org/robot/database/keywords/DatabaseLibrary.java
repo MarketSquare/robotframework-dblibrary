@@ -23,15 +23,18 @@ import java.sql.Statement;
  * (usually in the form of a JAR from the database provider) and the knowledge
  * of a proper JDBC connection-string.
  * 
+ * <pre>
  * The following table lists some examples of drivers and connection strings
  * for some popular databases. 
  * | Database | Driver Name | Sample Connection String | Download Driver |
  * | MySql | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |
  * | Oracle | oracle.jdbc.driver.OracleDriver | jdbc:oracle:thin:@servername:port:dbname | http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html |
+ * </pre>
  * 
  * The examples in the description of the keywords is based on a database table
  * named "MySampleTable" that has the following layout:
  * 
+ * <pre>
  * MySampleTable: 
  * | COLUMN | TYPE | 
  * | Id | Number | 
@@ -40,6 +43,7 @@ import java.sql.Statement;
  * | Postings | Number | 
  * | State | Number | 
  * | LastPosting | Timestamp |
+ * </pre>
  * 
  * NOTE: A lot of keywords that are targeted for Tables will work equally with
  * Views as this is often no difference if Select-statements are performed.
@@ -60,9 +64,11 @@ public class DatabaseLibrary {
 	 * found from the CLASSPATH when starting robot. Furthermore it must be
 	 * noted that the connection string is database-specific and must be valid
 	 * of course.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |
+	 * </pre>
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws IllegalAccessException
@@ -83,10 +89,11 @@ public class DatabaseLibrary {
 	 * Releases the existing connection to the database. In addition this
 	 * keyword will log any SQLWarnings that might have been occurred on the
 	 * connection.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Disconnect from Database |
-	 * 
+	 * </pre>
 	 */
 	public void disconnectFromDatabase() throws SQLException {
 		System.out.println("SQL Warnings on this connection: " + getConnection().getWarnings());
@@ -99,9 +106,11 @@ public class DatabaseLibrary {
 	 * 
 	 * NOTE: Some database expect the table names to be written all in 
 	 *       upper case letters to be found.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Table Must Exist | MySampleTable |
+	 * </pre>
 	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
@@ -119,8 +128,10 @@ public class DatabaseLibrary {
 	 * Checks that the given table has no rows. It is a convenience way of using
 	 * the "Table Must Contain Number Of Rows" with zero for the amount of rows.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Table Must Be Empty | MySampleTable |
+	 * </pre>
 	 * 
 	 * @throws DatabaseLibraryException 
 	 * @throws SQLException 
@@ -135,11 +146,12 @@ public class DatabaseLibrary {
 	 * accidently execution of this keyword in a productive system will cause
 	 * heavy loss of data. There will be no rollback possible.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Delete All Rows From Table | MySampleTable |
+	 * </pre>
 	 * 
 	 * @throws SQLException
-	 * 
 	 */
 	public void deleteAllRowsFromTable(String tableName) throws SQLException {
 		String sql = "delete from " + tableName;
@@ -154,9 +166,11 @@ public class DatabaseLibrary {
 	 * For the example this means that the table "MySampleTable" must contain
 	 * exactly 14 rows, otherwise the teststep will fail.
 	 * 
+	 * <pre>
 	 * Example: 
-	 * 
 	 * | Table Must Contain Number Of Rows | MySampleTable | 14 |
+	 * </pre>
+	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
 	 */
@@ -175,8 +189,10 @@ public class DatabaseLibrary {
 	 * amount of rows. For the example this means that the table "MySampleTable"
 	 * must contain 100 or more rows, otherwise the teststep will fail.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Table Must Contain More Than Number Of Rows | MySampleTable | 99 |
+	 * </pre>
 	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
@@ -197,8 +213,10 @@ public class DatabaseLibrary {
 	 * must contain anything between 0 and 1000 rows, otherwise the teststep
 	 * will fail.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 |
+	 * </pre>
 	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
@@ -217,8 +235,10 @@ public class DatabaseLibrary {
 	 * This keyword checks that two given database tables have the same amount
 	 * of rows.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable |
+	 * </pre>
 	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
@@ -245,13 +265,14 @@ public class DatabaseLibrary {
 	 * corresponding values are then read from that row in the given table and
 	 * compared to the expected values. If all values match the teststep will
 	 * pass, otherwise it will fail.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Check Content for Row Identified by Rownum | Name, EMail | John Doe, john.doe@x-files | MySampleTable | 4 |
+	 * </pre>
 	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
-	 * 
 	 */
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
 			String expectedValues, String tableName, long rowNum) throws SQLException, DatabaseLibraryException
@@ -304,10 +325,11 @@ public class DatabaseLibrary {
 	 * 
 	 * If the where-clause will select more or less than exactly one row the
 	 * test will fail.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Check Content for Row Identified by Rownum | Name,EMail | John Doe,john.doe@x-files | MySampleTable | Postings=14 |
-	 * 
+	 * </pre>
 	 */
 	public void checkContentForRowIdentifiedByWhereClause(String spaltennamen,
 			String erwarteteWerte, String tabellenname, String whereClause) {
@@ -316,9 +338,11 @@ public class DatabaseLibrary {
 	/**
 	 * Updates the given table to change the values of a given column to a new
 	 * Value for those rows selected by the given where-clause.
-	 * 
+	 *
+	 * <pre>
 	 * Example: 
 	 * | Update Column Values in Table | MySampleTable | State | 0 | LastPosting < sysdate-100 |
+	 * </pre>
 	 */
 	public void updateColumnValuesInTable(String tableName, String columnName,
 			String newValue, String whereClause) {
@@ -330,8 +354,10 @@ public class DatabaseLibrary {
 	 * less than exactly one row in that table this will result in an error for
 	 * this teststep. Otherwise the selected value will be returned.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' |
+	 * </pre>
 	 * 
 	 */
 	public String readSingleValueFromTable(String tableName, String columnName,
@@ -347,11 +373,13 @@ public class DatabaseLibrary {
 	 * TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or
 	 * TRANSACTION_NONE.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED |
+	 * </pre>
+	 * 
 	 * @throws SQLException 
 	 * @throws DatabaseLibraryException 
-	 * 
 	 */
 	public void transactionIsolationLevelMustBe(String levelName) throws SQLException, DatabaseLibraryException {
 
@@ -393,14 +421,16 @@ public class DatabaseLibrary {
 	/**
 	 * Returns a String value that contains the name of the transaction
 	 * isolation level of the connection that is used for executing the tests.
-	 * Possible return vlaues are: TRANSACTION_READ_UNCOMMITTED,
+	 * Possible return values are: TRANSACTION_READ_UNCOMMITTED,
 	 * TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ,
 	 * TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.
 	 * 
+	 * <pre>
 	 * Example: 
 	 * | ${TI_LEVEL}= | Get Transaction Isolation Level |
-	 * @throws SQLException 
+	 * </pre>
 	 * 
+	 * @throws SQLException 
 	 */
 	public String getTransactionIsolationLevel() throws SQLException {
 
