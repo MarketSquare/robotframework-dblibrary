@@ -40,11 +40,15 @@ public class DatabaseLibraryTest {
 
 		Statement stmt = con.createStatement();
 		stmt
-				.execute("CREATE TABLE MySampleTable (Id Integer, Name VARCHAR(256), "
+				.execute("CREATE TABLE MySampleTable (Id Integer NOT NULL, Name VARCHAR(256), "
 						+ "EMail VARCHAR(256), "
 						+ "Postings Integer, State Integer, LastPosting Timestamp)");
 		stmt.execute("CREATE TABLE EmptyTable (Id Integer, Name VARCHAR(256))");
 		stmt.execute("CREATE TABLE ReferenceTable (Num Integer)");
+
+		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyUniqKey UNIQUE (Id)");
+		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyPrimKey PRIMARY KEY (Id)");
+		
 		stmt.close();
 		con.close();
 	}
@@ -565,6 +569,135 @@ public class DatabaseLibraryTest {
 	}	
 	
 	
+	@Test
+	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary
+					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
+							"1|Donny Dar|1001", "MySampleTable", 100);
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e2) {
+			// This Exception is expected as the test fails
+		}
+	}		
+	
+	
+	// ========================================================
+	//
+	// Check Check Content for row identified by where-clause
+	//
+	// ========================================================
+
+	@Test
+	public void checkCheckContentIdentifiedbyWhereClause() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary
+					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+							"1|Donny Darko|1001", "MySampleTable", "id=1");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e2) {
+			e2.printStackTrace();
+			fail();
+		}
+	}	
+	
+	@Test
+	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary
+					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+							"1|Donny Darko|100", "MySampleTable", "id=1");
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e2) {
+			// This Exception is expected as the test fails
+		}
+	}	
+	
+	@Test
+	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		try {
+			databaseLibrary
+					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+							"1|Donny Darko|100", "MySampleTable", "id=100");
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e2) {
+			// This Exception is expected as the test fails
+		}
+	}	
+
+	@Test
+	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary
+					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+							"1|Donny Darko|100", "MySampleTable", "id=1 or id=2");
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e2) {
+			// This Exception is expected as the test fails
+		}
+	}	
+
+	
+	
 	// ========================================================
 	//
 	// Check Transaction Isolation Level
@@ -585,7 +718,10 @@ public class DatabaseLibraryTest {
 		try {
 			String level = databaseLibrary.getTransactionIsolationLevel();
 			System.out.println("Transaction Isolation Level: " + level);
-			Assert.assertNotSame("Empty Transaction Isolation Level", "", level);
+			
+			if ((level == null) || (level.equals(""))) {
+				fail("Empty Transaction Isolation Level");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -635,5 +771,130 @@ public class DatabaseLibraryTest {
 			// This Exception is expected as the test fails
 		} 
 	}		
+	
+	
+	// ========================================================
+	//
+	// Check Read Single Value from Table
+	//
+	// ========================================================
+
+	@Test
+	public void checkReadSingleValueFromTable() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
+			System.out.println("Single Value Fetched: " + name);
+			Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} 
+	}	
+
+	
+	// ========================================================
+	//
+	// Check Primary Key Column Information
+	//
+	// ========================================================
+
+	@Test
+	public void checkGetPrimaryKeyColumnsForTable() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
+			System.out.println("Primary Keys: " + keys);
+			
+			if ((keys == null) || (keys.equals(""))) {
+				fail("Empty Primary Key");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} 
+	}		
+	
+	@Test
+	public void checkCheckPrimaryKeyColumnsForTable() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary.getCheckPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			e.printStackTrace();
+			fail();
+		} 
+	}			
+
+	@Test
+	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary.getCheckPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			// This Exception is expected as the test fails
+		} 
+	}			
+	
+	@Test
+	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary.getCheckPrimaryKeyColumnsForTable("WrongTable", "Id");
+			fail();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			// This Exception is expected as the test fails
+		} 
+	}				
 	
 }
