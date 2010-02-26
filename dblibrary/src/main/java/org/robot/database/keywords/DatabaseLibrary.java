@@ -552,7 +552,7 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException 
 	 * @throws DatabaseLibraryException
 	 */
-	public void getCheckPrimaryKeyColumnsForTable(String tableName,
+	public void checkPrimaryKeyColumnsForTable(String tableName,
 			String columnList) throws SQLException, DatabaseLibraryException {
 
 		String keys = "";
@@ -618,7 +618,7 @@ public class DatabaseLibrary {
 		this.connection = connection;
 	}
 
-	public Connection getConnection() {
+	private Connection getConnection() {
 		return connection;
 	}
 
