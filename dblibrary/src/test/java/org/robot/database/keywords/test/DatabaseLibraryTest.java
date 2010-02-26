@@ -90,7 +90,7 @@ public class DatabaseLibraryTest {
 
 	// ========================================================
 	//
-	// Database Connection
+	// Database Connection 
 	//
 	// ========================================================
 
@@ -123,6 +123,20 @@ public class DatabaseLibraryTest {
 		}
 	}
 
+	@Test
+	public void checkDisconnectFromDatabase() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+			databaseLibrary.disconnectFromDatabase();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	
 	// ========================================================
 	//
 	// Check Table Must be Empty
@@ -897,4 +911,30 @@ public class DatabaseLibraryTest {
 		} 
 	}				
 	
+	
+	//
+	// Check Execute SQL
+	//
+	@Test
+	public void checkExecuteSQL() {
+		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
+		try {
+			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
+					"jdbc:hsqldb:mem:xdb", "sa", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		try {
+			databaseLibrary.executeSQL("CREATE TABLE TestTable (Num Integer)");
+			databaseLibrary.tableMustExist("TESTTABLE");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			e.printStackTrace();
+			fail();
+		} 
+	}				
 }
