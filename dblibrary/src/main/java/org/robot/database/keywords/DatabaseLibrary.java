@@ -343,7 +343,7 @@ public class DatabaseLibrary {
 	 * 
 	 * <pre>
 	 * Example: 
-	 * | Check Content for Row Identified by Rownum | Name,EMail | John Doe,john.doe@x-files | MySampleTable | Postings=14 |
+	 * | Check Content for Row Identified by WhereClause | Name,EMail | John Doe,john.doe@x-files | MySampleTable | Postings=14 |
 	 * </pre>
 	 * 
 	 * @throws SQLException
@@ -545,7 +545,7 @@ public class DatabaseLibrary {
 	 * 
 	 * <pre>
 	 * Example: 
-	 * | ${KEYS}=| Check Primary Key Columns For Table | MySampleTable | Id,Name |
+	 * | Check Primary Key Columns For Table | MySampleTable | Id,Name |
 	 * </pre>
 	 * 
 	 * @throws SQLException
@@ -588,7 +588,7 @@ public class DatabaseLibrary {
 	 * 
 	 * <pre>
 	 * Example: 
-	 * | ${KEYS}=| Get Primary Key Columns For Table | MySampleTable |
+	 * | ${KEYS}= | Get Primary Key Columns For Table | MySampleTable |
 	 * </pre>
 	 * 
 	 * @throws SQLException
