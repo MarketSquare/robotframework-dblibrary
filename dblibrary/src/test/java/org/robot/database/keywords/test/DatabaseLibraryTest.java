@@ -843,7 +843,7 @@ public class DatabaseLibraryTest {
 		}
 
 		try {
-			databaseLibrary.getCheckPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
+			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -865,7 +865,7 @@ public class DatabaseLibraryTest {
 		}
 
 		try {
-			databaseLibrary.getCheckPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
+			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -887,7 +887,7 @@ public class DatabaseLibraryTest {
 		}
 
 		try {
-			databaseLibrary.getCheckPrimaryKeyColumnsForTable("WrongTable", "Id");
+			databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
