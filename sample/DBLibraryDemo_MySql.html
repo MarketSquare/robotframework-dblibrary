@@ -205,6 +205,166 @@ td.name, th.name {
 </tr>
 <tr>
 <td class="name"></td>
+<td>Execute SQL</td>
+<td>INSERT INTO DemoTable VALUES(2, 'Darth Vader')</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"><a name="test_Check Number of Rows">Check Number of Rows</a></td>
+<td>[Documentation]</td>
+<td colspan="3">Perform some checks related to the number of Rows in the DemoTable.</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Table Must Contain Number of Rows</td>
+<td>DemoTable</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Table Must Contain More Than Number Of Rows</td>
+<td>DemoTable</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Table Must Contain Less Than Number Of Rows</td>
+<td>DemoTable</td>
+<td>3</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Tables Must Contain Same Amount of Rows</td>
+<td>DemoTable</td>
+<td>DemoTable</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"><a name="test_Content Check">Content Check</a></td>
+<td>[Documentation]</td>
+<td colspan="3">Checks for specific content in the DemoTable.You can inspect the Logfile to see the value fetched by the "Read Single Value From Table" keyword.</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Check Content for Row Identified by Rownum</td>
+<td>Id,Name</td>
+<td>1|Donny Darko</td>
+<td>DemoTable</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>...</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Check Content for Row Identified by WhereClause</td>
+<td>Id,Name</td>
+<td>2|Darth Vader</td>
+<td>DemoTable</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>...</td>
+<td>id=2</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>${VALUE}=</td>
+<td>Read Single Value From Table</td>
+<td>DemoTable</td>
+<td>Name</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>...</td>
+<td>id=1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Log</td>
+<td>${VALUE}</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"><a name="test_Delete Rows From Database">Delete Rows From Database</a></td>
+<td>[Documentation]</td>
+<td colspan="3">Delete all rows from the database. \n</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Table Must Contain Number of Rows</td>
+<td>DemoTable</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Delete all Rows From Table</td>
+<td>DemoTable</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Table Must Contain Number of Rows</td>
+<td>DemoTable</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"><a name="test_Drop Test Table">Drop Test Table</a></td>
+<td>[Documentation]</td>
+<td colspan="3">Clean up by dropping the DemoTable again.</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Execute SQL</td>
+<td>DROP TABLE DemoTable</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
 <td></td>
 <td></td>
 <td></td>
