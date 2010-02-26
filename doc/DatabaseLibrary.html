@@ -149,13 +149,13 @@ NOTE: A lot of keywords that are targeted for Tables will work equally with View
 
 <h2>Shortcuts</h2>
 <div class='links'>
-<a href="#Check Content For Row Identified By Rownum" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Rownum</a>&nbsp;
-<a href="#Check Content For Row Identified By Where Clause" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Where&nbsp;Clause</a>&nbsp;
+<a href="#Check Content For Row Identified By Rownum" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a pipe-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Rownum</a>&nbsp;
+<a href="#Check Content For Row Identified By Where Clause" title="This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a pipe-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.">Check&nbsp;Content&nbsp;For&nbsp;Row&nbsp;Identified&nbsp;By&nbsp;Where&nbsp;Clause</a>&nbsp;
 <a href="#Check Primary Key Columns For Table" title="Checks that the primary key columns of a given table match the columns given as a comma-separated list. Note that the given list must be ordered by the name of the columns. Upper and lower case for the columns as such is ignored by comparing the values after converting both to lower case.">Check&nbsp;Primary&nbsp;Key&nbsp;Columns&nbsp;For&nbsp;Table</a>&nbsp;
 <a href="#Connect To Database" title="Establish the connection to the database. This is mandatory before any of the other keywords can be used and should be ideally done during the suite setup phase. To avoid problems ensure to close the connection again using the disconnect-keyword.">Connect&nbsp;To&nbsp;Database</a>&nbsp;
 <a href="#Delete All Rows From Table" title="Deletes the entire content of the given database table. This keyword is useful to start tests in a clean state. Use this keyword with care as accidently execution of this keyword in a productive system will cause heavy loss of data. There will be no rollback possible.">Delete&nbsp;All&nbsp;Rows&nbsp;From&nbsp;Table</a>&nbsp;
 <a href="#Disconnect From Database" title="Releases the existing connection to the database. In addition this keyword will log any SQLWarnings that might have been occurred on the connection.">Disconnect&nbsp;From&nbsp;Database</a>&nbsp;
-<a href="#Execute SQL" title="Executes the given SQL without any further modifications. The given SQL must be valid for the database that is used. The main purpose of this keyword is building some contents in the database used for later testing.">Execute&nbsp;SQL</a>&nbsp;
+<a href="#Execute SQL" title="Executes the given SQL without any further modifications.O The given SQL must be valid for the database that is used. The main purpose of this keyword is building some contents in the database used for later testing.">Execute&nbsp;SQL</a>&nbsp;
 <a href="#Get Primary Key Columns For Table" title="Returns a comma-separated list of the primary keys defined for the given table. The list if ordered by the name of the columns.">Get&nbsp;Primary&nbsp;Key&nbsp;Columns&nbsp;For&nbsp;Table</a>&nbsp;
 <a href="#Get Transaction Isolation Level" title="Returns a String value that contains the name of the transaction isolation level of the connection that is used for executing the tests. Possible return values are: TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or TRANSACTION_NONE.">Get&nbsp;Transaction&nbsp;Isolation&nbsp;Level</a>&nbsp;
 <a href="#Read Single Value From Table" title="Reads a single value from the given table and column based on the where-clause passed to the test. If the where-clause identifies more or less than exactly one row in that table this will result in an error for this teststep. Otherwise the selected value will be returned.">Read&nbsp;Single&nbsp;Value&nbsp;From&nbsp;Table</a>&nbsp;
@@ -177,15 +177,15 @@ NOTE: A lot of keywords that are targeted for Tables will work equally with View
 </tr>
 <tr>
   <td class="kw"><a name="Check Content For Row Identified By Rownum"></a>Check Content For Row Identified By Rownum</td>
-  <td class="arg">columnNames, expectedValues, tableName, rowNum</td>
-  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
+  <td class="arg">columnNames, expectedValues, tableName, rowNumValue</td>
+  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a pipe-separated list of values in the second parameter. Then the name of the table and the rownum to check must be passed to this keyword. The corresponding values are then read from that row in the given table and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
 <br />
 &lt;pre&gt; Example:<br />
 <table border="1" class="doc">
 <tr>
 <td>Check Content for Row Identified by Rownum</td>
-<td>Name, EMail</td>
-<td>John Doe, john.doe@x-files</td>
+<td>Name,EMail</td>
+<td>John Doe|john.doe@x-files</td>
 <td>MySampleTable</td>
 <td>4</td>
 </tr>
@@ -197,7 +197,7 @@ NOTE: A lot of keywords that are targeted for Tables will work equally with View
 <tr>
   <td class="kw"><a name="Check Content For Row Identified By Where Clause"></a>Check Content For Row Identified By Where Clause</td>
   <td class="arg">columnNames, expectedValues, tableName, whereClause</td>
-  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a comma-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
+  <td class="doc">This keyword can be used to check for proper content inside a specific row in a database table. For this it is possible to give a comma-separated list of column names in the first parameter and a pipe-separated list of values in the second parameter. Then the name of the table and a statement used in the where-clause to identify a concrete row. The corresponding values are then read from the row identified this way and compared to the expected values. If all values match the teststep will pass, otherwise it will fail.<br />
 <br />
 If the where-clause will select more or less than exactly one row the test will fail.<br />
 <br />
@@ -206,7 +206,7 @@ If the where-clause will select more or less than exactly one row the test will 
 <tr>
 <td>Check Content for Row Identified by WhereClause</td>
 <td>Name,EMail</td>
-<td>John Doe,john.doe@x-files</td>
+<td>John Doe|john.doe@x-files</td>
 <td>MySampleTable</td>
 <td>Postings=14</td>
 </tr>
@@ -288,7 +288,7 @@ It must be ensured that the JAR-file containing the given driver can be found fr
 <tr>
   <td class="kw"><a name="Execute SQL"></a>Execute SQL</td>
   <td class="arg">sqlString</td>
-  <td class="doc">Executes the given SQL without any further modifications. The given SQL must be valid for the database that is used. The main purpose of this keyword is building some contents in the database used for later testing.<br />
+  <td class="doc">Executes the given SQL without any further modifications.O The given SQL must be valid for the database that is used. The main purpose of this keyword is building some contents in the database used for later testing.<br />
 <br />
 NOTE: Use this method with care as you might cause damage to your database, especially when using this in a productive environment.<br />
 <br />
@@ -374,7 +374,7 @@ NOTE: Some database expect the table names to be written all in upper case lette
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain Less Than Number Of Rows"></a>Table Must Contain Less Than Number Of Rows</td>
-  <td class="arg">tableName, rowNum</td>
+  <td class="arg">tableName, rowNumValue</td>
   <td class="doc">This keyword checks that a given table contains less than the given amount of rows. For the example this means that the table "MySampleTable" must contain anything between 0 and 1000 rows, otherwise the teststep will fail.<br />
 <br />
 &lt;pre&gt; Example:<br />
@@ -391,7 +391,7 @@ NOTE: Some database expect the table names to be written all in upper case lette
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain More Than Number Of Rows"></a>Table Must Contain More Than Number Of Rows</td>
-  <td class="arg">tableName, rowNum</td>
+  <td class="arg">tableName, rowNumValue</td>
   <td class="doc">This keyword checks that a given table contains more than the given amount of rows. For the example this means that the table "MySampleTable" must contain 100 or more rows, otherwise the teststep will fail.<br />
 <br />
 &lt;pre&gt; Example:<br />
@@ -408,7 +408,7 @@ NOTE: Some database expect the table names to be written all in upper case lette
 </tr>
 <tr>
   <td class="kw"><a name="Table Must Contain Number Of Rows"></a>Table Must Contain Number Of Rows</td>
-  <td class="arg">tableName, rowNum</td>
+  <td class="arg">tableName, rowNumValue</td>
   <td class="doc">This keyword checks that a given table contains a given amount of rows. For the example this means that the table "MySampleTable" must contain exactly 14 rows, otherwise the teststep will fail.<br />
 <br />
 &lt;pre&gt; Example:<br />
@@ -478,7 +478,7 @@ NOTE: Some database expect the table names to be written all in upper case lette
 <p class="footer">
 Altogether 17 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2010-02-26 13:51:18.
+on 2010-02-26 17:43:26.
 </p>
 </body>
 </html>
