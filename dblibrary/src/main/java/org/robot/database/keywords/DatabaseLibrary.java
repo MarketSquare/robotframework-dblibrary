@@ -161,7 +161,7 @@ public class DatabaseLibrary {
 		String sql = "delete from " + tableName;
 
 		Statement stmt = getConnection().createStatement();
-		stmt.executeQuery(sql);
+		stmt.execute(sql);
 		stmt.close();
 	}
 
@@ -273,7 +273,7 @@ public class DatabaseLibrary {
 	 * This keyword can be used to check for proper content inside a specific
 	 * row in a database table. For this it is possible to give a
 	 * comma-separated list of column names in the first parameter and a
-	 * comma-separated list of values in the second parameter. Then the name of
+	 * pipe-separated list of values in the second parameter. Then the name of
 	 * the table and the rownum to check must be passed to this keyword. The
 	 * corresponding values are then read from that row in the given table and
 	 * compared to the expected values. If all values match the teststep will
@@ -281,7 +281,7 @@ public class DatabaseLibrary {
 	 * 
 	 * <pre>
 	 * Example: 
-	 * | Check Content for Row Identified by Rownum | Name, EMail | John Doe, john.doe@x-files | MySampleTable | 4 |
+	 * | Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 |
 	 * </pre>
 	 * 
 	 * @throws SQLException
@@ -340,7 +340,7 @@ public class DatabaseLibrary {
 	 * This keyword can be used to check for proper content inside a specific
 	 * row in a database table. For this it is possible to give a
 	 * comma-separated list of column names in the first parameter and a
-	 * comma-separated list of values in the second parameter. Then the name of
+	 * pipe-separated list of values in the second parameter. Then the name of
 	 * the table and a statement used in the where-clause to identify a concrete
 	 * row. The corresponding values are then read from the row identified this
 	 * way and compared to the expected values. If all values match the teststep
@@ -351,7 +351,7 @@ public class DatabaseLibrary {
 	 * 
 	 * <pre>
 	 * Example: 
-	 * | Check Content for Row Identified by WhereClause | Name,EMail | John Doe,john.doe@x-files | MySampleTable | Postings=14 |
+	 * | Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 |
 	 * </pre>
 	 * 
 	 * @throws SQLException
