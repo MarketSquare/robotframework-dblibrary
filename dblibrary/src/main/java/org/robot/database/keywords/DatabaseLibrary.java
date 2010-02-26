@@ -141,7 +141,7 @@ public class DatabaseLibrary {
 	 */
 	public void tableMustBeEmpty(String tableName) throws SQLException,
 			DatabaseLibraryException {
-		tableMustContainNumberOfRows(tableName, 0);
+		tableMustContainNumberOfRows(tableName, "0");
 	}
 
 	/**
@@ -178,9 +178,11 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	public void tableMustContainNumberOfRows(String tableName, long rowNum)
+	public void tableMustContainNumberOfRows(String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
+		long rowNum = new Long(rowNumValue).longValue();
+		
 		long num = getNumberOfRows(tableName, (rowNum + 1));
 		if (num != rowNum) {
 			throw new DatabaseLibraryException("Expecting " + rowNum
@@ -202,8 +204,10 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	public void tableMustContainMoreThanNumberOfRows(String tableName,
-			long rowNum) throws SQLException, DatabaseLibraryException {
+			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
+		long rowNum = new Long(rowNumValue).longValue();
+		
 		long num = getNumberOfRows(tableName, rowNum + 1);
 		if (num <= rowNum) {
 			throw new DatabaseLibraryException("Expecting more than" + rowNum
@@ -226,8 +230,10 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	public void tableMustContainLessThanNumberOfRows(String tableName,
-			long rowNum) throws SQLException, DatabaseLibraryException {
+			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
+		long rowNum = new Long(rowNumValue).longValue();
+		
 		long num = getNumberOfRows(tableName, rowNum);
 		if (num >= rowNum) {
 			throw new DatabaseLibraryException("Expecting less than" + rowNum
@@ -282,8 +288,10 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
-			String expectedValues, String tableName, long rowNum)
+			String expectedValues, String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
+		
+		long rowNum = new Long(rowNumValue).longValue();
 
 		String sqlString = "select " + columnNames + " from " + tableName;
 
@@ -615,7 +623,7 @@ public class DatabaseLibrary {
 	}
 	
 	/**
-	 * Executes the given SQL without any further modifications.
+	 * Executes the given SQL without any further modifications.O
 	 * The given SQL must be valid for the database that is used.
 	 * The main purpose of this keyword is building some contents in the database
 	 * used for later testing.

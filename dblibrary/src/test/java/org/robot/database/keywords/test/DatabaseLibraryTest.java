@@ -294,7 +294,7 @@ public class DatabaseLibraryTest {
 		}
 
 		try {
-			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", 2);
+			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -316,7 +316,7 @@ public class DatabaseLibraryTest {
 		}
 
 		try {
-			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", 5);
+			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -345,7 +345,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", 1);
+					"MySampleTable", "1");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -368,7 +368,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", 2);
+					"MySampleTable", "2");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -391,7 +391,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", 200);
+					"MySampleTable", "200");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -420,7 +420,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", 3);
+					"MySampleTable", "3");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -443,7 +443,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", 2);
+					"MySampleTable", "2");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -466,7 +466,7 @@ public class DatabaseLibraryTest {
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", 1);
+					"MySampleTable", "1");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -548,7 +548,7 @@ public class DatabaseLibraryTest {
 		try {
 			databaseLibrary
 					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Darko|1001", "MySampleTable", 1);
+							"1|Donny Darko|1001", "MySampleTable", "1");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
@@ -572,7 +572,7 @@ public class DatabaseLibraryTest {
 		try {
 			databaseLibrary
 					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Dar|1001", "MySampleTable", 1);
+							"1|Donny Dar|1001", "MySampleTable", "1");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -597,7 +597,7 @@ public class DatabaseLibraryTest {
 		try {
 			databaseLibrary
 					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Dar|1001", "MySampleTable", 100);
+							"1|Donny Dar|1001", "MySampleTable", "100");
 			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
