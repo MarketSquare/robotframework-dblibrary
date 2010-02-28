@@ -9,7 +9,7 @@ REM according to the name of that JAR!
 REM
 
 set CLASSPATH=%CLASSPATH%;./dblibrary-1.0.jar;./mysql-connector-java-5.1.12-bin.jar
-jybot --outputdir c:\ --output DBLibraryDemo_MySql_Output.xml --log DBLibraryDemo_MySql_Log.html --report DBLibraryDemo_MySql_Report.html DBLibraryDemo_MySql.html
+jybot --variable PORT:3306 --outputdir c:\ --output DBLibraryDemo_MySql_Output.xml --log DBLibraryDemo_MySql_Log.html --report DBLibraryDemo_MySql_Report.html DBLibraryDemo_MySql.html
 
 
 
