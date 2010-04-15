@@ -1,5 +1,9 @@
 package org.robot.database.keywords;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -690,7 +694,7 @@ public class DatabaseLibrary {
 	}
 	
 	/**
-	 * Executes the given SQL without any further modifications.O
+	 * Executes the given SQL without any further modifications.
 	 * The given SQL must be valid for the database that is used.
 	 * The main purpose of this keyword is building some contents in the database
 	 * used for later testing.
@@ -716,6 +720,86 @@ public class DatabaseLibrary {
 		Statement stmt = getConnection().createStatement();
 		stmt.execute(sqlString);
 	}
+	
+
+	/**
+	 * Executes the SQL statements contained in the given file without any further modifications.
+	 * The given SQL must be valid for the database that is used.
+	 * Any lines prefixed with "REM" or "#" are ignored.
+	 * This keyword can for example be used to setup database tables from some SQL install
+	 * script.
+	 * 
+	 * Single SQL statements in the file can be spread over multiple lines, but must be terminated 
+	 * with a semicolon ";". A new statement must always start in a new line and not in the same line
+	 * where the previous statement was terminated by a ";".
+	 * 
+	 * In case there is a problem in executing any of the SQL statements from the file the execution
+	 * is terminated and the operation is rolled back.
+	 * 
+	 * NOTE: Use this method with care as you might cause damage to your database,
+	 * especially when using this in a productive environment.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Execute SQL from File | myFile.sql |
+	 * </pre>
+	 * 
+	 * @throws IOExcetion
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
+		    + "Example:\n"
+		    + "| Execute SQL from File | myFile.sql |\n")
+	@ArgumentNames({"fileName"})					
+	public void executeSQLFromFile(String fileName)
+			throws SQLException, IOException, DatabaseLibraryException {
+
+		getConnection().setAutoCommit(false);
+		
+		FileReader fr = new FileReader(new File(fileName));
+		BufferedReader br =  new BufferedReader(fr);		
+		
+		String sql = "";
+		String line = ""; 
+        while ( (line = br.readLine()) != null) {
+        	line = line.trim();
+        	 
+        	// Ignore lines commented out in the given file
+        	if (line.toLowerCase().startsWith("rem")) {
+        		continue;
+        	}        	
+        	if (line.startsWith("#")) {
+        		continue;
+        	}
+        	
+        	// Add the line to the current SQL statement
+        	sql += line;
+        	
+        	// Check if SQL statement is complete, if yes execute
+        	try {
+        		if (sql.endsWith(";")) {
+        			System.out.println("Executing: " + sql);
+        			executeSQL(sql);
+        			sql = "";
+        		}
+        	} catch (SQLException e) {
+        		br.close();
+        		getConnection().rollback();
+        		getConnection().setAutoCommit(true);
+        		throw new DatabaseLibraryException("Error executing: " + sql + " Execution from file rolled back!");
+        	}
+		}
+
+		getConnection().commit();
+		getConnection().setAutoCommit(true);
+        br.close();
+		
+		
+	}
+	
+	
+	
 	
 	
 	
