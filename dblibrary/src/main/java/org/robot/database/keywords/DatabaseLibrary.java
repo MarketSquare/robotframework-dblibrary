@@ -13,6 +13,7 @@ import java.sql.Statement;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
+import org.robotframework.javalib.annotation.RobotKeywords;
 
 /**
  * This library supports database-related testing using the Robot Framework. It
@@ -56,10 +57,18 @@ import org.robotframework.javalib.annotation.RobotKeyword;
  * Views as this is often no difference if Select-statements are performed.
  * 
  */
+@RobotKeywords
 public class DatabaseLibrary {
 	public static final String ROBOT_LIBRARY_SCOPE = "GLOBAL";
 
 	private Connection connection = null;
+	
+
+	/**
+	 * Default-constructor
+	 */
+	public DatabaseLibrary() {
+	}
 	
 	/**
 	 * Establish the connection to the database. This is mandatory before any of
@@ -779,6 +788,7 @@ public class DatabaseLibrary {
         	// Check if SQL statement is complete, if yes execute
         	try {
         		if (sql.endsWith(";")) {
+        			sql = sql.substring(0, sql.length()-1);    			
         			System.out.println("Executing: " + sql);
         			executeSQL(sql);
         			sql = "";
@@ -794,8 +804,78 @@ public class DatabaseLibrary {
 		getConnection().commit();
 		getConnection().setAutoCommit(true);
         br.close();
+	}
+
+	/**
+	 * Executes the SQL statements contained in the given file without any further modifications.
+	 * The given SQL must be valid for the database that is used.
+	 * Any lines prefixed with "REM" or "#" are ignored.
+	 * This keyword can for example be used to setup database tables from some SQL install
+	 * script.
+	 * 
+	 * Single SQL statements in the file can be spread over multiple lines, but must be terminated 
+	 * with a semicolon ";". A new statement must always start in a new line and not in the same line
+	 * where the previous statement was terminated by a ";".
+	 *
+	 * Any errors that might happen during execution of SQL statements are logged to the
+	 * Robot Log-file, but otherwise ignored.
+	 * 
+	 * NOTE: Use this method with care as you might cause damage to your database,
+	 * especially when using this in a productive environment.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Execute SQL from File | myFile.sql |
+	 * </pre>
+	 * 
+	 * @throws IOExcetion
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
+		    + "Example:\n"
+		    + "| Execute SQL from File Ignore Errors| myFile.sql |\n")
+	@ArgumentNames({"fileName"})					
+	public void executeSQLFromFileIgnoreErrors(String fileName)
+			throws SQLException, IOException, DatabaseLibraryException {
+
+		getConnection().setAutoCommit(false);
 		
+		FileReader fr = new FileReader(new File(fileName));
+		BufferedReader br =  new BufferedReader(fr);		
 		
+		String sql = "";
+		String line = ""; 
+        while ( (line = br.readLine()) != null) {
+        	line = line.trim();
+        	 
+        	// Ignore lines commented out in the given file
+        	if (line.toLowerCase().startsWith("rem")) {
+        		continue;
+        	}        	
+        	if (line.startsWith("#")) {
+        		continue;
+        	}
+        	
+        	// Add the line to the current SQL statement
+        	sql += line;
+        	
+        	// Check if SQL statement is complete, if yes execute
+        	try {
+        		if (sql.endsWith(";")) {
+        			sql = sql.substring(0, sql.length()-1);
+        			System.out.println("Executing: " + sql);
+        			executeSQL(sql);
+        			sql = "";
+        		}
+        	} catch (SQLException e) {
+        		System.out.println("Error executing: " + sql + "\n" + e.getMessage());
+        	}
+		}
+
+		getConnection().commit();
+		getConnection().setAutoCommit(true);
+        br.close();
 	}
 	
 	
