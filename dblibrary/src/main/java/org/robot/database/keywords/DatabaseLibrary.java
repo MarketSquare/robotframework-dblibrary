@@ -794,6 +794,7 @@ public class DatabaseLibrary {
         			sql = "";
         		}
         	} catch (SQLException e) {
+        		sql = "";
         		br.close();
         		getConnection().rollback();
         		getConnection().setAutoCommit(true);
@@ -864,13 +865,15 @@ public class DatabaseLibrary {
         	try {
         		if (sql.endsWith(";")) {
         			sql = sql.substring(0, sql.length()-1);
-        			System.out.println("Executing: " + sql);
+        			System.out.println("Executing: " + sql + "\n");
         			executeSQL(sql);
         			sql = "";
+        			System.out.println("\n");
         		}
         	} catch (SQLException e) {
-        		System.out.println("Error executing: " + sql + "\n" + e.getMessage());
-        	}
+        		System.out.println("Error executing: " + sql + "\n" + e.getMessage() + "\n\n");
+        		sql = "";
+        	} 
 		}
 
 		getConnection().commit();
