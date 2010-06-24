@@ -250,7 +250,7 @@ public class DatabaseLibrary {
 	public void tableMustContainMoreThanNumberOfRows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
-		long rowNum = new Long(rowNumValue).longValue();
+		long rowNum = Long.valueOf(rowNumValue);
 		
 		long num = getNumberOfRows(tableName, rowNum + 1);
 		if (num <= rowNum) {
@@ -280,7 +280,7 @@ public class DatabaseLibrary {
 	public void tableMustContainLessThanNumberOfRows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
-		long rowNum = new Long(rowNumValue).longValue();
+		long rowNum = Long.valueOf(rowNumValue);
 		
 		long num = getNumberOfRows(tableName, rowNum);
 		if (num >= rowNum) {
@@ -347,7 +347,7 @@ public class DatabaseLibrary {
 			String expectedValues, String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 		
-		long rowNum = new Long(rowNumValue).longValue();
+		long rowNum = Long.valueOf(rowNumValue);
 
 		String sqlString = "select " + columnNames + " from " + tableName;
 
