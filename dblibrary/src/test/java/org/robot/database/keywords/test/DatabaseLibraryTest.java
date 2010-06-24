@@ -19,7 +19,14 @@ import org.robot.database.keywords.DatabaseLibraryException;
 
 public class DatabaseLibraryTest {
 
+	private static final String HSQL_DRIVER_CLASSNAME = "org.hsqldb.jdbcDriver";
+	private static final String HSQL_URL = "jdbc:hsqldb:mem:xdb";
+	private static final String HSQL_USER = "sa";
+	private static final String HSQL_PASSWORD = "";
+
 	private static Server hsqldbServer = null;
+	
+	private DatabaseLibrary databaseLibrary;
 
 	// ========================================================
 	//
@@ -34,9 +41,9 @@ public class DatabaseLibraryTest {
 		hsqldbServer.main(new String[] { "--database.0", "file:mydb",
 				"--dbname.0", "xdb" });
 
-		Class.forName("org.hsqldb.jdbcDriver").newInstance();
-		Connection con = DriverManager.getConnection("jdbc:hsqldb:mem:xdb",
-				"sa", "");
+		Class.forName(HSQL_DRIVER_CLASSNAME).newInstance();
+		Connection con = DriverManager.getConnection(HSQL_URL,
+				HSQL_USER, HSQL_PASSWORD);
 
 		Statement stmt = con.createStatement();
 		stmt
@@ -65,10 +72,15 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Before
+	public void setUpTest() throws Exception {
+		initTestTables();
+		initDatabaseLibrary();
+	}
+	
 	public void initTestTables() throws Exception {
-		Class.forName("org.hsqldb.jdbcDriver").newInstance();
-		Connection con = DriverManager.getConnection("jdbc:hsqldb:mem:xdb",
-				"sa", "");
+		Class.forName(HSQL_DRIVER_CLASSNAME).newInstance();
+		Connection con = DriverManager.getConnection(HSQL_URL,
+				HSQL_USER, HSQL_PASSWORD);
 
 		Statement stmt = con.createStatement();
 		stmt.execute("DELETE FROM MySampleTable");
@@ -87,6 +99,10 @@ public class DatabaseLibraryTest {
 		stmt.close();
 		con.close();
 	}
+	
+	private void initDatabaseLibrary() {
+		databaseLibrary = new DatabaseLibrary();
+	}
 
 	// ========================================================
 	//
@@ -96,10 +112,9 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkConnectToDatabase() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
+			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -108,10 +123,9 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "xyz", "");
+			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+					HSQL_URL, "xyz", HSQL_PASSWORD);
 		} catch (SQLException e) {
 			if (!e.getMessage().contains("not found")) {
 				e.printStackTrace();
@@ -125,10 +139,9 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkDisconnectFromDatabase() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
 		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
+			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
 			databaseLibrary.disconnectFromDatabase();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,14 +158,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustBeEmpty_OnEmptyTable() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustBeEmpty("EmptyTable");
@@ -167,14 +173,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustBeEmpty_OnTableNotEmpty() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustBeEmpty("MySampleTable");
@@ -195,14 +194,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustExist_ThatExists() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustExist("EMPTYTABLE");
@@ -217,14 +209,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustExist_ThatDoesNotExist() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustExist("WRONG_NAME");
@@ -245,14 +230,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkDeleteAllRowsFromTable() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			// Check first that table is not empty
@@ -272,7 +250,6 @@ public class DatabaseLibraryTest {
 				e2.printStackTrace();
 				fail();
 			}
-
 		}
 	}
 
@@ -284,14 +261,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainNumberOfRows() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
@@ -306,14 +276,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainNumberOfRows_WrongNumber() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
@@ -334,14 +297,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainMoreThanNumberOfRows() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
@@ -357,14 +313,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
@@ -380,14 +329,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainMoreThanNumberOfRows(
@@ -409,14 +351,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainLessThanNumberOfRows() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
@@ -432,14 +367,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
@@ -455,14 +383,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tableMustContainLessThanNumberOfRows(
@@ -484,14 +405,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTablesMustContainSameAmountOfRows() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
@@ -507,14 +421,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
@@ -536,14 +443,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckContentIdentifiedbyRownum() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -560,14 +460,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckContentIdentifiedbyRownum_WrongValues() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -585,14 +478,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -616,14 +502,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -640,14 +519,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -664,14 +536,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 		
 		try {
 			databaseLibrary
@@ -688,14 +553,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary
@@ -720,20 +578,13 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetTransactionIsolationLevel() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			String level = databaseLibrary.getTransactionIsolationLevel();
 			System.out.println("Transaction Isolation Level: " + level);
 			
-			if ((level == null) || (level.equals(""))) {
+			if ((level == null) || (level.equals(HSQL_PASSWORD))) {
 				fail("Empty Transaction Isolation Level");
 			}
 		} catch (SQLException e) {
@@ -744,14 +595,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checktransactionIsolationLevelMustBe() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_READ_COMMITTED");
@@ -766,14 +610,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_REPEATABLE_READ");
@@ -795,14 +632,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkReadSingleValueFromTable() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
@@ -823,20 +653,13 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetPrimaryKeyColumnsForTable() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
 			System.out.println("Primary Keys: " + keys);
 			
-			if ((keys == null) || (keys.equals(""))) {
+			if ((keys == null) || (keys.equals(HSQL_PASSWORD))) {
 				fail("Empty Primary Key");
 			}
 		} catch (SQLException e) {
@@ -847,14 +670,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckPrimaryKeyColumnsForTable() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
@@ -869,14 +685,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
@@ -891,14 +700,7 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
@@ -908,8 +710,8 @@ public class DatabaseLibraryTest {
 			fail();
 		} catch (DatabaseLibraryException e) {
 			// This Exception is expected as the test fails
-		} 
-	}				
+		}
+	}
 	
 	
 	//
@@ -917,14 +719,7 @@ public class DatabaseLibraryTest {
 	//
 	@Test
 	public void checkExecuteSQL() {
-		DatabaseLibrary databaseLibrary = new DatabaseLibrary();
-		try {
-			databaseLibrary.connectToDatabase("org.hsqldb.jdbcDriver",
-					"jdbc:hsqldb:mem:xdb", "sa", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+		connectToDatabase();
 
 		try {
 			databaseLibrary.executeSQL("CREATE TABLE TestTable (Num Integer)");
@@ -936,5 +731,17 @@ public class DatabaseLibraryTest {
 			e.printStackTrace();
 			fail();
 		} 
-	}				
+	}
+	
+	// Utility methods to clean up the test cases
+	
+	private void connectToDatabase() {
+		try {
+			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
 }
