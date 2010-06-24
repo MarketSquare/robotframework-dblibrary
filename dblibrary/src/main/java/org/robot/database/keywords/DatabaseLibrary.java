@@ -221,7 +221,7 @@ public class DatabaseLibrary {
 	public void tableMustContainNumberOfRows(String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
-		long rowNum = new Long(rowNumValue).longValue();
+		long rowNum = Long.valueOf(rowNumValue);
 		
 		long num = getNumberOfRows(tableName, (rowNum + 1));
 		if (num != rowNum) {
