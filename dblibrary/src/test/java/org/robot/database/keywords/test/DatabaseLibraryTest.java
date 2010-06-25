@@ -733,6 +733,50 @@ public class DatabaseLibraryTest {
 		} 
 	}
 	
+	@Test
+	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() {
+		connectToDatabase();
+		
+		try {
+			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	@Test
+	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() {
+		connectToDatabase();
+		
+		try {
+			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	@Test
+	public void checkVerifyNumberOfRowsMatchingWhereFailure() {
+		connectToDatabase();
+		
+		try {
+			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail();
+		} catch (DatabaseLibraryException e) {
+			// Good exception, we expect this.
+		}
+	}
+	
 	// Utility methods to clean up the test cases
 	
 	private void connectToDatabase() {

@@ -62,14 +62,13 @@ public class DatabaseLibrary {
 	public static final String ROBOT_LIBRARY_SCOPE = "GLOBAL";
 
 	private Connection connection = null;
-	
 
 	/**
 	 * Default-constructor
 	 */
 	public DatabaseLibrary() {
 	}
-	
+
 	/**
 	 * Establish the connection to the database. This is mandatory before any of
 	 * the other keywords can be used and should be ideally done during the
@@ -92,9 +91,9 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	@RobotKeyword("Connects to the database defined by the given arguments.\n\n"
-		    + "Example:\n"
-		    + "| Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |\n")
-	@ArgumentNames({"driverClassName", "connectionString, dbUser, dbPassword"})	    
+			+ "Example:\n"
+			+ "| Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |\n")
+	@ArgumentNames( { "driverClassName", "connectionString, dbUser, dbPassword" })
 	public void connectToDatabase(String driverClassName, String connectString,
 			String dbUser, String dbPassword) throws SQLException,
 			InstantiationException, IllegalAccessException,
@@ -104,7 +103,6 @@ public class DatabaseLibrary {
 		setConnection(DriverManager.getConnection(connectString, dbUser,
 				dbPassword));
 	}
-	
 
 	/**
 	 * Releases the existing connection to the database. In addition this
@@ -116,9 +114,8 @@ public class DatabaseLibrary {
 	 * | Disconnect from Database |
 	 * </pre>
 	 */
-	@RobotKeyword("Disconnects from the database.\n\n"
-		    + "Example:\n"
-		    + "| Disconnect from Database |\n")	    	
+	@RobotKeyword("Disconnects from the database.\n\n" + "Example:\n"
+			+ "| Disconnect from Database |\n")
 	public void disconnectFromDatabase() throws SQLException {
 		System.out.println("SQL Warnings on this connection: "
 				+ getConnection().getWarnings());
@@ -140,10 +137,9 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that the given table exists.\n\n"
-		    + "Example:\n"
-		    + "| Table Must Exist | MySampleTable |\n")
-	@ArgumentNames({"tableName"})	    	
+	@RobotKeyword("Checks that the given table exists.\n\n" + "Example:\n"
+			+ "| Table Must Exist | MySampleTable |\n")
+	@ArgumentNames( { "tableName" })
 	public void tableMustExist(String tableName) throws SQLException,
 			DatabaseLibraryException {
 
@@ -167,10 +163,9 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 * @throws SQLException
 	 */
-	@RobotKeyword("Checks that the given table is empty.\n\n"
-		    + "Example:\n"
-		    + "| Table Must Be Empty | MySampleTable |\n")
-	@ArgumentNames({"tableName"})	    		
+	@RobotKeyword("Checks that the given table is empty.\n\n" + "Example:\n"
+			+ "| Table Must Be Empty | MySampleTable |\n")
+	@ArgumentNames( { "tableName" })
 	public void tableMustBeEmpty(String tableName) throws SQLException,
 			DatabaseLibraryException {
 		tableMustContainNumberOfRows(tableName, "0");
@@ -189,10 +184,9 @@ public class DatabaseLibrary {
 	 * 
 	 * @throws SQLException
 	 */
-	@RobotKeyword("Deletes all rows from the given table.\n\n"
-		    + "Example:\n"
-		    + "| Delete All Rows From Table | MySampleTable |\n")
-	@ArgumentNames({"tableName"})
+	@RobotKeyword("Deletes all rows from the given table.\n\n" + "Example:\n"
+			+ "| Delete All Rows From Table | MySampleTable |\n")
+	@ArgumentNames( { "tableName" })
 	public void deleteAllRowsFromTable(String tableName) throws SQLException {
 		String sql = "delete from " + tableName;
 
@@ -215,14 +209,14 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that the given table contains the given number of records.\n\n"
-		    + "Example:\n"
-		    + "| Table Must Contain Number Of Rows | MySampleTable | 14 |\n")
-	@ArgumentNames({"tableName", "rowNumValue"})	    
-	public void tableMustContainNumberOfRows(String tableName, String rowNumValue)
-			throws SQLException, DatabaseLibraryException {
+			+ "Example:\n"
+			+ "| Table Must Contain Number Of Rows | MySampleTable | 14 |\n")
+	@ArgumentNames( { "tableName", "rowNumValue" })
+	public void tableMustContainNumberOfRows(String tableName,
+			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
-		
+
 		long num = getNumberOfRows(tableName, (rowNum + 1));
 		if (num != rowNum) {
 			throw new DatabaseLibraryException("Expecting " + rowNum
@@ -244,14 +238,14 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that the given table contains more than the given number of records.\n\n"
-		    + "Example:\n"
-		    + "| Table Must Contain More Than Number Of Rows | MySampleTable | 99 |\n")
-	@ArgumentNames({"tableName", "rowNumValue"})	    	
+			+ "Example:\n"
+			+ "| Table Must Contain More Than Number Of Rows | MySampleTable | 99 |\n")
+	@ArgumentNames( { "tableName", "rowNumValue" })
 	public void tableMustContainMoreThanNumberOfRows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
-		
+
 		long num = getNumberOfRows(tableName, rowNum + 1);
 		if (num <= rowNum) {
 			throw new DatabaseLibraryException("Expecting more than" + rowNum
@@ -274,14 +268,14 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that the given table contains less than the given number of records.\n\n"
-		    + "Example:\n"
-		    + "| Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 |\n")
-	@ArgumentNames({"tableName", "rowNumValue"})	    		
+			+ "Example:\n"
+			+ "| Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 |\n")
+	@ArgumentNames( { "tableName", "rowNumValue" })
 	public void tableMustContainLessThanNumberOfRows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
-		
+
 		long num = getNumberOfRows(tableName, rowNum);
 		if (num >= rowNum) {
 			throw new DatabaseLibraryException("Expecting less than" + rowNum
@@ -302,9 +296,9 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that two given tables contain the same number of records.\n\n"
-		    + "Example:\n"
-		    + "| Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable |\n")
-	@ArgumentNames({"firstTableName", "secondTableName"})	    			
+			+ "Example:\n"
+			+ "| Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable |\n")
+	@ArgumentNames( { "firstTableName", "secondTableName" })
 	public void tablesMustContainSameAmountOfRows(String firstTableName,
 			String secondTableName) throws SQLException,
 			DatabaseLibraryException {
@@ -340,13 +334,14 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks the content of a specific record in a given table identified by its row number.\n\n"
-		    + "Example:\n"
-		    + "| Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 |\n")
-	@ArgumentNames({"columnNames", "expectedValues", "tableName", "rowNumValue"})	 	
+			+ "Example:\n"
+			+ "| Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 |\n")
+	@ArgumentNames( { "columnNames", "expectedValues", "tableName",
+			"rowNumValue" })
 	public void checkContentForRowIdentifiedByRownum(String columnNames,
 			String expectedValues, String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
-		
+
 		long rowNum = Long.valueOf(rowNumValue);
 
 		String sqlString = "select " + columnNames + " from " + tableName;
@@ -414,9 +409,10 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks the content of a specific record in a given table identified by a where-clause.\n\n"
-		    + "Example:\n"
-		    + "| Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 |\n")
-	@ArgumentNames({"columnNames", "expectedValues", "tableName", "whereClause"})	 		
+			+ "Example:\n"
+			+ "| Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 |\n")
+	@ArgumentNames( { "columnNames", "expectedValues", "tableName",
+			"whereClause" })
 	public void checkContentForRowIdentifiedByWhereClause(String columnNames,
 			String expectedValues, String tableName, String whereClause)
 			throws SQLException, DatabaseLibraryException {
@@ -485,9 +481,9 @@ public class DatabaseLibrary {
 	 * 
 	 */
 	@RobotKeyword("Reads and returns a single value from one column and record of a given table identified by a where-clause.\n\n"
-		    + "Example:\n"
-		    + "| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' |\n")
-	@ArgumentNames({"tableName", "columnName", "whereClause"})	 			
+			+ "Example:\n"
+			+ "| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' |\n")
+	@ArgumentNames( { "tableName", "columnName", "whereClause" })
 	public String readSingleValueFromTable(String tableName, String columnName,
 			String whereClause) throws SQLException {
 
@@ -523,9 +519,9 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that the given transaction isolation level is set.\n\n"
-		    + "Example:\n"
-		    + "| Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED |\n")
-	@ArgumentNames({"levelName"})	 				
+			+ "Example:\n"
+			+ "| Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED |\n")
+	@ArgumentNames( { "levelName" })
 	public void transactionIsolationLevelMustBe(String levelName)
 			throws SQLException, DatabaseLibraryException {
 
@@ -579,9 +575,9 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 */
 	@RobotKeyword("Returns the currently set transaction isolation level.\n\n"
-		    + "Example:\n"
-		    + "| ${TI_LEVEL}= | Get Transaction Isolation Level |\n")
-	@ArgumentNames({"levelName"})		
+			+ "Example:\n"
+			+ "| ${TI_LEVEL}= | Get Transaction Isolation Level |\n")
+	@ArgumentNames( { "levelName" })
 	public String getTransactionIsolationLevel() throws SQLException {
 
 		String ret = "";
@@ -629,13 +625,13 @@ public class DatabaseLibrary {
 	 * </pre>
 	 * 
 	 * @throws SQLException
-	 * @throws DatabaseLibraryException 
+	 * @throws DatabaseLibraryException
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that the givn columns are defined as the primary key for the given table.\n\n"
-		    + "Example:\n"
-		    + "| Check Primary Key Columns For Table | MySampleTable | Id,Name |\n")
-	@ArgumentNames({"tableName", "columnList"})			
+			+ "Example:\n"
+			+ "| Check Primary Key Columns For Table | MySampleTable | Id,Name |\n")
+	@ArgumentNames( { "tableName", "columnList" })
 	public void checkPrimaryKeyColumnsForTable(String tableName,
 			String columnList) throws SQLException, DatabaseLibraryException {
 
@@ -679,9 +675,9 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Returns a comma-separated list of the primary key columns for the given table.\n\n"
-		    + "Example:\n"
-		    + "| ${KEYS}= | Get Primary Key Columns For Table | MySampleTable |\n")
-	@ArgumentNames({"tableName"})				
+			+ "Example:\n"
+			+ "| ${KEYS}= | Get Primary Key Columns For Table | MySampleTable |\n")
+	@ArgumentNames( { "tableName" })
 	public String getPrimaryKeyColumnsForTable(String tableName)
 			throws SQLException {
 
@@ -701,15 +697,14 @@ public class DatabaseLibrary {
 
 		return ret;
 	}
-	
+
 	/**
-	 * Executes the given SQL without any further modifications.
-	 * The given SQL must be valid for the database that is used.
-	 * The main purpose of this keyword is building some contents in the database
-	 * used for later testing.
+	 * Executes the given SQL without any further modifications. The given SQL
+	 * must be valid for the database that is used. The main purpose of this
+	 * keyword is building some contents in the database used for later testing.
 	 * 
-	 * NOTE: Use this method with care as you might cause damage to your database,
-	 * especially when using this in a productive environment.
+	 * NOTE: Use this method with care as you might cause damage to your
+	 * database, especially when using this in a productive environment.
 	 * 
 	 * <pre>
 	 * Example: 
@@ -719,34 +714,32 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Executes the given SQL-statement.\n\n"
-		    + "Example:\n"
-		    + "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) |\n")
-	@ArgumentNames({"sqlString"})					
-	public void executeSQL(String sqlString)
-			throws SQLException {
+	@RobotKeyword("Executes the given SQL-statement.\n\n" + "Example:\n"
+			+ "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) |\n")
+	@ArgumentNames( { "sqlString" })
+	public void executeSQL(String sqlString) throws SQLException {
 
 		Statement stmt = getConnection().createStatement();
 		stmt.execute(sqlString);
 	}
-	
 
 	/**
-	 * Executes the SQL statements contained in the given file without any further modifications.
-	 * The given SQL must be valid for the database that is used.
-	 * Any lines prefixed with "REM" or "#" are ignored.
-	 * This keyword can for example be used to setup database tables from some SQL install
+	 * Executes the SQL statements contained in the given file without any
+	 * further modifications. The given SQL must be valid for the database that
+	 * is used. Any lines prefixed with "REM" or "#" are ignored. This keyword
+	 * can for example be used to setup database tables from some SQL install
 	 * script.
 	 * 
-	 * Single SQL statements in the file can be spread over multiple lines, but must be terminated 
-	 * with a semicolon ";". A new statement must always start in a new line and not in the same line
-	 * where the previous statement was terminated by a ";".
+	 * Single SQL statements in the file can be spread over multiple lines, but
+	 * must be terminated with a semicolon ";". A new statement must always
+	 * start in a new line and not in the same line where the previous statement
+	 * was terminated by a ";".
 	 * 
-	 * In case there is a problem in executing any of the SQL statements from the file the execution
-	 * is terminated and the operation is rolled back.
+	 * In case there is a problem in executing any of the SQL statements from
+	 * the file the execution is terminated and the operation is rolled back.
 	 * 
-	 * NOTE: Use this method with care as you might cause damage to your database,
-	 * especially when using this in a productive environment.
+	 * NOTE: Use this method with care as you might cause damage to your
+	 * database, especially when using this in a productive environment.
 	 * 
 	 * <pre>
 	 * Example: 
@@ -758,71 +751,72 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
-		    + "Example:\n"
-		    + "| Execute SQL from File | myFile.sql |\n")
-	@ArgumentNames({"fileName"})					
-	public void executeSQLFromFile(String fileName)
-			throws SQLException, IOException, DatabaseLibraryException {
+			+ "Example:\n" + "| Execute SQL from File | myFile.sql |\n")
+	@ArgumentNames( { "fileName" })
+	public void executeSQLFromFile(String fileName) throws SQLException,
+			IOException, DatabaseLibraryException {
 
 		getConnection().setAutoCommit(false);
-		
+
 		FileReader fr = new FileReader(new File(fileName));
-		BufferedReader br =  new BufferedReader(fr);		
-		
+		BufferedReader br = new BufferedReader(fr);
+
 		String sql = "";
-		String line = ""; 
-        while ( (line = br.readLine()) != null) {
-        	line = line.trim();
-        	 
-        	// Ignore lines commented out in the given file
-        	if (line.toLowerCase().startsWith("rem")) {
-        		continue;
-        	}        	
-        	if (line.startsWith("#")) {
-        		continue;
-        	}
-        	
-        	// Add the line to the current SQL statement
-        	sql += line;
-        	
-        	// Check if SQL statement is complete, if yes execute
-        	try {
-        		if (sql.endsWith(";")) {
-        			sql = sql.substring(0, sql.length()-1);    			
-        			System.out.println("Executing: " + sql);
-        			executeSQL(sql);
-        			sql = "";
-        		}
-        	} catch (SQLException e) {
-        		sql = "";
-        		br.close();
-        		getConnection().rollback();
-        		getConnection().setAutoCommit(true);
-        		throw new DatabaseLibraryException("Error executing: " + sql + " Execution from file rolled back!");
-        	}
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			line = line.trim();
+
+			// Ignore lines commented out in the given file
+			if (line.toLowerCase().startsWith("rem")) {
+				continue;
+			}
+			if (line.startsWith("#")) {
+				continue;
+			}
+
+			// Add the line to the current SQL statement
+			sql += line;
+
+			// Check if SQL statement is complete, if yes execute
+			try {
+				if (sql.endsWith(";")) {
+					sql = sql.substring(0, sql.length() - 1);
+					System.out.println("Executing: " + sql);
+					executeSQL(sql);
+					sql = "";
+				}
+			} catch (SQLException e) {
+				sql = "";
+				br.close();
+				getConnection().rollback();
+				getConnection().setAutoCommit(true);
+				throw new DatabaseLibraryException("Error executing: " + sql
+						+ " Execution from file rolled back!");
+			}
 		}
 
 		getConnection().commit();
 		getConnection().setAutoCommit(true);
-        br.close();
+		br.close();
 	}
 
 	/**
-	 * Executes the SQL statements contained in the given file without any further modifications.
-	 * The given SQL must be valid for the database that is used.
-	 * Any lines prefixed with "REM" or "#" are ignored.
-	 * This keyword can for example be used to setup database tables from some SQL install
+	 * Executes the SQL statements contained in the given file without any
+	 * further modifications. The given SQL must be valid for the database that
+	 * is used. Any lines prefixed with "REM" or "#" are ignored. This keyword
+	 * can for example be used to setup database tables from some SQL install
 	 * script.
 	 * 
-	 * Single SQL statements in the file can be spread over multiple lines, but must be terminated 
-	 * with a semicolon ";". A new statement must always start in a new line and not in the same line
-	 * where the previous statement was terminated by a ";".
-	 *
-	 * Any errors that might happen during execution of SQL statements are logged to the
-	 * Robot Log-file, but otherwise ignored.
+	 * Single SQL statements in the file can be spread over multiple lines, but
+	 * must be terminated with a semicolon ";". A new statement must always
+	 * start in a new line and not in the same line where the previous statement
+	 * was terminated by a ";".
 	 * 
-	 * NOTE: Use this method with care as you might cause damage to your database,
-	 * especially when using this in a productive environment.
+	 * Any errors that might happen during execution of SQL statements are
+	 * logged to the Robot Log-file, but otherwise ignored.
+	 * 
+	 * NOTE: Use this method with care as you might cause damage to your
+	 * database, especially when using this in a productive environment.
 	 * 
 	 * <pre>
 	 * Example: 
@@ -834,58 +828,85 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
-		    + "Example:\n"
-		    + "| Execute SQL from File Ignore Errors| myFile.sql |\n")
-	@ArgumentNames({"fileName"})					
+			+ "Example:\n"
+			+ "| Execute SQL from File Ignore Errors| myFile.sql |\n")
+	@ArgumentNames( { "fileName" })
 	public void executeSQLFromFileIgnoreErrors(String fileName)
 			throws SQLException, IOException, DatabaseLibraryException {
 
 		getConnection().setAutoCommit(false);
-		
+
 		FileReader fr = new FileReader(new File(fileName));
-		BufferedReader br =  new BufferedReader(fr);		
-		
+		BufferedReader br = new BufferedReader(fr);
+
 		String sql = "";
-		String line = ""; 
-        while ( (line = br.readLine()) != null) {
-        	line = line.trim();
-        	 
-        	// Ignore lines commented out in the given file
-        	if (line.toLowerCase().startsWith("rem")) {
-        		continue;
-        	}        	
-        	if (line.startsWith("#")) {
-        		continue;
-        	}
-        	
-        	// Add the line to the current SQL statement
-        	sql += line;
-        	
-        	// Check if SQL statement is complete, if yes execute
-        	try {
-        		if (sql.endsWith(";")) {
-        			sql = sql.substring(0, sql.length()-1);
-        			System.out.println("Executing: " + sql + "\n");
-        			executeSQL(sql);
-        			sql = "";
-        			System.out.println("\n");
-        		}
-        	} catch (SQLException e) {
-        		System.out.println("Error executing: " + sql + "\n" + e.getMessage() + "\n\n");
-        		sql = "";
-        	} 
+		String line = "";
+		while ((line = br.readLine()) != null) {
+			line = line.trim();
+
+			// Ignore lines commented out in the given file
+			if (line.toLowerCase().startsWith("rem")) {
+				continue;
+			}
+			if (line.startsWith("#")) {
+				continue;
+			}
+
+			// Add the line to the current SQL statement
+			sql += line;
+
+			// Check if SQL statement is complete, if yes execute
+			try {
+				if (sql.endsWith(";")) {
+					sql = sql.substring(0, sql.length() - 1);
+					System.out.println("Executing: " + sql + "\n");
+					executeSQL(sql);
+					sql = "";
+					System.out.println("\n");
+				}
+			} catch (SQLException e) {
+				System.out.println("Error executing: " + sql + "\n"
+						+ e.getMessage() + "\n\n");
+				sql = "";
+			}
 		}
 
 		getConnection().commit();
 		getConnection().setAutoCommit(true);
-        br.close();
+		br.close();
 	}
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * This keyword checks that a given table contains a given amount of rows
+	 * matching a given WHERE clause.
+	 * 
+	 * For the example this means that the table "MySampleTable" must contain
+	 * exactly 2 rows matching the given WHERE, otherwise the teststep will
+	 * fail.
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Verify Number Of Rows Matching Where | MySampleTable | email=x@y.net | 2 |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	@RobotKeyword("Checks that the given table contains the given number of records matching the given WHERE clause.\n\n"
+			+ "Example:\n"
+			+ "| Verify Number Of Rows Matching Where | MySampleTable | email=x@y.net | 2 |\n")
+	@ArgumentNames( { "tableName", "where", "rowNumValue" })
+	public void verifyNumberOfRowsMatchingWhere(String tableName, String where,
+			String rowNumValue) throws SQLException, DatabaseLibraryException {
+
+		long rowNum = Long.valueOf(rowNumValue);
+
+		long num = getNumberOfRows(tableName, where, (rowNum + 1));
+		if (num != rowNum) {
+			throw new DatabaseLibraryException("Expecting " + rowNum
+					+ " rows, fetched: " + num);
+		}
+	}
 
 	private void setConnection(Connection connection) {
 		this.connection = connection;
@@ -893,6 +914,40 @@ public class DatabaseLibrary {
 
 	private Connection getConnection() {
 		return connection;
+	}
+
+	private long getNumberOfRows(String tableName, String where, long limit)
+			throws SQLException {
+
+		// Let's first try with count(*), but this is not supported by all
+		// databases.
+		// In this case an exception will be thrown and we will read the amount
+		// of records the "hard way", but luckily limited by the amount of rows
+		// expected,
+		// so that this might not be too bad.
+		long num = -1;
+		try {
+			String sql = "select count(*) from " + tableName + " where " + where;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			rs.next();
+			num = rs.getLong("count(*)");
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			String sql = "select * from " + tableName + " where " + where;
+			Statement stmt = getConnection().createStatement();
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			num = 0;
+			while ((rs.next())) {
+				num++;
+			}
+			rs.close();
+			stmt.close();
+		}
+		return num;
 	}
 
 	private long getNumberOfRows(String tableName, long limit)
