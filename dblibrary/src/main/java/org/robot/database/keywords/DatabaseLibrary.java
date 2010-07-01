@@ -220,7 +220,7 @@ public class DatabaseLibrary {
 
 		long rowNum = Long.valueOf(rowNumValue);
 
-		long num = getNumberOfRows(tableName, (rowNum + 1));
+		long num = getNumberOfRows(tableName, rowNum + 1);
 		if (num != rowNum) {
 			throw new DatabaseLibraryException("Expecting " + rowNum
 					+ " rows, fetched: " + num);
@@ -938,6 +938,18 @@ public class DatabaseLibrary {
 		return connection;
 	}
 
+
+	private long getNumberOfRows(String tableName) throws SQLException {
+		return getNumberOfRows(tableName, Long.MAX_VALUE);
+	}
+
+	private long getNumberOfRows(String tableName, long limit) throws SQLException {
+		return getNumberOfRows(tableName, null, limit);
+	}
+	
+	/* 
+	 * @param limit Limit is used to cut off counting in case count(*) is not supported
+	 */
 	private long getNumberOfRows(String tableName, String where, long limit)
 			throws SQLException {
 
@@ -949,47 +961,10 @@ public class DatabaseLibrary {
 		// so that this might not be too bad.
 		long num = -1;
 		try {
-			String sql = "select count(*) from " + tableName + " where " + where;
-			Statement stmt = getConnection().createStatement();
-			try {
-				stmt.executeQuery(sql);
-				ResultSet rs = (ResultSet) stmt.getResultSet();
-				rs.next();
-				num = rs.getLong("count(*)");
-				rs.close();
-			} finally {
-				stmt.close();
+			String sql = "select count(*) from " + tableName; 
+			if (where != null) {
+				sql = sql + " where " + where;
 			}
-		} catch (SQLException e) {
-			String sql = "select * from " + tableName + " where " + where;
-			Statement stmt = getConnection().createStatement();
-			try {
-				stmt.executeQuery(sql);
-				ResultSet rs = (ResultSet) stmt.getResultSet();
-				num = 0;
-				while ((rs.next())) {
-					num++;
-				}
-				rs.close();
-			} finally {
-				stmt.close();
-			}
-		}
-		return num;
-	}
-
-	private long getNumberOfRows(String tableName, long limit)
-			throws SQLException {
-
-		// Let's first try with count(*), but this is not supported by all
-		// databases.
-		// In this case an exception will be thrown and we will read the amount
-		// of records the "hard way", but luckily limited by the amount of rows
-		// expected,
-		// so that this might not be too bad.
-		long num = -1;
-		try {
-			String sql = "select count(*) from " + tableName;
 			Statement stmt = getConnection().createStatement();
 			try {
 				stmt.executeQuery(sql);
@@ -1002,6 +977,9 @@ public class DatabaseLibrary {
 			}
 		} catch (SQLException e) {
 			String sql = "select * from " + tableName;
+			if (where != null) {
+				sql = sql + " where " + where;
+			}
 			Statement stmt = getConnection().createStatement();
 			try {
 				stmt.executeQuery(sql);
@@ -1018,40 +996,4 @@ public class DatabaseLibrary {
 		return num;
 	}
 
-	private long getNumberOfRows(String tableName) throws SQLException {
-
-		// Let's first try with count(*), but this is not supported by all
-		// databases.
-		// In this case an exception will be thrown and we will read the amount
-		// of records the "hard way"
-		long num = -1;
-		try {
-			String sql = "select count(*) from " + tableName;
-			Statement stmt = getConnection().createStatement();
-			try {
-				stmt.executeQuery(sql);
-				ResultSet rs = (ResultSet) stmt.getResultSet();
-				rs.next();
-				num = rs.getLong("count(*)");
-				rs.close();
-			} finally {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			String sql = "select * from " + tableName;
-			Statement stmt = getConnection().createStatement();
-			try {
-				stmt.executeQuery(sql);
-				ResultSet rs = (ResultSet) stmt.getResultSet();
-				num = 0;
-				while (rs.next()) {
-					num++;
-				}
-				rs.close();
-			} finally {
-				stmt.close();
-			}
-		}
-		return num;
-	}
 }
