@@ -145,9 +145,13 @@ public class DatabaseLibrary {
 
 		DatabaseMetaData dbm = getConnection().getMetaData();
 		ResultSet rs = dbm.getTables(null, null, tableName, null);
-		if (!rs.next()) {
-			throw new DatabaseLibraryException("Table: " + tableName
-					+ " was not found");
+		try {
+			if (!rs.next()) {
+				throw new DatabaseLibraryException("Table: " + tableName
+						+ " was not found");
+			}
+		} finally {
+			rs.close();
 		}
 	}
 
@@ -356,7 +360,6 @@ public class DatabaseLibrary {
 		try {
 			stmt.executeQuery(sqlString);
 			ResultSet rs = (ResultSet) stmt.getResultSet();
-			
 
 			long count = 0;
 			while (rs.next()) {
@@ -388,8 +391,8 @@ public class DatabaseLibrary {
 						"Given rownum does not exist for statement: " + sqlString);
 			}
 	
-			rs.close();
 		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 			stmt.close();
 		}
 	}
@@ -472,8 +475,8 @@ public class DatabaseLibrary {
 								+ sqlString);
 			}
 	
-			rs.close();
 		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 			stmt.close();
 		}
 	}
@@ -507,8 +510,8 @@ public class DatabaseLibrary {
 			ResultSet rs = (ResultSet) stmt.getResultSet();
 			rs.next();
 			ret = rs.getString(columnName);
-			rs.close();
 		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 			stmt.close();
 		}
 
@@ -661,11 +664,13 @@ public class DatabaseLibrary {
 
 		DatabaseMetaData dbm = getConnection().getMetaData();
 		ResultSet rs = dbm.getPrimaryKeys(null, null, tableName);
-
-		while (rs.next()) {
-			ret = rs.getString("COLUMN_NAME") + ",";
+		try {
+			while (rs.next()) {
+				ret = rs.getString("COLUMN_NAME") + ",";
+			}
+		} finally {
+			rs.close();
 		}
-		rs.close();
 		
 		// Remove the last ","
 		if (ret.length() > 0) {
@@ -933,8 +938,8 @@ public class DatabaseLibrary {
 				ResultSet rs = (ResultSet) stmt.getResultSet();
 				rs.next();
 				num = rs.getLong("count(*)");
-				rs.close();
 			} finally {
+				// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 				stmt.close();
 			}
 		} catch (SQLException e) {
@@ -950,8 +955,8 @@ public class DatabaseLibrary {
 				while ((rs.next()) && (num < limit)) {
 					num++;
 				}
-				rs.close();
 			} finally {
+				// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 				stmt.close();
 			}
 		}
