@@ -913,6 +913,9 @@ public class DatabaseLibrary {
 	}
 
 	private Connection getConnection() {
+		if (connection == null) {
+			throw new IllegalStateException("No connection open. Did you forget to run 'Connect To Database' before?");
+		}
 		return connection;
 	}
 
