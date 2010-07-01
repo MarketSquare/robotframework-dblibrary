@@ -17,6 +17,9 @@ import org.junit.Test;
 import org.robot.database.keywords.DatabaseLibrary;
 import org.robot.database.keywords.DatabaseLibraryException;
 
+/**
+ * Tests that use a database connection
+ */
 public class DatabaseLibraryTest {
 
 	private static final String HSQL_DRIVER_CLASSNAME = "org.hsqldb.jdbcDriver";
@@ -24,8 +27,6 @@ public class DatabaseLibraryTest {
 	private static final String HSQL_USER = "sa";
 	private static final String HSQL_PASSWORD = "";
 
-	private static Server hsqldbServer = null;
-	
 	private DatabaseLibrary databaseLibrary;
 
 	// ========================================================
@@ -36,11 +37,6 @@ public class DatabaseLibraryTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		// Start the HSQLDB
-		hsqldbServer = new Server();
-		hsqldbServer.main(new String[] { "--database.0", "file:mydb",
-				"--dbname.0", "xdb" });
-
 		Class.forName(HSQL_DRIVER_CLASSNAME).newInstance();
 		Connection con = DriverManager.getConnection(HSQL_URL,
 				HSQL_USER, HSQL_PASSWORD);
@@ -58,11 +54,6 @@ public class DatabaseLibraryTest {
 		
 		stmt.close();
 		con.close();
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		hsqldbServer.shutdown();
 	}
 
 	// ========================================================
@@ -100,50 +91,11 @@ public class DatabaseLibraryTest {
 		con.close();
 	}
 	
-	private void initDatabaseLibrary() {
+	private void initDatabaseLibrary() throws Exception {
 		databaseLibrary = new DatabaseLibrary();
-	}
-
-	// ========================================================
-	//
-	// Database Connection 
-	//
-	// ========================================================
-
-	@Test
-	public void checkConnectToDatabase() throws Exception {
 		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
 				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-	}
-
-	@Test
-	public void checkConnectToDatabaseWithWrongUsername() {
-		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-					HSQL_URL, "xyz", HSQL_PASSWORD);
-		} catch (SQLException e) {
-			if (!e.getMessage().contains("not found")) {
-				e.printStackTrace();
-				fail();
-			}
-		} catch (Exception e2) {
-			e2.printStackTrace();
-			fail();
-		}
-	}
-
-	@Test
-	public void checkDisconnectFromDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-		databaseLibrary.disconnectFromDatabase();
-	}
-
-	@Test(expected=IllegalStateException.class)
-	public void checkIllegalStateExceptionWithoutConnect() throws Exception {
-		databaseLibrary.tableMustBeEmpty("NoConnection");
-	}
-	
+	}	
 	
 	// ========================================================
 	//
@@ -153,15 +105,11 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustBeEmpty_OnEmptyTable() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustBeEmpty("EmptyTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustBeEmpty_OnTableNotEmpty() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustBeEmpty("MySampleTable");
 	}
 
@@ -173,15 +121,11 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustExist_ThatExists() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustExist("EMPTYTABLE");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustExist("WRONG_NAME");
 	}
 
@@ -193,8 +137,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkDeleteAllRowsFromTable() throws Exception {
-		connectToDatabase();
-
 		try {
 			// Check first that table is not empty
 			databaseLibrary.tableMustBeEmpty("MySampleTable");
@@ -213,15 +155,11 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainNumberOfRows() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustContainNumberOfRows_WrongNumber() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
 	}
 
@@ -233,24 +171,18 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainMoreThanNumberOfRows() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "1");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() throws Exception {
-		connectToDatabase();
-		
 		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "200");
 	}
@@ -263,24 +195,18 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustContainLessThanNumberOfRows() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "3");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "1");
 	}
@@ -293,16 +219,12 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTablesMustContainSameAmountOfRows() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
 				"ReferenceTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
 				"EmptyTable");
 	}
@@ -315,8 +237,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckContentIdentifiedbyRownum() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Darko|1001", "MySampleTable", "1");
@@ -324,8 +244,6 @@ public class DatabaseLibraryTest {
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyRownum_WrongValues() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Dar|1001", "MySampleTable", "1");
@@ -334,8 +252,6 @@ public class DatabaseLibraryTest {
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Dar|1001", "MySampleTable", "100");
@@ -350,8 +266,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|1001", "MySampleTable", "id=1");
@@ -359,8 +273,6 @@ public class DatabaseLibraryTest {
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=1");
@@ -368,8 +280,6 @@ public class DatabaseLibraryTest {
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-		
 		databaseLibrary
 				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=100");
@@ -377,8 +287,6 @@ public class DatabaseLibraryTest {
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary
 				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=1 or id=2");
@@ -394,8 +302,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetTransactionIsolationLevel() throws Exception {
-		connectToDatabase();
-
 		String level = databaseLibrary.getTransactionIsolationLevel();
 		System.out.println("Transaction Isolation Level: " + level);
 		
@@ -406,15 +312,11 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checktransactionIsolationLevelMustBe() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_READ_COMMITTED");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_REPEATABLE_READ");
 	}		
 	
@@ -427,8 +329,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkReadSingleValueFromTable() throws Exception {
-		connectToDatabase();
-
 		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
 		System.out.println("Single Value Fetched: " + name);
 		Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
@@ -443,8 +343,6 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetPrimaryKeyColumnsForTable() throws Exception {
-		connectToDatabase();
-
 		String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
 		System.out.println("Primary Keys: " + keys);
 		
@@ -455,23 +353,16 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckPrimaryKeyColumnsForTable() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
 	}			
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
-		fail();
 	}			
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-
 		databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
 	}
 	
@@ -481,42 +372,23 @@ public class DatabaseLibraryTest {
 	//
 	@Test
 	public void checkExecuteSQL() throws Exception {
-		connectToDatabase();
-
 		databaseLibrary.executeSQL("CREATE TABLE TestTable (Num Integer)");
 		databaseLibrary.tableMustExist("TESTTABLE");
 	}
 	
 	@Test
 	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() throws Exception {
-		connectToDatabase();
-		
 		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
 	}
 	
 	@Test
 	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() throws Exception {
-		connectToDatabase();
-		
 		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
 	}
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException, Exception {
-		connectToDatabase();
-		
 		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
 	}
 	
-	// Utility methods to clean up the test cases
-	
-	private void connectToDatabase() {
-		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
 }
