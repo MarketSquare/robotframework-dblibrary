@@ -183,8 +183,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTableMustBeEmpty_OnTableNotEmpty() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustBeEmpty_OnTableNotEmpty() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -193,8 +193,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -219,8 +217,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTableMustExist_ThatDoesNotExist() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -229,8 +227,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -286,8 +282,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTableMustContainNumberOfRows_WrongNumber() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustContainNumberOfRows_WrongNumber() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -296,8 +292,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -323,8 +317,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -334,13 +328,11 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
-	@Test
-	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() throws Throwable {
 		connectToDatabase();
 
 		try {
@@ -350,8 +342,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -377,8 +367,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -388,13 +378,11 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
-	@Test
-	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -404,8 +392,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -431,8 +417,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 
-	@Test
-	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -442,8 +428,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}
 
@@ -470,8 +454,8 @@ public class DatabaseLibraryTest {
 		}
 	}
 	
-	@Test
-	public void checkCheckContentIdentifiedbyRownum_WrongValues() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckContentIdentifiedbyRownum_WrongValues() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -482,14 +466,12 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}	
 	
 	
-	@Test
-	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -500,8 +482,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}		
 	
@@ -529,8 +509,8 @@ public class DatabaseLibraryTest {
 		}
 	}	
 	
-	@Test
-	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -541,13 +521,11 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}	
 	
-	@Test
-	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() throws DatabaseLibraryException {
 		connectToDatabase();
 		
 		try {
@@ -558,13 +536,11 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}	
 
-	@Test
-	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -575,8 +551,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e2) {
-			// This Exception is expected as the test fails
 		}
 	}	
 
@@ -620,8 +594,8 @@ public class DatabaseLibraryTest {
 		} 
 	}	
 	
-	@Test
-	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -630,8 +604,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// This Exception is expected as the test fails
 		} 
 	}		
 	
@@ -695,8 +667,8 @@ public class DatabaseLibraryTest {
 		} 
 	}			
 
-	@Test
-	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -705,13 +677,11 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// This Exception is expected as the test fails
 		} 
 	}			
 	
-	@Test
-	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() throws DatabaseLibraryException {
 		connectToDatabase();
 
 		try {
@@ -720,8 +690,6 @@ public class DatabaseLibraryTest {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// This Exception is expected as the test fails
 		}
 	}
 	
@@ -775,17 +743,16 @@ public class DatabaseLibraryTest {
 		}
 	}
 	
-	@Test
-	public void checkVerifyNumberOfRowsMatchingWhereFailure() {
+	@Test(expected=DatabaseLibraryException.class)
+	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException {
 		connectToDatabase();
 		
 		try {
 			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
+			fail();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail();
-		} catch (DatabaseLibraryException e) {
-			// Good exception, we expect this.
 		}
 	}
 	
