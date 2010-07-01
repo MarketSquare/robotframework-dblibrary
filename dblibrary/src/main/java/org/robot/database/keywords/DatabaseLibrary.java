@@ -538,32 +538,7 @@ public class DatabaseLibrary {
 	public void transactionIsolationLevelMustBe(String levelName)
 			throws SQLException, DatabaseLibraryException {
 
-		String transactionName = "";
-
-		int transactionIsolation = getConnection().getTransactionIsolation();
-
-		switch (transactionIsolation) {
-
-		case Connection.TRANSACTION_NONE:
-			transactionName = "TRANSACTION_NONE";
-			break;
-
-		case Connection.TRANSACTION_READ_COMMITTED:
-			transactionName = "TRANSACTION_READ_COMMITTED";
-			break;
-
-		case Connection.TRANSACTION_READ_UNCOMMITTED:
-			transactionName = "TRANSACTION_READ_UNCOMMITTED";
-			break;
-
-		case Connection.TRANSACTION_REPEATABLE_READ:
-			transactionName = "TRANSACTION_REPEATABLE_READ";
-			break;
-
-		case Connection.TRANSACTION_SERIALIZABLE:
-			transactionName = "TRANSACTION_SERIALIZABLE";
-			break;
-		}
+		String transactionName = getTransactionIsolationLevel();
 
 		if (!transactionName.equals(levelName)) {
 			throw new DatabaseLibraryException(
@@ -648,20 +623,7 @@ public class DatabaseLibrary {
 	public void checkPrimaryKeyColumnsForTable(String tableName,
 			String columnList) throws SQLException, DatabaseLibraryException {
 
-		String keys = "";
-
-		DatabaseMetaData dbm = getConnection().getMetaData();
-		ResultSet rs = dbm.getPrimaryKeys(null, null, tableName);
-
-		while (rs.next()) {
-			keys = rs.getString("COLUMN_NAME") + ",";
-		}
-		rs.close();
-
-		// Remove the last ","
-		if (keys.length() > 0) {
-			keys = keys.substring(0, keys.length() - 1);
-		}
+		String keys = getPrimaryKeyColumnsForTable(tableName);
 
 		columnList = columnList.toLowerCase();
 		keys = keys.toLowerCase();
