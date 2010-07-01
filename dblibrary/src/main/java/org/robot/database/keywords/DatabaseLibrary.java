@@ -191,8 +191,11 @@ public class DatabaseLibrary {
 		String sql = "delete from " + tableName;
 
 		Statement stmt = getConnection().createStatement();
-		stmt.execute(sql);
-		stmt.close();
+		try {
+			stmt.execute(sql);
+		} finally {
+			stmt.close();
+		}
 	}
 
 	/**
@@ -350,41 +353,45 @@ public class DatabaseLibrary {
 		String[] values = expectedValues.split("\\|");
 
 		Statement stmt = getConnection().createStatement();
-		stmt.executeQuery(sqlString);
-		ResultSet rs = (ResultSet) stmt.getResultSet();
+		try {
+			stmt.executeQuery(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			
 
-		long count = 0;
-		while (rs.next()) {
-
-			count++;
-			if (count == rowNum) {
-
-				for (int i = 0; i < columns.length; i++) {
-					String fieldValue = rs.getString(columns[i]);
-					System.out.println(columns[i] + " -> " + fieldValue);
-
-					if (values[i].equals("(NULL)")) {
-						values[i] = "";
+			long count = 0;
+			while (rs.next()) {
+	
+				count++;
+				if (count == rowNum) {
+	
+					for (int i = 0; i < columns.length; i++) {
+						String fieldValue = rs.getString(columns[i]);
+						System.out.println(columns[i] + " -> " + fieldValue);
+	
+						if (values[i].equals("(NULL)")) {
+							values[i] = "";
+						}
+	
+						if (!fieldValue.equals(values[i])) {
+							throw new DatabaseLibraryException("Value found: '"
+									+ fieldValue + "'. Expected: '" + values[i]
+									+ "'");
+						}
 					}
-
-					if (!fieldValue.equals(values[i])) {
-						throw new DatabaseLibraryException("Value found: '"
-								+ fieldValue + "'. Expected: '" + values[i]
-								+ "'");
-					}
+					break;
 				}
-				break;
 			}
+	
+			// Rownum does not exist
+			if (count != rowNum) {
+				throw new DatabaseLibraryException(
+						"Given rownum does not exist for statement: " + sqlString);
+			}
+	
+			rs.close();
+		} finally {
+			stmt.close();
 		}
-
-		// Rownum does not exist
-		if (count != rowNum) {
-			throw new DatabaseLibraryException(
-					"Given rownum does not exist for statement: " + sqlString);
-		}
-
-		rs.close();
-		stmt.close();
 	}
 
 	/**
@@ -424,48 +431,51 @@ public class DatabaseLibrary {
 		String[] values = expectedValues.split("\\|");
 
 		Statement stmt = getConnection().createStatement();
-		stmt.executeQuery(sqlString);
-		ResultSet rs = (ResultSet) stmt.getResultSet();
-
-		long count = 0;
-		while (rs.next()) {
-			count++;
-			if (count == 1) {
-
-				for (int i = 0; i < columns.length; i++) {
-					String fieldValue = rs.getString(columns[i]);
-					System.out.println(columns[i] + " -> " + fieldValue);
-
-					if (values[i].equals("(NULL)")) {
-						values[i] = "";
-					}
-
-					if (!fieldValue.equals(values[i])) {
-						throw new DatabaseLibraryException("Value found: '"
-								+ fieldValue + "'. Expected: '" + values[i]
-								+ "'");
+		try {
+			stmt.executeQuery(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+	
+			long count = 0;
+			while (rs.next()) {
+				count++;
+				if (count == 1) {
+	
+					for (int i = 0; i < columns.length; i++) {
+						String fieldValue = rs.getString(columns[i]);
+						System.out.println(columns[i] + " -> " + fieldValue);
+	
+						if (values[i].equals("(NULL)")) {
+							values[i] = "";
+						}
+	
+						if (!fieldValue.equals(values[i])) {
+							throw new DatabaseLibraryException("Value found: '"
+									+ fieldValue + "'. Expected: '" + values[i]
+									+ "'");
+						}
 					}
 				}
+	
+				// Throw exception if more than one row is selected by the given
+				// "where-clause"
+				if (count > 1) {
+					throw new DatabaseLibraryException(
+							"More than one row fetched by given where-clause for statement: "
+									+ sqlString);
+				}
 			}
-
-			// Throw exception if more than one row is selected by the given
-			// "where-clause"
-			if (count > 1) {
+	
+			// Throw exception if no row was fetched by given where-clause
+			if (count == 0) {
 				throw new DatabaseLibraryException(
-						"More than one row fetched by given where-clause for statement: "
+						"No row fetched by given where-clause for statement: "
 								+ sqlString);
 			}
+	
+			rs.close();
+		} finally {
+			stmt.close();
 		}
-
-		// Throw exception if no rrow was fetched by given where-clause
-		if (count == 0) {
-			throw new DatabaseLibraryException(
-					"No row fetched by given where-clause for statement: "
-							+ sqlString);
-		}
-
-		rs.close();
-		stmt.close();
 	}
 
 	/**
@@ -492,12 +502,15 @@ public class DatabaseLibrary {
 		String sql = "select " + columnName + " from " + tableName + " where "
 				+ whereClause;
 		Statement stmt = getConnection().createStatement();
-		stmt.executeQuery(sql);
-		ResultSet rs = (ResultSet) stmt.getResultSet();
-		rs.next();
-		ret = rs.getString(columnName);
-		rs.close();
-		stmt.close();
+		try {
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			rs.next();
+			ret = rs.getString(columnName);
+			rs.close();
+		} finally {
+			stmt.close();
+		}
 
 		return ret;
 	}
@@ -643,6 +656,7 @@ public class DatabaseLibrary {
 		while (rs.next()) {
 			keys = rs.getString("COLUMN_NAME") + ",";
 		}
+		rs.close();
 
 		// Remove the last ","
 		if (keys.length() > 0) {
@@ -689,7 +703,8 @@ public class DatabaseLibrary {
 		while (rs.next()) {
 			ret = rs.getString("COLUMN_NAME") + ",";
 		}
-
+		rs.close();
+		
 		// Remove the last ","
 		if (ret.length() > 0) {
 			ret = ret.substring(0, ret.length() - 1);
@@ -720,7 +735,11 @@ public class DatabaseLibrary {
 	public void executeSQL(String sqlString) throws SQLException {
 
 		Statement stmt = getConnection().createStatement();
-		stmt.execute(sqlString);
+		try {
+			stmt.execute(sqlString);
+		} finally {
+			stmt.close();
+		}
 	}
 
 	/**
@@ -932,23 +951,29 @@ public class DatabaseLibrary {
 		try {
 			String sql = "select count(*) from " + tableName + " where " + where;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			rs.next();
-			num = rs.getLong("count(*)");
-			rs.close();
-			stmt.close();
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				rs.next();
+				num = rs.getLong("count(*)");
+				rs.close();
+			} finally {
+				stmt.close();
+			}
 		} catch (SQLException e) {
 			String sql = "select * from " + tableName + " where " + where;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			num = 0;
-			while ((rs.next())) {
-				num++;
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				num = 0;
+				while ((rs.next())) {
+					num++;
+				}
+				rs.close();
+			} finally {
+				stmt.close();
 			}
-			rs.close();
-			stmt.close();
 		}
 		return num;
 	}
@@ -966,23 +991,29 @@ public class DatabaseLibrary {
 		try {
 			String sql = "select count(*) from " + tableName;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			rs.next();
-			num = rs.getLong("count(*)");
-			rs.close();
-			stmt.close();
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				rs.next();
+				num = rs.getLong("count(*)");
+				rs.close();
+			} finally {
+				stmt.close();
+			}
 		} catch (SQLException e) {
 			String sql = "select * from " + tableName;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			num = 0;
-			while ((rs.next()) && (num < limit)) {
-				num++;
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				num = 0;
+				while ((rs.next()) && (num < limit)) {
+					num++;
+				}
+				rs.close();
+			} finally {
+				stmt.close();
 			}
-			rs.close();
-			stmt.close();
 		}
 		return num;
 	}
@@ -997,23 +1028,29 @@ public class DatabaseLibrary {
 		try {
 			String sql = "select count(*) from " + tableName;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			rs.next();
-			num = rs.getLong("count(*)");
-			rs.close();
-			stmt.close();
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				rs.next();
+				num = rs.getLong("count(*)");
+				rs.close();
+			} finally {
+				stmt.close();
+			}
 		} catch (SQLException e) {
 			String sql = "select * from " + tableName;
 			Statement stmt = getConnection().createStatement();
-			stmt.executeQuery(sql);
-			ResultSet rs = (ResultSet) stmt.getResultSet();
-			num = 0;
-			while (rs.next()) {
-				num++;
+			try {
+				stmt.executeQuery(sql);
+				ResultSet rs = (ResultSet) stmt.getResultSet();
+				num = 0;
+				while (rs.next()) {
+					num++;
+				}
+				rs.close();
+			} finally {
+				stmt.close();
 			}
-			rs.close();
-			stmt.close();
 		}
 		return num;
 	}
