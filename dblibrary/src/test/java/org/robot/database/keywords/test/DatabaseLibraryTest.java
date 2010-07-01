@@ -111,14 +111,9 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkConnectToDatabase() {
-		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void checkConnectToDatabase() throws Exception {
+		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
 	}
 
 	@Test
@@ -138,27 +133,15 @@ public class DatabaseLibraryTest {
 	}
 
 	@Test
-	public void checkDisconnectFromDatabase() {
-		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-					HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-			databaseLibrary.disconnectFromDatabase();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void checkDisconnectFromDatabase() throws Exception {
+		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
+		databaseLibrary.disconnectFromDatabase();
 	}
 
 	@Test(expected=IllegalStateException.class)
-	public void checkIllegalStateExceptionWithoutConnect() {
-		try {
-			databaseLibrary.tableMustBeEmpty("NoConnection");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-		}
-		fail();
+	public void checkIllegalStateExceptionWithoutConnect() throws Exception {
+		databaseLibrary.tableMustBeEmpty("NoConnection");
 	}
 	
 	
@@ -169,31 +152,17 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTableMustBeEmpty_OnEmptyTable() {
+	public void checkTableMustBeEmpty_OnEmptyTable() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustBeEmpty("EmptyTable");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustBeEmpty("EmptyTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustBeEmpty_OnTableNotEmpty() throws DatabaseLibraryException {
+	public void checkTableMustBeEmpty_OnTableNotEmpty() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustBeEmpty("MySampleTable");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustBeEmpty("MySampleTable");
 	}
 
 	// ========================================================
@@ -203,31 +172,17 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTableMustExist_ThatExists() {
+	public void checkTableMustExist_ThatExists() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustExist("EMPTYTABLE");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustExist("EMPTYTABLE");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException {
+	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustExist("WRONG_NAME");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustExist("WRONG_NAME");
 	}
 
 	// ========================================================
@@ -237,27 +192,16 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkDeleteAllRowsFromTable() {
+	public void checkDeleteAllRowsFromTable() throws Exception {
 		connectToDatabase();
 
 		try {
 			// Check first that table is not empty
 			databaseLibrary.tableMustBeEmpty("MySampleTable");
 			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
 		} catch (DatabaseLibraryException e) {
-			try {
-				databaseLibrary.deleteAllRowsFromTable("MySampleTable");
-				databaseLibrary.tableMustBeEmpty("MySampleTable");
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-				fail();
-			} catch (DatabaseLibraryException e2) {
-				e2.printStackTrace();
-				fail();
-			}
+			databaseLibrary.deleteAllRowsFromTable("MySampleTable");
+			databaseLibrary.tableMustBeEmpty("MySampleTable");
 		}
 	}
 
@@ -268,31 +212,17 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTableMustContainNumberOfRows() {
+	public void checkTableMustContainNumberOfRows() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustContainNumberOfRows_WrongNumber() throws DatabaseLibraryException {
+	public void checkTableMustContainNumberOfRows_WrongNumber() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
 	}
 
 	// ========================================================
@@ -302,47 +232,27 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTableMustContainMoreThanNumberOfRows() {
+	public void checkTableMustContainMoreThanNumberOfRows() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", "1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
+				"MySampleTable", "1");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() throws DatabaseLibraryException {
+	public void checkTableMustContainMoreThanNumberOfRows_SameNumbers() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", "2");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
+				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() throws Throwable {
+	public void checkTableMustContainMoreThanNumberOfRows_MoreNumbers() throws Exception {
 		connectToDatabase();
-
-		try {
-			databaseLibrary.tableMustContainMoreThanNumberOfRows(
-					"MySampleTable", "200");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
+				"MySampleTable", "200");
 	}
 
 	// ========================================================
@@ -352,47 +262,27 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTableMustContainLessThanNumberOfRows() {
+	public void checkTableMustContainLessThanNumberOfRows() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", "3");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
+				"MySampleTable", "3");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() throws DatabaseLibraryException {
+	public void checkTableMustContainLessThanNumberOfRows_SameNumbers() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", "2");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
+				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() throws DatabaseLibraryException {
+	public void checkTableMustContainLessThanNumberOfRows_LessNumbers() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tableMustContainLessThanNumberOfRows(
-					"MySampleTable", "1");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
+				"MySampleTable", "1");
 	}
 
 	// ========================================================
@@ -402,33 +292,19 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkTablesMustContainSameAmountOfRows() {
+	public void checkTablesMustContainSameAmountOfRows() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
-					"ReferenceTable");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
+				"ReferenceTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException {
+	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
-					"EmptyTable");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
+				"EmptyTable");
 	}
 
 	// ========================================================
@@ -438,51 +314,31 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkCheckContentIdentifiedbyRownum() {
+	public void checkCheckContentIdentifiedbyRownum() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Darko|1001", "MySampleTable", "1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
+						"1|Donny Darko|1001", "MySampleTable", "1");
 	}
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckContentIdentifiedbyRownum_WrongValues() throws DatabaseLibraryException {
+	public void checkCheckContentIdentifiedbyRownum_WrongValues() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Dar|1001", "MySampleTable", "1");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
+						"1|Donny Dar|1001", "MySampleTable", "1");
 	}	
 	
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() throws DatabaseLibraryException {
+	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
-							"1|Donny Dar|1001", "MySampleTable", "100");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
+						"1|Donny Dar|1001", "MySampleTable", "100");
 	}		
 	
 	
@@ -493,65 +349,39 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkCheckContentIdentifiedbyWhereClause() {
+	public void checkCheckContentIdentifiedbyWhereClause() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
-							"1|Donny Darko|1001", "MySampleTable", "id=1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e2) {
-			e2.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+						"1|Donny Darko|1001", "MySampleTable", "id=1");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() throws DatabaseLibraryException {
+	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
-							"1|Donny Darko|100", "MySampleTable", "id=1");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+						"1|Donny Darko|100", "MySampleTable", "id=1");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() throws DatabaseLibraryException {
+	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 		
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
-							"1|Donny Darko|100", "MySampleTable", "id=100");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+						"1|Donny Darko|100", "MySampleTable", "id=100");
 	}	
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() throws DatabaseLibraryException {
+	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary
-					.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
-							"1|Donny Darko|100", "MySampleTable", "id=1 or id=2");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
+						"1|Donny Darko|100", "MySampleTable", "id=1 or id=2");
 	}	
 
 	
@@ -563,48 +393,29 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkGetTransactionIsolationLevel() {
+	public void checkGetTransactionIsolationLevel() throws Exception {
 		connectToDatabase();
 
-		try {
-			String level = databaseLibrary.getTransactionIsolationLevel();
-			System.out.println("Transaction Isolation Level: " + level);
-			
-			if ((level == null) || (level.equals(HSQL_PASSWORD))) {
-				fail("Empty Transaction Isolation Level");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		String level = databaseLibrary.getTransactionIsolationLevel();
+		System.out.println("Transaction Isolation Level: " + level);
+		
+		if ((level == null) || (level.equals(HSQL_PASSWORD))) {
+			fail("Empty Transaction Isolation Level");
+		}
 	}	
 	
 	@Test
-	public void checktransactionIsolationLevelMustBe() {
+	public void checktransactionIsolationLevelMustBe() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_READ_COMMITTED");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_READ_COMMITTED");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() throws DatabaseLibraryException {
+	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_REPEATABLE_READ");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_REPEATABLE_READ");
 	}		
 	
 	
@@ -615,17 +426,12 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkReadSingleValueFromTable() {
+	public void checkReadSingleValueFromTable() throws Exception {
 		connectToDatabase();
 
-		try {
-			String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
-			System.out.println("Single Value Fetched: " + name);
-			Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
+		System.out.println("Single Value Fetched: " + name);
+		Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
 	}	
 
 	
@@ -636,61 +442,37 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@Test
-	public void checkGetPrimaryKeyColumnsForTable() {
+	public void checkGetPrimaryKeyColumnsForTable() throws Exception {
 		connectToDatabase();
 
-		try {
-			String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
-			System.out.println("Primary Keys: " + keys);
-			
-			if ((keys == null) || (keys.equals(HSQL_PASSWORD))) {
-				fail("Empty Primary Key");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
+		System.out.println("Primary Keys: " + keys);
+		
+		if ((keys == null) || (keys.equals(HSQL_PASSWORD))) {
+			fail("Empty Primary Key");
+		}
 	}		
 	
 	@Test
-	public void checkCheckPrimaryKeyColumnsForTable() {
+	public void checkCheckPrimaryKeyColumnsForTable() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
 	}			
 
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() throws DatabaseLibraryException {
+	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
+		fail();
 	}			
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() throws DatabaseLibraryException {
+	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
 	}
 	
 	
@@ -698,62 +480,32 @@ public class DatabaseLibraryTest {
 	// Check Execute SQL
 	//
 	@Test
-	public void checkExecuteSQL() {
+	public void checkExecuteSQL() throws Exception {
 		connectToDatabase();
 
-		try {
-			databaseLibrary.executeSQL("CREATE TABLE TestTable (Num Integer)");
-			databaseLibrary.tableMustExist("TESTTABLE");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		} 
+		databaseLibrary.executeSQL("CREATE TABLE TestTable (Num Integer)");
+		databaseLibrary.tableMustExist("TESTTABLE");
 	}
 	
 	@Test
-	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() {
+	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() throws Exception {
 		connectToDatabase();
 		
-		try {
-			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
 	}
 	
 	@Test
-	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() {
+	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() throws Exception {
 		connectToDatabase();
 		
-		try {
-			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		} catch (DatabaseLibraryException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
 	}
 	
 	@Test(expected=DatabaseLibraryException.class)
-	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException {
+	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException, Exception {
 		connectToDatabase();
 		
-		try {
-			databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
-			fail();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			fail();
-		}
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
 	}
 	
 	// Utility methods to clean up the test cases
