@@ -149,6 +149,18 @@ public class DatabaseLibraryTest {
 		}
 	}
 
+	@Test(expected=IllegalStateException.class)
+	public void checkIllegalStateExceptionWithoutConnect() {
+		try {
+			databaseLibrary.tableMustBeEmpty("NoConnection");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (DatabaseLibraryException e) {
+			e.printStackTrace();
+		}
+		fail();
+	}
+	
 	
 	// ========================================================
 	//
