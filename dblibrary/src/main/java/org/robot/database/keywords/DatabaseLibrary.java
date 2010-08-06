@@ -1,13 +1,17 @@
 package org.robot.database.keywords;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -962,5 +966,119 @@ public class DatabaseLibrary {
 		}
 		return num;
 	}
+	
+	/**
+	 * Executes the given SQL without any further modifications and
+	 * stores the result in a file.  The SQL query must be valid for
+	 * the database that is used. The main purpose of this keyword
+	 * is to generate expected result sets for use with keyword
+	 * compareQueryResultToFile
+	 * 
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws IOException 
+	 * @throws DatabaseLibraryException
+	 */
+	@RobotKeyword("Executes the given SQL-statement and stores result to a file\n\n" + "Example:\n"
+			+ "| Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt |\n")
+	@ArgumentNames( { "sqlString", "fileName"})
+	public void storeQueryResultToFile(String sqlString, String fileName) throws SQLException, IOException {
 
+		Statement stmt = getConnection().createStatement();
+		try {
+			stmt.execute(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			ResultSetMetaData rsmd = rs.getMetaData();
+		    int numberOfColumns = rsmd.getColumnCount();
+		    FileWriter fstream = new FileWriter(fileName);
+		    BufferedWriter out = new BufferedWriter(fstream);	    
+			while (rs.next()) {
+				for (int i = 1; i <= numberOfColumns; i++) {
+					rs.getString(i);
+					out.write(rs.getString(i) + '|');
+				}
+				out.write("\n");
+			}
+			out.close();
+		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
+			stmt.close();
+		}
+	}
+
+	/**
+	 * Executes the given SQL compares the result to expected
+	 * results stored in a file.  Results are stored as strings
+	 * separated with pipes ('|') with a pipe following the last 
+	 * column.  Rows are separated with a newline.
+	 * 
+	 * To ensure compares work correctly
+	 * The SQL query should
+	 * a) specify an order
+	 * b) convert non-string fields (especially dates) to a specific format
+	 * 
+	 * storeQueryResultToFile can be used to generate expected result files
+	 * 
+	 * <pre>
+	 * Example: 
+	 * | Compare Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 * @throws FileNotFoundException 
+	 */
+	@RobotKeyword("Executes the given SQL-statement and compares result to a file\n\n" + "Example:\n"
+			+ "| Compare Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt |\n")
+	@ArgumentNames( { "sqlString", "fileName"})
+	public void compareQueryResultToFile(String sqlString, String fileName) throws SQLException, DatabaseLibraryException, FileNotFoundException {
+	
+		Statement stmt = getConnection().createStatement();
+	    int numDiffs = 0;
+	    int maxDiffs = 10;
+	    String diffs = "";
+	    try {
+			stmt.execute(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			ResultSetMetaData rsmd = rs.getMetaData();
+		    int numberOfColumns = rsmd.getColumnCount();
+		    FileReader fr = new FileReader(fileName); 
+		    BufferedReader br = new BufferedReader(fr);
+		    String actRow;
+		    String expRow;
+	
+		    int row = 0;
+			while (rs.next() && (numDiffs < maxDiffs)) {
+				actRow = "";
+				row++;
+				for (int i = 1; i <= numberOfColumns; i++) {
+					actRow += rs.getString(i) + '|';
+				}
+				expRow = br.readLine();
+				if (!actRow.equals(expRow)) {
+					numDiffs++;
+					diffs += "Row " + row + " does not match:\nexp: " + expRow + "\nact: " +actRow + "\n"; 
+				}
+			}
+			if (br.ready() && numDiffs < maxDiffs) {
+				numDiffs++;
+				diffs += "More rows in expected file than in query result\n";
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			numDiffs++;
+			diffs += "Fewer rows in expected file than in query result\n";
+		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
+			stmt.close();
+			if (numDiffs > 0) throw new DatabaseLibraryException(diffs);
+		}
+	}
 }

@@ -2,6 +2,12 @@ package org.robot.database.keywords.test;
 
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,7 +19,9 @@ import org.hsqldb.Server;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.robot.database.keywords.DatabaseLibrary;
 import org.robot.database.keywords.DatabaseLibraryException;
 
@@ -62,6 +70,9 @@ public class DatabaseLibraryTest {
 	//
 	// ========================================================
 
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+	
 	@Before
 	public void setUpTest() throws Exception {
 		initTestTables();
@@ -390,5 +401,90 @@ public class DatabaseLibraryTest {
 	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException, Exception {
 		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
 	}
+
+	// ========================================================
+	//
+	// Store Query Result To File
+	//
+	// ========================================================
 	
+	@Test 
+	public void checkStoreQueryResultToFile() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";
+		databaseLibrary.storeQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	    FileReader fr = new FileReader(myFileName); 
+	    BufferedReader br = new BufferedReader(fr);
+	    Assert.assertEquals("Wrong value written to file","Donny Darko|donny.darko@robot.org|",br.readLine());
+	    Assert.assertEquals("Wrong value written to file","Darth Vader|darth.vader@starwars.universe|",br.readLine());
+	    Assert.assertEquals("File is longer than expected",false, br.ready());
+	}
+
+	// ========================================================
+	//
+	// Compare Query Result To File
+	//
+	// ========================================================
+	
+	@Test 
+	public void checkCompareQueryResultToFileWhereFileMatches() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
+		FileWriter fstream = new FileWriter(myFileName);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    out.write("Donny Darko|donny.darko@robot.org|\n");
+	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
+	    out.close();
+		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	}
+
+	@Test (expected=DatabaseLibraryException.class)
+	public void checkCompareQueryResultToFileWhereFileHasTooFewRows() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
+		FileWriter fstream = new FileWriter(myFileName);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    out.write("Donny Darko|donny.darko@robot.org|\n");
+	    out.close();
+		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	}
+
+	@Test (expected=DatabaseLibraryException.class)
+	public void checkCompareQueryResultToFileWhereFileHasTooManyRows() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
+		FileWriter fstream = new FileWriter(myFileName);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    out.write("Donny Darko|donny.darko@robot.org|\n");
+	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
+	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
+	    out.close();
+		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	}
+
+	@Test (expected=DatabaseLibraryException.class)
+	public void checkCompareQueryResultToFileWhereFileHasInvalidRow() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
+		FileWriter fstream = new FileWriter(myFileName);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    out.write("Donny Darko|donny.darko@robot.org|\n");
+	    out.write("Darth Vader|lukes.father@starwars.universe|\n");
+	    out.close();
+		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	}
+
+	@Test (expected=FileNotFoundException.class)
+	public void checkCompareQueryResultToFileWhereFileNotFound() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
+		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
+				myFileName);
+	}
+
 }
