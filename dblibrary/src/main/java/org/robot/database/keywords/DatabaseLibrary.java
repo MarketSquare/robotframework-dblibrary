@@ -900,6 +900,41 @@ public class DatabaseLibrary {
 		}
 	}
 
+	/**
+	 * This keyword can be used to check the inexistence of content inside 
+	 * a specific row in a database table defined by a where-clause.
+	 * This can be used to validate an exclusion of specific data from a table.
+	 *  
+	 * <pre>
+	 * Example:
+	 * | Row Should Not Exist In Table | MySampleTable | Name='John Doe' |
+	 * </pre>
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseLibraryException
+	 */
+	@RobotKeyword("Validate data inexistence from table defined by a where-clause.\n\n"
+			+ "Example:\n"
+			+ "| Row Should Not Exist In Table | MySampleTable | Name='John Doe' |\n")
+	@ArgumentNames( { "tableName", "whereClause" })
+	public void rowShouldNotExistInTable(String tableName, String whereClause) 
+		throws SQLException, DatabaseLibraryException {
+
+		String sql = "select * from " + tableName + " where " + whereClause;
+		Statement stmt = getConnection().createStatement();
+		try {
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			if(rs.next() == true) {
+				throw new DatabaseLibraryException("Row exists (but should not) for where-clause: " 
+						+ whereClause + " in table: " + tableName);
+			}
+		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
+			stmt.close();
+		}
+	}
+	
 	private void setConnection(Connection connection) {
 		this.connection = connection;
 	}

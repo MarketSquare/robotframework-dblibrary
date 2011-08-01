@@ -491,5 +491,22 @@ public class DatabaseLibraryTest {
 		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
 				myFileName);
 	}
+	
+	// Tests for "Row Should Not Exist In Table"
+	@Test
+	public void checkRowShouldNotExistInTable() throws SQLException, DatabaseLibraryException {
+		databaseLibrary.rowShouldNotExistInTable("MySampleTable", "Name='John Doe'");
+	}
+	
+	@Test
+	public void checkRowShouldNotExistInTableFailsIfRowExists() throws SQLException, DatabaseLibraryException {
+		try {
+			databaseLibrary.rowShouldNotExistInTable("MySampleTable", "Name='Darth Vader'");
+			fail();
+		} catch(DatabaseLibraryException e) {
+			Assert.assertEquals("Row exists (but should not) for where-clause: Name='Darth Vader' in table: MySampleTable", e.getMessage());
+		}
+	}
+	
 
 }
