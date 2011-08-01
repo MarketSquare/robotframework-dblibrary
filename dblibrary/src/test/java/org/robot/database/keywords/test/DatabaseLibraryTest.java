@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import junit.framework.Assert;
@@ -340,7 +341,14 @@ public class DatabaseLibraryTest {
 		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
 		System.out.println("Single Value Fetched: " + name);
 		Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
-	}	
+	}
+	
+	@Test
+	public void checkReadSingleValueFromTableReturnsEmptyStringIfNoMatch() throws SQLException {
+		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=23");
+		System.out.println("Single Value Fetched: " + name);
+		Assert.assertEquals("Value found", "", name);
+	}
 
 	
 	// ========================================================

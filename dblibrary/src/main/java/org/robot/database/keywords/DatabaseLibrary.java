@@ -508,12 +508,14 @@ public class DatabaseLibrary {
 
 		String sql = "select " + columnName + " from " + tableName + " where "
 				+ whereClause;
-		Statement stmt = getConnection().createStatement();
+		Statement stmt = getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		try {
 			stmt.executeQuery(sql);
 			ResultSet rs = (ResultSet) stmt.getResultSet();
-			rs.next();
-			ret = rs.getString(columnName);
+			
+			if(rs.first()) {
+				ret = rs.getString(columnName);
+			}
 		} finally {
 			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 			stmt.close();
