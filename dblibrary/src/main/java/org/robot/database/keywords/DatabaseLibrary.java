@@ -910,6 +910,8 @@ public class DatabaseLibrary {
 	 * | Row Should Not Exist In Table | MySampleTable | Name='John Doe' |
 	 * </pre>
 	 * 
+	 * This keyword was introduced in version 1.1.
+	 * 
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
