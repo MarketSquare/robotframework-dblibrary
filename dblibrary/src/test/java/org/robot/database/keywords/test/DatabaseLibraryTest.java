@@ -507,6 +507,5 @@ public class DatabaseLibraryTest {
 			Assert.assertEquals("Row exists (but should not) for where-clause: Name='Darth Vader' in table: MySampleTable", e.getMessage());
 		}
 	}
-	
 
 }
