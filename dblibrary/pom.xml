@@ -4,7 +4,7 @@
 	<groupId>robotframework</groupId>
 	<artifactId>dblibrary</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>2.0</version>
 	<name>dblibrary</name>
 	<dependencies>
 		<dependency>
@@ -26,12 +26,33 @@
 			<artifactId>javalib-core</artifactId>
 			<version>0.8.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.robotframework</groupId>
 			<artifactId>jvmconnector</artifactId>
 			<version>0.9.2</version>
 		</dependency>
+		<dependency>
+			<groupId>jrobotremoteserver</groupId>
+			<artifactId>jrobotremoteserver</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jrobotremoteserver</groupId>
+			<artifactId>simple</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>jrobotremoteserver</groupId>
+			<artifactId>simple-xmlrpc</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jrobotremoteserver</groupId>
+			<artifactId>xmlrpc</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
+		
 	</dependencies>
 
 
@@ -76,6 +97,29 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <artifactId>maven-assembly-plugin</artifactId>
+		        <version>2.3</version>
+		        <configuration>
+		          <descriptorRefs>
+		            <descriptorRef>jar-with-dependencies</descriptorRef>
+		          </descriptorRefs>
+		          <archive>
+		            <manifest>
+		              <mainClass>org/robotframework/remotelibrary/RemoteServer</mainClass>
+		            </manifest>
+		          </archive>
+		        </configuration>
+		        <executions>
+		          <execution>
+		            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+		            <phase>package</phase> <!-- bind to the packaging phase -->
+		            <goals>
+		              <goal>single</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>			
 		</plugins>
 	</build>
 
