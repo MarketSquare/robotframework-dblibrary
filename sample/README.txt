@@ -31,3 +31,5 @@ In case you are using a different database you need to change the database conne
 string given as one parameter to the "Connect to Database" keyword during Suite Setup. In 
 addition you need to edit the CLASSPATH in the start script to include the proper Driver-JAR. 
 
+For MY-SQL information is provided here from where to download the Driver-JAR:
+https://github.com/ThomasJaspers/robotframework-dblibrary/wiki

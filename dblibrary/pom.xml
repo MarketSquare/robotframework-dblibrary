@@ -33,11 +33,6 @@
 		</dependency>
 		<dependency>
 			<groupId>jrobotremoteserver</groupId>
-			<artifactId>jrobotremoteserver</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>jrobotremoteserver</groupId>
 			<artifactId>simple</artifactId>
 			<version>4.0.1</version>
 		</dependency>
@@ -106,7 +101,7 @@
 		          </descriptorRefs>
 		          <archive>
 		            <manifest>
-		              <mainClass>org/robotframework/remotelibrary/RemoteServer</mainClass>
+		              <mainClass>org/robot/database/server/RemoteServer</mainClass>
 		            </manifest>
 		          </archive>
 		        </configuration>

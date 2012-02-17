@@ -33,14 +33,14 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkConnectToDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+		databaseLibrary.connect_to_database(HSQL_DRIVER_CLASSNAME,
 				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
 	}
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
 		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+			databaseLibrary.connect_to_database(HSQL_DRIVER_CLASSNAME,
 					HSQL_URL, "xyz", HSQL_PASSWORD);
 		} catch (SQLException e) {
 			if (!e.getMessage().contains("not found")) {
@@ -55,14 +55,14 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkDisconnectFromDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
+		databaseLibrary.connect_to_database(HSQL_DRIVER_CLASSNAME,
 				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
-		databaseLibrary.disconnectFromDatabase();
+		databaseLibrary.disconnect_from_database();
 	}
 
 	@Test(expected=IllegalStateException.class)
 	public void checkIllegalStateExceptionWithoutConnect() throws Exception {
-		databaseLibrary.tableMustBeEmpty("NoConnection");
+		databaseLibrary.table_must_be_empty("NoConnection");
 	}
 
 }

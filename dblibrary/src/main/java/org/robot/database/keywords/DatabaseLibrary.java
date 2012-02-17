@@ -98,7 +98,7 @@ public class DatabaseLibrary {
 			+ "Example:\n"
 			+ "| Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |\n")
 	@ArgumentNames( { "driverClassName", "connectionString, dbUser, dbPassword" })
-	public void connectToDatabase(String driverClassName, String connectString,
+	public void connect_to_database(String driverClassName, String connectString,
 			String dbUser, String dbPassword) throws SQLException,
 			InstantiationException, IllegalAccessException,
 			ClassNotFoundException {
@@ -120,7 +120,7 @@ public class DatabaseLibrary {
 	 */
 	@RobotKeyword("Disconnects from the database.\n\n" + "Example:\n"
 			+ "| Disconnect from Database |\n")
-	public void disconnectFromDatabase() throws SQLException {
+	public void disconnect_from_database() throws SQLException {
 		System.out.println("SQL Warnings on this connection: "
 				+ getConnection().getWarnings());
 		getConnection().close();
@@ -144,7 +144,7 @@ public class DatabaseLibrary {
 	@RobotKeyword("Checks that the given table exists.\n\n" + "Example:\n"
 			+ "| Table Must Exist | MySampleTable |\n")
 	@ArgumentNames( { "tableName" })
-	public void tableMustExist(String tableName) throws SQLException,
+	public void table_must_exist(String tableName) throws SQLException,
 			DatabaseLibraryException {
 
 		DatabaseMetaData dbm = getConnection().getMetaData();
@@ -174,9 +174,9 @@ public class DatabaseLibrary {
 	@RobotKeyword("Checks that the given table is empty.\n\n" + "Example:\n"
 			+ "| Table Must Be Empty | MySampleTable |\n")
 	@ArgumentNames( { "tableName" })
-	public void tableMustBeEmpty(String tableName) throws SQLException,
+	public void table_must_be_empty(String tableName) throws SQLException,
 			DatabaseLibraryException {
-		tableMustContainNumberOfRows(tableName, "0");
+		table_must_contain_number_of_rows(tableName, "0");
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class DatabaseLibrary {
 	@RobotKeyword("Deletes all rows from the given table.\n\n" + "Example:\n"
 			+ "| Delete All Rows From Table | MySampleTable |\n")
 	@ArgumentNames( { "tableName" })
-	public void deleteAllRowsFromTable(String tableName) throws SQLException {
+	public void delete_all_rows_from_table(String tableName) throws SQLException {
 		String sql = "delete from " + tableName;
 
 		Statement stmt = getConnection().createStatement();
@@ -223,7 +223,7 @@ public class DatabaseLibrary {
 			+ "Example:\n"
 			+ "| Table Must Contain Number Of Rows | MySampleTable | 14 |\n")
 	@ArgumentNames( { "tableName", "rowNumValue" })
-	public void tableMustContainNumberOfRows(String tableName,
+	public void table_must_contain_number_of_rows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
@@ -252,7 +252,7 @@ public class DatabaseLibrary {
 			+ "Example:\n"
 			+ "| Table Must Contain More Than Number Of Rows | MySampleTable | 99 |\n")
 	@ArgumentNames( { "tableName", "rowNumValue" })
-	public void tableMustContainMoreThanNumberOfRows(String tableName,
+	public void table_must_contain_more_than_number_of_rows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
@@ -278,11 +278,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that the given table contains less than the given number of records.\n\n"
-			+ "Example:\n"
-			+ "| Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 |\n")
-	@ArgumentNames( { "tableName", "rowNumValue" })
-	public void tableMustContainLessThanNumberOfRows(String tableName,
+	public void table_must_contain_less_than_number_of_rows(String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
@@ -306,11 +302,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that two given tables contain the same number of records.\n\n"
-			+ "Example:\n"
-			+ "| Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable |\n")
-	@ArgumentNames( { "firstTableName", "secondTableName" })
-	public void tablesMustContainSameAmountOfRows(String firstTableName,
+	public void tables_must_contain_same_amount_of_rows(String firstTableName,
 			String secondTableName) throws SQLException,
 			DatabaseLibraryException {
 
@@ -344,12 +336,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks the content of a specific record in a given table identified by its row number.\n\n"
-			+ "Example:\n"
-			+ "| Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 |\n")
-	@ArgumentNames( { "columnNames", "expectedValues", "tableName",
-			"rowNumValue" })
-	public void checkContentForRowIdentifiedByRownum(String columnNames,
+	public void check_content_for_row_identified_by_rownum(String columnNames,
 			String expectedValues, String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
@@ -422,12 +409,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks the content of a specific record in a given table identified by a where-clause.\n\n"
-			+ "Example:\n"
-			+ "| Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 |\n")
-	@ArgumentNames( { "columnNames", "expectedValues", "tableName",
-			"whereClause" })
-	public void checkContentForRowIdentifiedByWhereClause(String columnNames,
+	public void check_content_for_row_identified_by_where_clause(String columnNames,
 			String expectedValues, String tableName, String whereClause)
 			throws SQLException, DatabaseLibraryException {
 
@@ -497,11 +479,7 @@ public class DatabaseLibrary {
 	 * </pre>
 	 * 
 	 */
-	@RobotKeyword("Reads and returns a single value from one column and record of a given table identified by a where-clause.\n\n"
-			+ "Example:\n"
-			+ "| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' |\n")
-	@ArgumentNames( { "tableName", "columnName", "whereClause" })
-	public String readSingleValueFromTable(String tableName, String columnName,
+	public String read_single_value_from_table(String tableName, String columnName,
 			String whereClause) throws SQLException {
 
 		String ret = "";
@@ -540,14 +518,10 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that the given transaction isolation level is set.\n\n"
-			+ "Example:\n"
-			+ "| Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED |\n")
-	@ArgumentNames( { "levelName" })
-	public void transactionIsolationLevelMustBe(String levelName)
+	public void transaction_isolation_level_must_be(String levelName)
 			throws SQLException, DatabaseLibraryException {
 
-		String transactionName = getTransactionIsolationLevel();
+		String transactionName = get_transaction_isolation_level();
 
 		if (!transactionName.equals(levelName)) {
 			throw new DatabaseLibraryException(
@@ -571,11 +545,7 @@ public class DatabaseLibrary {
 	 * 
 	 * @throws SQLException
 	 */
-	@RobotKeyword("Returns the currently set transaction isolation level.\n\n"
-			+ "Example:\n"
-			+ "| ${TI_LEVEL}= | Get Transaction Isolation Level |\n")
-	@ArgumentNames( { "levelName" })
-	public String getTransactionIsolationLevel() throws SQLException {
+	public String get_transaction_isolation_level() throws SQLException {
 
 		String ret = "";
 
@@ -625,14 +595,10 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that the givn columns are defined as the primary key for the given table.\n\n"
-			+ "Example:\n"
-			+ "| Check Primary Key Columns For Table | MySampleTable | Id,Name |\n")
-	@ArgumentNames( { "tableName", "columnList" })
-	public void checkPrimaryKeyColumnsForTable(String tableName,
+	public void check_primary_key_columns_for_table(String tableName,
 			String columnList) throws SQLException, DatabaseLibraryException {
 
-		String keys = getPrimaryKeyColumnsForTable(tableName);
+		String keys = get_primary_key_columns_for_table(tableName);
 
 		columnList = columnList.toLowerCase();
 		keys = keys.toLowerCase();
@@ -641,7 +607,6 @@ public class DatabaseLibrary {
 			throw new DatabaseLibraryException("Given column list: "
 					+ columnList + " Keys found: " + keys);
 		}
-
 	}
 
 	/**
@@ -659,11 +624,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Returns a comma-separated list of the primary key columns for the given table.\n\n"
-			+ "Example:\n"
-			+ "| ${KEYS}= | Get Primary Key Columns For Table | MySampleTable |\n")
-	@ArgumentNames( { "tableName" })
-	public String getPrimaryKeyColumnsForTable(String tableName)
+	public String get_primary_key_columns_for_table(String tableName)
 			throws SQLException {
 
 		String ret = "";
@@ -702,10 +663,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Executes the given SQL-statement.\n\n" + "Example:\n"
-			+ "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) |\n")
-	@ArgumentNames( { "sqlString" })
-	public void executeSQL(String sqlString) throws SQLException {
+	public void execute_sql(String sqlString) throws SQLException {
 
 		Statement stmt = getConnection().createStatement();
 		try {
@@ -742,10 +700,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
-			+ "Example:\n" + "| Execute SQL from File | myFile.sql |\n")
-	@ArgumentNames( { "fileName" })
-	public void executeSQLFromFile(String fileName) throws SQLException,
+	public void execute_sql_from_file(String fileName) throws SQLException,
 			IOException, DatabaseLibraryException {
 
 		getConnection().setAutoCommit(false);
@@ -774,7 +729,7 @@ public class DatabaseLibrary {
 				if (sql.endsWith(";")) {
 					sql = sql.substring(0, sql.length() - 1);
 					System.out.println("Executing: " + sql);
-					executeSQL(sql);
+					execute_sql(sql);
 					sql = "";
 				}
 			} catch (SQLException e) {
@@ -819,11 +774,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Executes the SQL-statements contained in the given file.\n\n"
-			+ "Example:\n"
-			+ "| Execute SQL from File Ignore Errors| myFile.sql |\n")
-	@ArgumentNames( { "fileName" })
-	public void executeSQLFromFileIgnoreErrors(String fileName)
+	public void execute_sql_from_file_ignore_errors(String fileName)
 			throws SQLException, IOException, DatabaseLibraryException {
 
 		getConnection().setAutoCommit(false);
@@ -852,7 +803,7 @@ public class DatabaseLibrary {
 				if (sql.endsWith(";")) {
 					sql = sql.substring(0, sql.length() - 1);
 					System.out.println("Executing: " + sql + "\n");
-					executeSQL(sql);
+					execute_sql(sql);
 					sql = "";
 					System.out.println("\n");
 				}
@@ -884,11 +835,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Checks that the given table contains the given number of records matching the given WHERE clause.\n\n"
-			+ "Example:\n"
-			+ "| Verify Number Of Rows Matching Where | MySampleTable | email=x@y.net | 2 |\n")
-	@ArgumentNames( { "tableName", "where", "rowNumValue" })
-	public void verifyNumberOfRowsMatchingWhere(String tableName, String where,
+	public void verify_number_of_rows_matching_where(String tableName, String where,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
 		long rowNum = Long.valueOf(rowNumValue);
@@ -915,11 +862,7 @@ public class DatabaseLibrary {
 	 * @throws SQLException
 	 * @throws DatabaseLibraryException
 	 */
-	@RobotKeyword("Validate data inexistence from table defined by a where-clause.\n\n"
-			+ "Example:\n"
-			+ "| Row Should Not Exist In Table | MySampleTable | Name='John Doe' |\n")
-	@ArgumentNames( { "tableName", "whereClause" })
-	public void rowShouldNotExistInTable(String tableName, String whereClause) 
+	public void row_should_not_exist_in_table(String tableName, String whereClause) 
 		throws SQLException, DatabaseLibraryException {
 
 		String sql = "select * from " + tableName + " where " + whereClause;
@@ -935,6 +878,11 @@ public class DatabaseLibrary {
 			// stmt.close() automatically takes care of its ResultSet, so no rs.close()
 			stmt.close();
 		}
+	}
+	
+	
+	public void test_remote_lib(String value) {
+		System.out.println("Received argument: " + value);
 	}
 	
 	private void setConnection(Connection connection) {
