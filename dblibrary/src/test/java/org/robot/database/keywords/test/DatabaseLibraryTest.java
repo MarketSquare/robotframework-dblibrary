@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -34,6 +36,7 @@ public class DatabaseLibraryTest {
 	private static final String HSQL_PASSWORD = "";
 
 	private DatabaseLibrary databaseLibrary;
+	
 
 	// ========================================================
 	//
@@ -102,7 +105,7 @@ public class DatabaseLibraryTest {
 	
 	private void initDatabaseLibrary() throws Exception {
 		databaseLibrary = new DatabaseLibrary();
-		databaseLibrary.connect_to_database(HSQL_DRIVER_CLASSNAME,
+		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
 				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
 	}	
 	
@@ -114,12 +117,12 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checktable_must_be_empty_OnEmptyTable() throws Exception {
-		databaseLibrary.table_must_be_empty("EmptyTable");
+		databaseLibrary.tableMustBeEmpty("EmptyTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_be_empty_OnTableNotEmpty() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_be_empty("MySampleTable");
+		databaseLibrary.tableMustBeEmpty("MySampleTable");
 	}
 
 	// ========================================================
@@ -130,12 +133,12 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTableMustExist_ThatExists() throws Exception {
-		databaseLibrary.table_must_exist("EMPTYTABLE");
+		databaseLibrary.tableMustExist("EMPTYTABLE");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_exist("WRONG_NAME");
+		databaseLibrary.tableMustExist("WRONG_NAME");
 	}
 
 	// ========================================================
@@ -148,11 +151,11 @@ public class DatabaseLibraryTest {
 	public void checkdelete_all_rows_from_table() throws Exception {
 		try {
 			// Check first that table is not empty
-			databaseLibrary.table_must_be_empty("MySampleTable");
+			databaseLibrary.tableMustBeEmpty("MySampleTable");
 			fail();
 		} catch (DatabaseLibraryException e) {
-			databaseLibrary.delete_all_rows_from_table("MySampleTable");
-			databaseLibrary.table_must_be_empty("MySampleTable");
+			databaseLibrary.deleteAllRowsFromTable("MySampleTable");
+			databaseLibrary.tableMustBeEmpty("MySampleTable");
 		}
 	}
 
@@ -164,12 +167,12 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checktable_must_contain_number_of_rows() throws Exception {
-		databaseLibrary.table_must_contain_number_of_rows("MySampleTable", "2");
+		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_contain_number_of_rows_WrongNumber() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_contain_number_of_rows("MySampleTable", "5");
+		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
 	}
 
 	// ========================================================
@@ -180,19 +183,19 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checktable_must_contain_more_than_number_of_rows() throws Exception {
-		databaseLibrary.table_must_contain_more_than_number_of_rows(
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "1");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_contain_more_than_number_of_rows_SameNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_contain_more_than_number_of_rows(
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_contain_more_than_number_of_rows_MoreNumbers() throws Exception {
-		databaseLibrary.table_must_contain_more_than_number_of_rows(
+		databaseLibrary.tableMustContainMoreThanNumberOfRows(
 				"MySampleTable", "200");
 	}
 
@@ -204,19 +207,19 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checktable_must_contain_less_than_number_of_rows() throws Exception {
-		databaseLibrary.table_must_contain_less_than_number_of_rows(
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "3");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_contain_less_than_number_of_rows_SameNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_contain_less_than_number_of_rows(
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "2");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktable_must_contain_less_than_number_of_rows_LessNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.table_must_contain_less_than_number_of_rows(
+		databaseLibrary.tableMustContainLessThanNumberOfRows(
 				"MySampleTable", "1");
 	}
 
@@ -228,13 +231,13 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkTablesMustContainSameAmountOfRows() throws Exception {
-		databaseLibrary.tables_must_contain_same_amount_of_rows("MySampleTable",
+		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
 				"ReferenceTable");
 	}
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tables_must_contain_same_amount_of_rows("MySampleTable",
+		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
 				"EmptyTable");
 	}
 
@@ -247,14 +250,14 @@ public class DatabaseLibraryTest {
 	@Test
 	public void checkCheckContentIdentifiedbyRownum() throws Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_rownum("Id,Name,Postings",
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Darko|1001", "MySampleTable", "1");
 	}
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyRownum_WrongValues() throws DatabaseLibraryException, Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_rownum("Id,Name,Postings",
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Dar|1001", "MySampleTable", "1");
 	}	
 	
@@ -262,7 +265,7 @@ public class DatabaseLibraryTest {
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyRownum_NoRecordFound() throws DatabaseLibraryException, Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_rownum("Id,Name,Postings",
+				.checkContentForRowIdentifiedByRownum("Id,Name,Postings",
 						"1|Donny Dar|1001", "MySampleTable", "100");
 	}		
 	
@@ -276,28 +279,28 @@ public class DatabaseLibraryTest {
 	@Test
 	public void checkCheckContentIdentifiedbyWhereClause() throws Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_where_clause("Id,Name,Postings",
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|1001", "MySampleTable", "id=1");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_WrongValues() throws DatabaseLibraryException, Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_where_clause("Id,Name,Postings",
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=1");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_NoRecordFound() throws DatabaseLibraryException, Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_where_clause("Id,Name,Postings",
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=100");
 	}	
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckContentIdentifiedbyWhereClause_MoreThanOneRecordFound() throws DatabaseLibraryException, Exception {
 		databaseLibrary
-				.check_content_for_row_identified_by_where_clause("Id,Name,Postings",
+				.checkContentForRowIdentifiedByWhereClause("Id,Name,Postings",
 						"1|Donny Darko|100", "MySampleTable", "id=1 or id=2");
 	}	
 
@@ -311,7 +314,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetTransactionIsolationLevel() throws Exception {
-		String level = databaseLibrary.get_transaction_isolation_level();
+		String level = databaseLibrary.getTransactionIsolationLevel();
 		System.out.println("Transaction Isolation Level: " + level);
 		
 		if ((level == null) || (level.equals(HSQL_PASSWORD))) {
@@ -321,12 +324,12 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checktransactionIsolationLevelMustBe() throws Exception {
-		databaseLibrary.transaction_isolation_level_must_be("TRANSACTION_READ_COMMITTED");
+		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_READ_COMMITTED");
 	}	
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checktransactionIsolationLevelMustBe_WithWrongLevelName() throws DatabaseLibraryException, Exception {
-		databaseLibrary.transaction_isolation_level_must_be("TRANSACTION_REPEATABLE_READ");
+		databaseLibrary.transactionIsolationLevelMustBe("TRANSACTION_REPEATABLE_READ");
 	}		
 	
 	
@@ -338,14 +341,14 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkReadSingleValueFromTable() throws Exception {
-		String name = databaseLibrary.read_single_value_from_table("MySampleTable", "Name", "id=1");
+		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
 		System.out.println("Single Value Fetched: " + name);
 		Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
 	}
 	
 	@Test
-	public void checkReadSingleValueFromTableReturnsEmptyStringIfNoMatch() throws SQLException {
-		String name = databaseLibrary.read_single_value_from_table("MySampleTable", "Name", "id=23");
+	public void checkReadSingleValueFromTableReturnsEmptyStringIfNoMatch() throws SQLException, DatabaseLibraryException {
+		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=23");
 		System.out.println("Single Value Fetched: " + name);
 		Assert.assertEquals("Value found", "", name);
 	}
@@ -359,7 +362,7 @@ public class DatabaseLibraryTest {
 
 	@Test
 	public void checkGetPrimaryKeyColumnsForTable() throws Exception {
-		String keys = databaseLibrary.get_primary_key_columns_for_table("MYSAMPLETABLE");
+		String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
 		System.out.println("Primary Keys: " + keys);
 		
 		if ((keys == null) || (keys.equals(HSQL_PASSWORD))) {
@@ -369,17 +372,17 @@ public class DatabaseLibraryTest {
 	
 	@Test
 	public void checkCheckPrimaryKeyColumnsForTable() throws Exception {
-		databaseLibrary.check_primary_key_columns_for_table("MYSAMPLETABLE", "Id");
+		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Id");
 	}			
 
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckPrimaryKeyColumnsForTable_NoMatch() throws DatabaseLibraryException, Exception {
-		databaseLibrary.check_primary_key_columns_for_table("MYSAMPLETABLE", "Ids");
+		databaseLibrary.checkPrimaryKeyColumnsForTable("MYSAMPLETABLE", "Ids");
 	}			
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkCheckPrimaryKeyColumnsForTable_WrongTableName() throws DatabaseLibraryException, Exception {
-		databaseLibrary.check_primary_key_columns_for_table("WrongTable", "Id");
+		databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
 	}
 	
 	
@@ -388,23 +391,23 @@ public class DatabaseLibraryTest {
 	//
 	@Test
 	public void checkExecuteSQL() throws Exception {
-		databaseLibrary.execute_sql("CREATE TABLE TestTable (Num Integer)");
-		databaseLibrary.table_must_exist("TESTTABLE");
+		databaseLibrary.executeSql("CREATE TABLE TestTable (Num Integer)");
+		databaseLibrary.tableMustExist("TESTTABLE");
 	}
 	
 	@Test
 	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() throws Exception {
-		databaseLibrary.verify_number_of_rows_matching_where("MySampleTable", "EMail='donny.darko@robot.org'", "1");
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
 	}
 	
 	@Test
 	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() throws Exception {
-		databaseLibrary.verify_number_of_rows_matching_where("MySampleTable", "EMail='batman@robot.org'", "0");
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
 	}
 	
 	@Test(expected=DatabaseLibraryException.class)
 	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException, Exception {
-		databaseLibrary.verify_number_of_rows_matching_where("MySampleTable", "Postings > 0", "1");
+		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
 	}
 
 	// ========================================================
@@ -495,13 +498,13 @@ public class DatabaseLibraryTest {
 	// Tests for "Row Should Not Exist In Table"
 	@Test
 	public void checkRowShouldNotExistInTable() throws SQLException, DatabaseLibraryException {
-		databaseLibrary.row_should_not_exist_in_table("MySampleTable", "Name='John Doe'");
+		databaseLibrary.rowShouldNotExistInTable("MySampleTable", "Name='John Doe'");
 	}
 	
 	@Test
 	public void checkRowShouldNotExistInTableFailsIfRowExists() throws SQLException, DatabaseLibraryException {
 		try {
-			databaseLibrary.row_should_not_exist_in_table("MySampleTable", "Name='Darth Vader'");
+			databaseLibrary.rowShouldNotExistInTable("MySampleTable", "Name='Darth Vader'");
 			fail();
 		} catch(DatabaseLibraryException e) {
 			Assert.assertEquals("Row exists (but should not) for where-clause: Name='Darth Vader' in table: MySampleTable", e.getMessage());

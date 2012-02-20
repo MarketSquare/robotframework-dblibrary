@@ -4,11 +4,14 @@ depend on the corresponding platform.
 
 Currently the following start scripts are provided:
 
-Windows : startDBLibraryDemo_MySql.bat
+Windows : startDBLibraryDemo_MySql.bat 
+          startDBLibraryDemo_Remote_MySql.bat
+          startDBLibraryServer.bat
 Mac OS X: startDBLibraryDemo_MySql.sh
 
 Of course the start-script for Mac OS X can be easily adapted for other Unix
-operating systems.
+operating systems. You will need to download the required driver JAR(s) for 
+your database and adept the CLASSPATH in the start scripts accordingly.
 
 As the port where you are running the MySql database might differ from the default
 port this value is set as a variable in the start script. Please change it if needed.
@@ -33,3 +36,6 @@ addition you need to edit the CLASSPATH in the start script to include the prope
 
 For MY-SQL information is provided here from where to download the Driver-JAR:
 https://github.com/ThomasJaspers/robotframework-dblibrary/wiki
+
+More information can also be found here:
+https://github.com/ThomasJaspers/robotframework-dblibrary/wiki/Database-Library-Sample

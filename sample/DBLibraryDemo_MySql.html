@@ -1,10 +1,7 @@
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="RIDE" /> 
-<meta name="rf-template" content="False" /> 
 <style type="text/css">
 html {
   font-family: Arial,Helvetica,sans-serif;
@@ -15,20 +12,27 @@ table {
   border-collapse: collapse;
   empty-cells: show;
   margin: 1em 0em;
-  border: 0.1em solid black;
+  border: 1px solid black;
 }
 th, td {
-  border-style: solid;
-  border-width: 0.05em 0.1em;
-  border-color: black;
+  border: 1px solid black;
   padding: 0.1em 0.2em;
   height: 1.5em;
   width: 12em;
 }
+td.colspan4, th.colspan4 {
+    width: 48em;
+}
+td.colspan3, th.colspan3 {
+    width: 36em;
+}
+td.colspan2, th.colspan2 {
+    width: 24em;
+}
 th {
   background-color: rgb(192, 192, 192);
   color: black;
-  border-width: 0.1em;
+  height: 1.7em;
   font-weight: bold;
   text-align: center;
   letter-spacing: 0.1em;
@@ -41,18 +45,17 @@ td.name, th.name {
   width: 10em;
 }
 </style>
-<title>Dblibrarydemo Mysql</title>
+<title>DBLibraryDemo MySql</title>
 </head>
 <body>
-<h1>Dblibrarydemo Mysql</h1>
-<table id="settings" border="1">
+<h1>DBLibraryDemo MySql</h1>
+<table border="1" id="setting">
 <tr>
-<th class="name">Setting</th>
-<th colspan="4">Value</th>
+<th class="name" colspan="5">Setting</th>
 </tr>
 <tr>
 <td class="name">Documentation</td>
-<td colspan="4">This is a sample Robot Library testsuite demonstrating the usage of the Database Library (<a href="http://code.google.com/p/robotframework-dblibrary/">http://code.google.com/p/robotframework-dblibrary/</a>). Please make sure you have setup a proper MySql Database and user according to the instrcutions given in the README.txt bundled with this demo.</td>
+<td class="colspan4" colspan="4">This is a sample Robot Library testsuite demonstrating the usage of the Database Library (<a href="http://code.google.com/p/robotframework-dblibrary/">http://code.google.com/p/robotframework-dblibrary/</a>). Please make sure you have setup a proper MySql Database and user according to the instrcutions given in the README.txt bundled with this demo.</td>
 </tr>
 <tr>
 <td class="name">Suite Setup</td>
@@ -90,17 +93,14 @@ td.name, th.name {
 <td></td>
 </tr>
 </table>
-<table id="variables" border="1"></table>
-<table id="testcases" border="1">
+<table border="1" id="testcase">
 <tr>
-<th class="name">Test Case</th>
-<th>Action</th>
-<th colspan="3">Arguments</th>
+<th class="name" colspan="5">Test Case</th>
 </tr>
 <tr>
 <td class="name"><a name="test_Create Test Table">Create Test Table</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Creates the test table used for testing throughout the demo.</td>
+<td class="colspan3" colspan="3">Creates the test table used for testing throughout the demo.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -126,7 +126,7 @@ td.name, th.name {
 <tr>
 <td class="name"></td>
 <td>Execute SQL</td>
-<td>ALTER TABLE DemoTable ADD PRIMARY KEY (Id);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>ALTER TABLE DemoTable ADD PRIMARY KEY (Id);</td>
 <td></td>
 <td></td>
 </tr>
@@ -147,7 +147,7 @@ td.name, th.name {
 <tr>
 <td class="name"><a name="test_Basic Checks">Basic Checks</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Performs some basic checks on the created DemoTable. You can check the generated Robot Log-File to see the transactions isolation level fetched.</td>
+<td class="colspan3" colspan="3">Performs some basic checks on the created DemoTable. You can check the generated Robot Log-File to see the transactions isolation level fetched.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -194,7 +194,7 @@ td.name, th.name {
 <tr>
 <td class="name"><a name="test_Add Content To Table">Add Content To Table</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Add some records to the DemoTable for further checks.</td>
+<td class="colspan3" colspan="3">Add some records to the DemoTable for further checks.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -220,7 +220,7 @@ td.name, th.name {
 <tr>
 <td class="name"><a name="test_Check Number of Rows">Check Number of Rows</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Perform some checks related to the number of Rows in the DemoTable.</td>
+<td class="colspan3" colspan="3">Perform some checks related to the number of Rows in the DemoTable.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -258,9 +258,35 @@ td.name, th.name {
 <td></td>
 </tr>
 <tr>
+<td class="name"><a name="test_Store and read results to/from file">Store and read results to/from file</a></td>
+<td>[Documentation]</td>
+<td class="colspan3" colspan="3">This testcase checks the functionality of the keywords "Store Query Result To File " and "Compare Query Result To File".</td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Store Query Result To File</td>
+<td>SELECT * FROM DemoTable </td>
+<td>storeTest.txt</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td>Compare Query Result To File</td>
+<td>SELECT * FROM DemoTable </td>
+<td>storeTest.txt</td>
+<td></td>
+</tr>
+<tr>
+<td class="name"></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td class="name"><a name="test_Content Check">Content Check</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Checks for specific content in the DemoTable.You can inspect the Logfile to see the value fetched by the "Read Single Value From Table" keyword.</td>
+<td class="colspan3" colspan="3">Checks for specific content in the DemoTable.You can inspect the Logfile to see the value fetched by the "Read Single Value From Table" keyword.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -321,7 +347,7 @@ td.name, th.name {
 <tr>
 <td class="name"><a name="test_Delete Rows From Database">Delete Rows From Database</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Delete all rows from the database. \n</td>
+<td class="colspan3" colspan="3">Delete all rows from the database. \n</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -354,7 +380,7 @@ td.name, th.name {
 <tr>
 <td class="name"><a name="test_Drop Test Table">Drop Test Table</a></td>
 <td>[Documentation]</td>
-<td colspan="3">Clean up by dropping the DemoTable again.</td>
+<td class="colspan3" colspan="3">Clean up by dropping the DemoTable again.</td>
 </tr>
 <tr>
 <td class="name"></td>
@@ -371,6 +397,5 @@ td.name, th.name {
 <td></td>
 </tr>
 </table>
-<table id="keywords" border="1"></table>
 </body>
 </html>

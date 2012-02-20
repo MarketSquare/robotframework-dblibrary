@@ -8,7 +8,11 @@ import org.springframework.remoting.RemoteAccessException;
 
 public class RemoteServerMethods {
 
-	private static final String[] SUPPORTED_METHODS = new String[]{"connect_to_database", 
+	/**
+	 * Define available methods.
+	 */
+	private static final String[] SUPPORTED_METHODS = new String[]{
+		"connect_to_database", 
 		"disconnect_from_database", 
 		"table_must_exist", 
 		"table_must_be_empty", 
@@ -24,19 +28,31 @@ public class RemoteServerMethods {
 		"get_transaction_isolation_level", 
 		"check_primary_key_columns_for_table", 
 		"get_primary_key_columns_for_table", 
-		"execute_sql", "execute_sql_from_file", 
+		"execute_sql", 
+		"execute_sql_from_file", 
 		"execute_sql_from_file_ignore_errors", 
 		"verify_number_of_rows_matching_where", 
-		"row_should_not_exist_in_table", 
-		"test_remote_lib"};
+		"row_should_not_exist_in_table",
+		"store_query_result_to_file",
+		"compare_query_result_to_file"};
 	
 	private DatabaseLibrary dbLibrary = new DatabaseLibrary();
 	
 
+	/**
+	 * Returns the list of supported keywords.
+	 * @return Array containing keywords.
+	 */
 	public String[] get_keyword_names(){
     	return SUPPORTED_METHODS;
     }
-    
+
+	/**
+	 * Executed the given keyword and returns the result.
+	 * @param keyword Name of the keyword.
+	 * @param args Arguments-Array
+	 * @return Result-Map
+	 */
     public Map<String, String> run_keyword(String keyword, List<String> args) {
 
     	Map<String, String> returnRPC = new HashMap<String, String>();
@@ -46,49 +62,51 @@ public class RemoteServerMethods {
         	String returnObject = "";
             	
             if (keyword.equals("connect_to_database")) {
-            	dbLibrary.connect_to_database(args.get(0), args.get(1), args.get(2), args.get(3));
+            	dbLibrary.connectToDatabase(args.get(0), args.get(1), args.get(2), args.get(3));
             } else if (keyword.equals("disconnect_from_database")) {
-            	dbLibrary.disconnect_from_database();
+            	dbLibrary.disconnectFromDatabase();
             } else if (keyword.equals("table_must_exist")) {
-            	dbLibrary.table_must_exist(args.get(0));
+            	dbLibrary.tableMustExist(args.get(0));
             } else if (keyword.equals("table_must_be_empty")) {
-            	dbLibrary.table_must_be_empty(args.get(0));
+            	dbLibrary.tableMustBeEmpty(args.get(0));
             } else if (keyword.equals("delete_all_rows_from_table")) {
-            	dbLibrary.delete_all_rows_from_table(args.get(0));
+            	dbLibrary.deleteAllRowsFromTable(args.get(0));
             } else if (keyword.equals("table_must_contain_number_of_rows")) {
-            	dbLibrary.table_must_contain_number_of_rows(args.get(0), args.get(1));
+            	dbLibrary.tableMustContainNumberOfRows(args.get(0), args.get(1));
             } else if (keyword.equals("table_must_contain_more_than_number_of_rows")) {
-            	dbLibrary.table_must_contain_more_than_number_of_rows(args.get(0), args.get(1));
+            	dbLibrary.tableMustContainMoreThanNumberOfRows(args.get(0), args.get(1));
             } else if (keyword.equals("table_must_contain_less_than_number_of_rows")) {
-            	dbLibrary.table_must_contain_less_than_number_of_rows(args.get(0), args.get(1));
+            	dbLibrary.tableMustContainLessThanNumberOfRows(args.get(0), args.get(1));
             } else if (keyword.equals("tables_must_contain_same_amount_of_rows")) {
-            	dbLibrary.tables_must_contain_same_amount_of_rows(args.get(0), args.get(1));
+            	dbLibrary.tablesMustContainSameAmountOfRows(args.get(0), args.get(1));
             } else if (keyword.equals("check_content_for_row_identified_by_rownum")) {
-            	dbLibrary.check_content_for_row_identified_by_rownum(args.get(0), args.get(1), args.get(2), args.get(3));
+            	dbLibrary.checkContentForRowIdentifiedByRownum(args.get(0), args.get(1), args.get(2), args.get(3));
             } else if (keyword.equals("check_content_for_row_identified_by_where_clause")) {
-            	dbLibrary.check_content_for_row_identified_by_where_clause(args.get(0), args.get(1), args.get(2), args.get(3));
+            	dbLibrary.checkContentForRowIdentifiedByWhereClause(args.get(0), args.get(1), args.get(2), args.get(3));
             } else if (keyword.equals("read_single_value_from_table")) {
-            	dbLibrary.read_single_value_from_table(args.get(0), args.get(1), args.get(2));
+            	returnObject = dbLibrary.readSingleValueFromTable(args.get(0), args.get(1), args.get(2));
             } else if (keyword.equals("transaction_isolation_level_must_be")) {
-            	dbLibrary.transaction_isolation_level_must_be(args.get(0));
+            	dbLibrary.transactionIsolationLevelMustBe(args.get(0));
             } else if (keyword.equals("get_transaction_isolation_level")) {
-            	dbLibrary.get_transaction_isolation_level();
+            	returnObject = dbLibrary.getTransactionIsolationLevel();
             } else if (keyword.equals("check_primary_key_columns_for_table")) {
-            	dbLibrary.check_primary_key_columns_for_table(args.get(0), args.get(1));
+            	dbLibrary.checkPrimaryKeyColumnsForTable(args.get(0), args.get(1));
             } else if (keyword.equals("get_primary_key_columns_for_table")) {
-            	dbLibrary.get_primary_key_columns_for_table(args.get(0));
+            	returnObject = dbLibrary.getPrimaryKeyColumnsForTable(args.get(0));
             } else if (keyword.equals("execute_sql")) {
-            	dbLibrary.execute_sql(args.get(0));
+            	dbLibrary.executeSql(args.get(0));
             } else if (keyword.equals("execute_sql_from_file")) {
-            	dbLibrary.execute_sql_from_file(args.get(0));
+            	dbLibrary.executeSqlFromFile(args.get(0));
             } else if (keyword.equals("execute_sql_from_file_ignore_errors")) {
-            	dbLibrary.execute_sql_from_file_ignore_errors(args.get(0));
+            	dbLibrary.executeSqlFromFileIgnoreErrors(args.get(0));
             } else if (keyword.equals("verify_number_of_rows_matching_where")) {
-            	dbLibrary.verify_number_of_rows_matching_where(args.get(0), args.get(1), args.get(2));
+            	dbLibrary.verifyNumberOfRowsMatchingWhere(args.get(0), args.get(1), args.get(2));
             } else if (keyword.equals("row_should_not_exist_in_table")) {
-            	dbLibrary.row_should_not_exist_in_table(args.get(0), args.get(1));
-            } else if (keyword.equals("test_remote_lib")) {
-            	dbLibrary.test_remote_lib(args.get(0));
+            	dbLibrary.rowShouldNotExistInTable(args.get(0), args.get(1));
+            } else if (keyword.equals("store_query_result_to_file")) {
+            	dbLibrary.storeQueryResultToFile(args.get(0), args.get(1));
+            } else if (keyword.equals("compare_query_result_to_file")) {
+            	dbLibrary.compareQueryResultToFile(args.get(0), args.get(1));
             } else {
             	throw new RemoteAccessException("The keyword " + keyword + "does not exist in the Database Library Remote Server.");
             }
@@ -117,7 +135,12 @@ public class RemoteServerMethods {
         return returnRPC;
     }
 
-    
+
+    /**
+     * Returns the arguments required by the given keyword.
+     * @param keyword Keyword
+     * @return Argument-Array
+     */
     public String[] get_keyword_arguments(String keyword){
     	
     	String[] argumentList;
@@ -164,8 +187,10 @@ public class RemoteServerMethods {
         	argumentList = new String[]{"tableName", "where", "rowNumValue"};
         } else if (keyword.equals("row_should_not_exist_in_table")) {
         	argumentList = new String[]{"tableName", "whereClause"};
-        } else if (keyword.equals("test_remote_lib")) {
-        	argumentList = new String[]{"value"};
+        } else if (keyword.equals("store_query_result_to_file")) {
+        	argumentList = new String[]{"sqlString", "fileName"};
+        } else if (keyword.equals("compare_query_result_to_file")) {
+        	argumentList = new String[]{"sqlString", "fileName"};
         } else {
         	argumentList = new String[]{};
         }
@@ -173,7 +198,17 @@ public class RemoteServerMethods {
         return argumentList;
     }
     
+    /**
+     * Returns the documentation for the given keyword.
+     * @param keyword Keyword
+     * @return Documentation
+     */
     public String get_keyword_documentation(String keyword){
-    	return "empty";
+    	
+    	if (DatabaseLibrary.documentation.containsValue(keyword)) {
+    		return DatabaseLibrary.documentation.get(keyword);
+    	} else {
+    		return "Sorry, no documentation available.";
+    	}
     }
 }
