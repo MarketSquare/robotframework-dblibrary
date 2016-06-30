@@ -1,4 +1,4 @@
-package org.robot.database.keywords.test;
+package com.github.hi_fi.dblibrary.keywords;
 
 import static org.junit.Assert.fail;
 
@@ -6,17 +6,18 @@ import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robot.database.keywords.DatabaseLibrary;
+
+import com.github.hi_fi.dblibrary.keywords.DatabaseLibrary;
 
 /**
  * Tests related to connecting to the database
  */
 public class DatabaseLibraryConnectionTest {
 
-	private static final String HSQL_DRIVER_CLASSNAME = "org.hsqldb.jdbcDriver";
-	private static final String HSQL_URL = "jdbc:hsqldb:mem:xdb";
-	private static final String HSQL_USER = "sa";
-	private static final String HSQL_PASSWORD = "";
+	private static final String H2_DRIVER_CLASSNAME = "org.h2.Driver";
+	private static final String H2_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+	private static final String H2_USER = "sa";
+	private static final String H2_PASSWORD = "";
 
 	private DatabaseLibrary databaseLibrary;
 
@@ -33,17 +34,17 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkConnectToDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
+		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
+				H2_URL, H2_USER, H2_PASSWORD);
 	}
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
 		try {
-			databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-					HSQL_URL, "xyz", HSQL_PASSWORD);
+			databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
+					H2_URL, "xyz", H2_PASSWORD);
 		} catch (SQLException e) {
-			if (!e.getMessage().contains("not found")) {
+			if (!e.getMessage().contains("Wrong user name or password")) {
 				e.printStackTrace();
 				fail();
 			}
@@ -55,8 +56,8 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkDisconnectFromDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
+		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
+				H2_URL, H2_USER, H2_PASSWORD);
 		databaseLibrary.disconnectFromDatabase();
 	}
 

@@ -1,4 +1,4 @@
-package org.robot.database.keywords;
+package com.github.hi_fi.dblibrary.keywords;
 
 
 /**

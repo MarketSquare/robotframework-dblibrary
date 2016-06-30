@@ -1,4 +1,4 @@
-package org.robot.database.keywords.test;
+package com.github.hi_fi.dblibrary.keywords;
 
 import static org.junit.Assert.fail;
 
@@ -12,28 +12,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.robot.database.keywords.DatabaseLibrary;
-import org.robot.database.keywords.DatabaseLibraryException;
+
+import com.github.hi_fi.dblibrary.keywords.DatabaseLibrary;
+import com.github.hi_fi.dblibrary.keywords.DatabaseLibraryException;
 
 /**
  * Tests that use a database connection
  */
 public class DatabaseLibraryTest {
 
-	private static final String HSQL_DRIVER_CLASSNAME = "org.hsqldb.jdbcDriver";
-	private static final String HSQL_URL = "jdbc:hsqldb:mem:xdb";
-	private static final String HSQL_USER = "sa";
-	private static final String HSQL_PASSWORD = "";
+	private static final String H2_DRIVER_CLASSNAME = "org.h2.Driver";
+	private static final String H2_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+	private static final String H2_USER = "sa";
+	private static final String H2_PASSWORD = "";
 
 	private DatabaseLibrary databaseLibrary;
 	
@@ -46,9 +44,9 @@ public class DatabaseLibraryTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		Class.forName(HSQL_DRIVER_CLASSNAME).newInstance();
-		Connection con = DriverManager.getConnection(HSQL_URL,
-				HSQL_USER, HSQL_PASSWORD);
+		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
+		Connection con = DriverManager.getConnection(H2_URL,
+				H2_USER, H2_PASSWORD);
 
 		Statement stmt = con.createStatement();
 		stmt
@@ -81,9 +79,9 @@ public class DatabaseLibraryTest {
 	}
 	
 	public void initTestTables() throws Exception {
-		Class.forName(HSQL_DRIVER_CLASSNAME).newInstance();
-		Connection con = DriverManager.getConnection(HSQL_URL,
-				HSQL_USER, HSQL_PASSWORD);
+		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
+		Connection con = DriverManager.getConnection(H2_URL,
+				H2_USER, H2_PASSWORD);
 
 		Statement stmt = con.createStatement();
 		stmt.execute("DELETE FROM MySampleTable");
@@ -105,8 +103,8 @@ public class DatabaseLibraryTest {
 	
 	private void initDatabaseLibrary() throws Exception {
 		databaseLibrary = new DatabaseLibrary();
-		databaseLibrary.connectToDatabase(HSQL_DRIVER_CLASSNAME,
-				HSQL_URL, HSQL_USER, HSQL_PASSWORD);
+		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
+				H2_URL, H2_USER, H2_PASSWORD);
 	}	
 	
 	// ========================================================
@@ -317,7 +315,7 @@ public class DatabaseLibraryTest {
 		String level = databaseLibrary.getTransactionIsolationLevel();
 		System.out.println("Transaction Isolation Level: " + level);
 		
-		if ((level == null) || (level.equals(HSQL_PASSWORD))) {
+		if ((level == null) || (level.equals(H2_PASSWORD))) {
 			fail("Empty Transaction Isolation Level");
 		}
 	}	
@@ -365,7 +363,7 @@ public class DatabaseLibraryTest {
 		String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
 		System.out.println("Primary Keys: " + keys);
 		
-		if ((keys == null) || (keys.equals(HSQL_PASSWORD))) {
+		if ((keys == null) || (keys.equals(H2_PASSWORD))) {
 			fail("Empty Primary Key");
 		}
 	}		
