@@ -14,3 +14,17 @@ Stop H2 server
     ${stdout}    ${stderr}    Get Process Result    stdout=yes    stderr=yes
     Log    ${stdout}    DEBUG
     Log    ${stderr}    DEBUG
+
+Start Remote and H2 server
+    Start remote server
+    Import Library    Remote    http://127.0.0.1:62022/    WITH NAME    RemoteDatabaseLibrary
+    Set Library Search Order    RemoteDatabaseLibrary    DatabaseLibrary
+    Start H2 Server
+
+Stop Remote and H2 server
+    Stop H2 Server
+    Set Library Search Order    DatabaseLibrary    RemoteDatabaseLibrary
+
+Start remote server
+    ${process}    Start Process    java    -cp    ${maven.test.classpath}    org.robotframework.remoteserver.RemoteServer    --library
+    ...    DatabaseLibrary:/    --port    62022

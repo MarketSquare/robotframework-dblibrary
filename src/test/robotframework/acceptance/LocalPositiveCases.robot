@@ -29,8 +29,8 @@ Add Content To Table
 
 Check Number of Rows
     [Documentation]    This testcase checks the functionality of the keywords "Store Query Result To File" and "Compare Query Result To File".
-    Store Query Result To File    SELECT * FROM DemoTable    storeTest.txt
-    Compare Query Result To File    SELECT * FROM DemoTable    storeTest.txt
+    Store Query Result To File    SELECT * FROM DemoTable    localTest.tmp
+    Compare Query Result To File    SELECT * FROM DemoTable    localTest.tmp
 
 Content Check
     [Documentation]    Checks for specific content in the DemoTable. You can inspect the log file to see the value fetched by the "Read Single Value From Table" keyword.

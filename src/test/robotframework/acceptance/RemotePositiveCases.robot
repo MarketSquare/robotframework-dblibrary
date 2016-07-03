@@ -2,8 +2,10 @@
 Documentation     This is a sample Robot Library testsuite demonstrating the usage of the Database Library (https://github.com/Hi-Fi/robotframework-dblibrary).
 ...
 ...               Test uses in-memory H2 database, but changing of database just needs driver to classpath and change of settings in connection.
-Suite Setup       Start H2 server
-Suite Teardown    Stop H2 Server
+...
+...               Tests are executed through Remote server to test library in remte usage, too.
+Suite Setup       Start Remote and H2 server
+Suite Teardown    Start Remote and H2 server
 Resource          common.robot
 
 *** Test Cases ***
@@ -29,8 +31,8 @@ Add Content To Table
 
 Check Number of Rows
     [Documentation]    This testcase checks the functionality of the keywords "Store Query Result To File" and "Compare Query Result To File".
-    Store Query Result To File    SELECT * FROM DemoTable    storeTest.txt
-    Compare Query Result To File    SELECT * FROM DemoTable    storeTest.txt
+    Store Query Result To File    SELECT * FROM DemoTable    remoteTest.tmp
+    Compare Query Result To File    SELECT * FROM DemoTable    remoteTest.tmp
 
 Content Check
     [Documentation]    Checks for specific content in the DemoTable. You can inspect the log file to see the value fetched by the "Read Single Value From Table" keyword.

@@ -64,6 +64,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.github.ombre42</groupId>
+			<artifactId>jrobotremoteserver</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.robotframework</groupId>
 			<artifactId>javalib-core</artifactId>
 			<version>1.2.1</version>
