@@ -1,1 +1,7 @@
 language: java
+
+##skip installation step
+install: true
+
+## Run Unit and Integration tests
+script: "mvn verify"
