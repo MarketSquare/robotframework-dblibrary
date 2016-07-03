@@ -80,7 +80,7 @@ public class DatabaseLibrary {
 	 * @throws DatabaseLibraryException
 	 */
 	@RobotKeyword("Checks that a table with the given name exists. If the table does not exist the test will fail.\n\n"
-			+"NOTE: Some database expect the table names to be written all in upper case letters to be found.\n\n"
+			+"*NOTE*: Some database expect the table names to be written all in upper case letters to be found.\n\n"
 			+"Example: \n "
 			+"| Table Must Exist | MySampleTable |")
 	@ArgumentNames({"Table name"})
@@ -474,7 +474,7 @@ public class DatabaseLibrary {
 			+"by the name of the columns. Upper and lower case for the columns as such "
 			+"is ignored by comparing the values after converting both to lower case. "
 			+"\n\n"
-			+"NOTE: Some database expect the table names to be written all in upper "
+			+"*NOTE*: Some database expect the table names to be written all in upper "
 			+"case letters to be found. "
 			+"\n\n"
 			+"Example: \n"
@@ -500,7 +500,7 @@ public class DatabaseLibrary {
 	@RobotKeyword("Returns a comma-separated list of the primary keys defined for the given "
 			+"table. The list if ordered by the name of the columns. "
 			+"\n\n"
-			+"NOTE: Some database expect the table names to be written all in upper "
+			+"*NOTE*: Some database expect the table names to be written all in upper "
 			+"case letters to be found. "
 			+"\n\n"
 			+"Example: \n"
@@ -536,7 +536,7 @@ public class DatabaseLibrary {
 			+"must be valid for the database that is used. The main purpose of this "
 			+"keyword is building some contents in the database used for later testing. "
 			+"\n\n"
-			+"NOTE: Use this method with care as you might cause damage to your "
+			+"*NOTE*: Use this method with care as you might cause damage to your "
 			+"database, especially when using this in a productive environment. "
 			+"\n\n"
 			+"Example: \n"
@@ -571,8 +571,10 @@ public class DatabaseLibrary {
 			+"In case there is a problem in executing any of the SQL statements from "
 			+"the file the execution is terminated and the operation is rolled back. "
 			+"\n\n"
-			+"NOTE: Use this method with care as you might cause damage to your "
-			+"database, especially when using this in a productive environment. "
+			+"*NOTE*: Use this method with care as you might cause damage to your "
+			+"database, especially when using this in a productive environment. \n\n"
+			+"*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
 			+"\n\n"
 			+"Example: \n"
 			+"| Execute SQL from File | myFile.sql | ")
@@ -641,8 +643,10 @@ public class DatabaseLibrary {
 			+"Any errors that might happen during execution of SQL statements are "
 			+"logged to the Robot Log-file, but otherwise ignored. "
 			+"\n\n"
-			+"NOTE: Use this method with care as you might cause damage to your "
-			+"database, especially when using this in a productive environment. "
+			+"*NOTE*: Use this method with care as you might cause damage to your "
+			+"database, especially when using this in a productive environment. \n\n"
+			+"*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
 			+"\n\n"
 			+"Example: \n"
 			+"| Execute SQL from File | myFile.sql | ")
@@ -758,6 +762,9 @@ public class DatabaseLibrary {
 			+"used. The main purpose of this keyword is to generate expected result "
 			+"sets for use with keyword compareQueryResultToFile "
 			+"\n\n"
+			+"*NOTE*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
+			+"\n\n"
 			+"Example: \n"
 			+"| Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
 	@ArgumentNames({"Query to execute", "File to save results"})
@@ -800,6 +807,9 @@ public class DatabaseLibrary {
 			+"format "
 			+"\n\n"
 			+"storeQueryResultToFile can be used to generate expected result files "
+			+"\n\n"
+			+"*NOTE*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
 			+"\n\n"
 			+"Example: \n"
 			+"| Compare Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")

@@ -25,9 +25,9 @@ public class DatabaseLibrary extends AnnotationLibrary {
         		  +"\n\n"
         		  +"The following table lists some examples of drivers and connection strings"
         		  +"for some popular databases. \n"
-        		  +"| *Database* | *Driver Name* | *Sample Connection String* | *Download Driver* |\n"
-        		  +"| MySql | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ |\n"
-        		  +"| Oracle | oracle.jdbc.driver.OracleDriver | jdbc:oracle:thin:@servername:port:dbname | http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html |\n"
+        		  +"| *Database* | *Driver Name* | *Sample Connection String* | *Download Driver* | *Maven dependencies*  | \n"
+        		  +"| MySql | com.mysql.jdbc.Driver | jdbc:mysql://servername/dbname | http://dev.mysql.com/downloads/connector/j/ | http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22mysql%22%20AND%20a%3A%22mysql-connector-java%22 | \n"
+        		  +"| Oracle | oracle.jdbc.driver.OracleDriver | jdbc:oracle:thin:@servername:port:dbname | http://www.oracle.com/technology/tech/java/sqlj_jdbc/htdocs/jdbc_faq.html | https://blogs.oracle.com/dev2dev/entry/oracle_maven_repository_instructions_for | \n"
         		  +"\n\n"
         		  +"The examples in the description of the keywords is based on a database table"
         		  +"named \"MySampleTable\" that has the following layout:"
@@ -41,11 +41,13 @@ public class DatabaseLibrary extends AnnotationLibrary {
         		  +"| State | Number | \n"
         		  +"| LastPosting | Timestamp |\n"
         		  +"\n\n"
-        		  +"NOTE: A lot of keywords that are targeted for Tables will work equally with"
+        		  +"*NOTE*: A lot of keywords that are targeted for Tables will work equally with "
         		  +"Views as this is often no difference if Select-statements are performed."
         		  +"\n\n"
-        		  +"*Remote Library Support*"
-        		  +"At release 3.0 remote functionalities were removed from the library itself. Library can be used directly with jrobotremoteserver (https://github.com/ombre42/jrobotremoteserver/wiki/Getting-Started)";
+        		  +"*Remote Library Support*\n\n"
+        		  +"At release 3.0 remote functionalities were removed from the library itself. "
+        		  +"Library can be used directly with jrobotremoteserver (https://github.com/ombre42/jrobotremoteserver/wiki/Getting-Started). "
+        		  +"Example can be found at project's acceptance tests: https://github.com/Hi-Fi/robotframework-dblibrary/tree/master/src/test/robotframework/acceptance";
       return super.getKeywordDocumentation(keywordName);
   }
 }
