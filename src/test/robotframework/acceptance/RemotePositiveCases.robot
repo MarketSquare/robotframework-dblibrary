@@ -5,7 +5,7 @@ Documentation     This is a sample Robot Library testsuite demonstrating the usa
 ...
 ...               Tests are executed through Remote server to test library in remte usage, too.
 Suite Setup       Start Remote and H2 server
-Suite Teardown    Start Remote and H2 server
+Suite Teardown    Stop Remote and H2 server
 Resource          common.robot
 
 *** Test Cases ***
