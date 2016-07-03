@@ -26,7 +26,7 @@ import org.robotframework.javalib.annotation.RobotKeywords;
 public class DatabaseLibrary {
 	public static final String ROBOT_LIBRARY_SCOPE = "GLOBAL";
 
-	private Connection connection = null;
+	private static Connection connection = null;
 
 	public static final Map<String, String> documentation;
 
@@ -72,6 +72,7 @@ public class DatabaseLibrary {
 	public void disconnectFromDatabase() throws SQLException {
 		System.out.println("SQL Warnings on this connection: " + getConnection().getWarnings());
 		getConnection().close();
+		DatabaseLibrary.connection = null;
 	}
 
 	/**
@@ -853,14 +854,14 @@ public class DatabaseLibrary {
 	}
 
 	private void setConnection(Connection connection) {
-		this.connection = connection;
+		DatabaseLibrary.connection = connection;
 	}
 
 	private Connection getConnection() {
-		if (connection == null) {
+		if (DatabaseLibrary.connection == null) {
 			throw new IllegalStateException("No connection open. Did you forget to run 'Connect To Database' before?");
 		}
-		return connection;
+		return DatabaseLibrary.connection;
 	}
 
 	private long getNumberOfRows(String tableName) throws SQLException {

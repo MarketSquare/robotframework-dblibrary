@@ -248,6 +248,56 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.robotframework</groupId>
+				<artifactId>robotframework-maven-plugin</artifactId>
+				<version>1.4.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>acceptance-test</goal>
+						</goals>
+						<configuration>
+							<logLevel>DEBUG</logLevel>
+							<extraPathDirectories>
+								<extraPathDirectory>target/remotesikulilibrary-${project.version}.jar</extraPathDirectory>
+							</extraPathDirectories>
+							<variables>
+								<variable>maven.runtime.classpath:${maven.runtime.classpath}</variable>
+								<variable>maven.test.classpath:${maven.test.classpath}</variable>
+								<classpath />
+							</variables>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verifyResults</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>define-classpath</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<exportAntProperties>true</exportAntProperties>
+							<target>
+								<property name="maven.runtime.classpath" refid="maven.runtime.classpath" />
+								<property name="maven.test.classpath" refid="maven.test.classpath" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
