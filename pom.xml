@@ -136,35 +136,14 @@
 					<plugin>
 						<groupId>org.robotframework</groupId>
 						<artifactId>robotframework-maven-plugin</artifactId>
-						<version>1.4.6</version>
 						<executions>
 							<execution>
 								<id>html</id>
-								<phase>package</phase>
-								<goals>
-									<goal>libdoc</goal>
-								</goals>
-								<configuration>
-									<libdoc>
-										<outputDirectory>${project.build.directory}</outputDirectory>
-										<outputFile>${keywords.class}.html</outputFile>
-										<libraryOrResourceFile>${keywords.class}</libraryOrResourceFile>
-									</libdoc>
-								</configuration>
+								<phase>post-integration-test</phase>
 							</execution>
 							<execution>
 								<id>xml</id>
-								<phase>package</phase>
-								<goals>
-									<goal>libdoc</goal>
-								</goals>
-								<configuration>
-									<libdoc>
-										<outputDirectory>${project.build.directory}</outputDirectory>
-										<outputFile>${keywords.class}.xml</outputFile>
-										<libraryOrResourceFile>${keywords.class}</libraryOrResourceFile>
-									</libdoc>
-								</configuration>
+								<phase>post-integration-test</phase>
 							</execution>
 						</executions>
 					</plugin>
@@ -241,6 +220,66 @@
 						<goals>deploy</goals>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.robotframework</groupId>
+					<artifactId>robotframework-maven-plugin</artifactId>
+					<version>1.4.6</version>
+					<executions>
+						<execution>
+							<id>html</id>
+							<phase>none</phase>
+							<goals>
+								<goal>libdoc</goal>
+							</goals>
+							<configuration>
+								<libdoc>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<outputFile>${keywords.class}.html</outputFile>
+									<libraryOrResourceFile>${keywords.class}</libraryOrResourceFile>
+								</libdoc>
+							</configuration>
+						</execution>
+						<execution>
+							<id>xml</id>
+							<phase>none</phase>
+							<goals>
+								<goal>libdoc</goal>
+							</goals>
+							<configuration>
+								<libdoc>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<outputFile>${keywords.class}.xml</outputFile>
+									<libraryOrResourceFile>${keywords.class}</libraryOrResourceFile>
+								</libdoc>
+							</configuration>
+						</execution>
+						<execution>
+							<id>runIntegrationTest</id>
+							<phase>none</phase>
+							<goals>
+								<goal>acceptance-test</goal>
+							</goals>
+							<configuration>
+								<logLevel>DEBUG</logLevel>
+								<extraPathDirectories>
+									<extraPathDirectory>target/remotesikulilibrary-${project.version}.jar</extraPathDirectory>
+								</extraPathDirectories>
+								<variables>
+									<variable>maven.runtime.classpath:${maven.runtime.classpath}</variable>
+									<variable>maven.test.classpath:${maven.test.classpath}</variable>
+									<classpath />
+								</variables>
+							</configuration>
+						</execution>
+						<execution>
+							<id>verifyResults</id>
+							<phase>none</phase>
+							<goals>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -257,29 +296,14 @@
 			<plugin>
 				<groupId>org.robotframework</groupId>
 				<artifactId>robotframework-maven-plugin</artifactId>
-				<version>1.4.6</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>acceptance-test</goal>
-						</goals>
-						<configuration>
-							<logLevel>DEBUG</logLevel>
-							<extraPathDirectories>
-								<extraPathDirectory>target/remotesikulilibrary-${project.version}.jar</extraPathDirectory>
-							</extraPathDirectories>
-							<variables>
-								<variable>maven.runtime.classpath:${maven.runtime.classpath}</variable>
-								<variable>maven.test.classpath:${maven.test.classpath}</variable>
-								<classpath />
-							</variables>
-						</configuration>
+						<id>runIntegrationTest</id>
+						<phase>integration-test</phase>
 					</execution>
 					<execution>
 						<id>verifyResults</id>
-						<goals>
-							<goal>verify</goal>
-						</goals>
+						<phase>verify</phase>
 					</execution>
 				</executions>
 			</plugin>
