@@ -1,7 +1,7 @@
 # Database library for Robot Framework
 Introduction
 ------------
-The Robot Framework Database Library is a library which provides common functionality for testing database contents. Please see the wiki on github for more information and the provided keywords.
+The Robot Framework Database Library is a library which provides common functionality for testing database contents.
 
 * More information about this library can be found in the
   [Keyword Documentation](http://search.maven.org/remotecontent?filepath=com/github/hi-fi/robotframework-dblibrary/3.0/robotframework-dblibrary-3.0.html).
