@@ -36,18 +36,9 @@ public class DatabaseLibrary {
 		documentation = Collections.unmodifiableMap(map);
 	}
 
-	/**
-	 * Default-constructor
-	 */
 	public DatabaseLibrary() {
 	}
 
-	/**
-	 * @throws ClassNotFoundException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * 
-	 */
 	@RobotKeyword("Establish the connection to the database. This is mandatory before any of"
 			+ "the other keywords can be used and should be ideally done during the"
 			+ "suite setup phase. To avoid problems ensure to close the connection again"
@@ -75,10 +66,6 @@ public class DatabaseLibrary {
 		DatabaseLibrary.connection = null;
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Checks that a table with the given name exists. If the table does not exist the test will fail.\n\n"
 			+"*NOTE*: Some database expect the table names to be written all in upper case letters to be found.\n\n"
 			+"Example: \n "
@@ -97,10 +84,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws DatabaseLibraryException
-	 * @throws SQLException
-	 */
 	@RobotKeyword("Checks that the given table has no rows. It is a convenience way of using "
 			+"the 'Table Must Contain Number Of Rows' with zero for the amount of rows.\n\n"
 			+"Example: \n"
@@ -110,9 +93,6 @@ public class DatabaseLibrary {
 		tableMustContainNumberOfRows(tableName, "0");
 	}
 
-	/**
-	 * @throws SQLException
-	 */
 	@RobotKeyword("Deletes the entire content of the given database table. This keyword is"
 			+"useful to start tests in a clean state. Use this keyword with care as"
 			+"accidently execution of this keyword in a productive system will cause"
@@ -131,10 +111,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword checks that a given table contains a given amount of rows. "
 	 +"For the example this means that the table \"MySampleTable\" must contain "
 	 +" exactly 14 rows, otherwise the teststep will fail.\n\n"
@@ -152,10 +128,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword checks that a given table contains more than the given "
 			+"amount of rows. For the example this means that the table \"MySampleTable\""
 			+"must contain 100 or more rows, otherwise the teststep will fail. "
@@ -174,10 +146,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword checks that a given table contains less than the given "
 			+"amount of rows. For the example this means that the table \"MySampleTable\"\n\n"
 			+"must contain anything between 0 and 1000 rows, otherwise the teststep "
@@ -197,10 +165,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword checks that two given database tables have the same amount "
 			+"of rows. "
 			+"\n\n"
@@ -219,10 +183,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword can be used to check for proper content inside a specific "
 			+"row in a database table. For this it is possible to give a "
 			+"comma-separated list of column names in the first parameter and a "
@@ -285,10 +245,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword can be used to check for proper content inside a specific "
 			+"row in a database table. For this it is possible to give a "
 			+"comma-separated list of column names in the first parameter and a "
@@ -357,10 +313,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws DatabaseLibraryException
-	 * 
-	 */
 	@RobotKeyword("Reads a single value from the given table and column based on the "
 			+"where-clause passed to the test. If the where-clause identifies more or "
 			+"less than exactly one row in that table this will result in an error for "
@@ -396,10 +348,6 @@ public class DatabaseLibrary {
 		return ret;
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Can be used to check that the database connection used for executing "
 			+"tests has the proper transaction isolation level. The string parameter "
 			+"accepts the following values in a case-insensitive manner: "
@@ -421,9 +369,6 @@ public class DatabaseLibrary {
 
 	}
 
-	/**
-	 * @throws SQLException
-	 */
 	@RobotKeyword("Returns a String value that contains the name of the transaction "
 			+"isolation level of the connection that is used for executing the tests. "
 			+"Possible return values are: TRANSACTION_READ_UNCOMMITTED, "
@@ -464,11 +409,6 @@ public class DatabaseLibrary {
 		return ret;
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Checks that the primary key columns of a given table match the columns "
 			+"given as a comma-separated list. Note that the given list must be ordered "
 			+"by the name of the columns. Upper and lower case for the columns as such "
@@ -493,10 +433,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Returns a comma-separated list of the primary keys defined for the given "
 			+"table. The list if ordered by the name of the columns. "
 			+"\n\n"
@@ -528,10 +464,6 @@ public class DatabaseLibrary {
 		return ret;
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Executes the given SQL without any further modifications. The given SQL "
 			+"must be valid for the database that is used. The main purpose of this "
 			+"keyword is building some contents in the database used for later testing. "
@@ -552,11 +484,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws IOExcetion
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Executes the SQL statements contained in the given file without any "
 			+"further modifications. The given SQL must be valid for the database that "
 			+"is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
@@ -624,11 +551,6 @@ public class DatabaseLibrary {
 		br.close();
 	}
 
-	/**
-	 * @throws IOExcetion
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Executes the SQL statements contained in the given file without any "
 			+"further modifications. The given SQL must be valid for the database that "
 			+"is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
@@ -695,10 +617,6 @@ public class DatabaseLibrary {
 		br.close();
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword checks that a given table contains a given amount of rows "
 			+"matching a given WHERE clause. "
 			+"\n\n"
@@ -720,10 +638,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("This keyword can be used to check the inexistence of content inside a "
 			+"specific row in a database table defined by a where-clause. This can be "
 			+"used to validate an exclusion of specific data from a table. "
@@ -752,11 +666,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws DatabaseLibraryException
-	 */
 	@RobotKeyword("Executes the given SQL without any further modifications and stores the "
 			+"result in a file. The SQL query must be valid for the database that is "
 			+"used. The main purpose of this keyword is to generate expected result "
@@ -793,11 +702,6 @@ public class DatabaseLibrary {
 		}
 	}
 
-	/**	
-	 * @throws SQLException
-	 * @throws DatabaseLibraryException
-	 * @throws FileNotFoundException
-	 */
 	@RobotKeyword("Executes the given SQL compares the result to expected results stored in "
 			+"a file. Results are stored as strings separated with pipes ('|') with a "
 			+"pipe following the last column. Rows are separated with a newline. "
@@ -882,10 +786,6 @@ public class DatabaseLibrary {
 		return getNumberOfRows(tableName, null, limit);
 	}
 
-	/*
-	 * @param limit Limit is used to cut off counting in case count(*) is not
-	 * supported
-	 */
 	private long getNumberOfRows(String tableName, String where, long limit) throws SQLException {
 
 		// Let's first try with count(*), but this is not supported by all
