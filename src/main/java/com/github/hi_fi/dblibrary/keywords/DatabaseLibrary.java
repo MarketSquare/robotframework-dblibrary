@@ -47,9 +47,10 @@ public class DatabaseLibrary {
 			+ "using the disconnect-keyword.\n\n"
 			+ "It must be ensured that the JAR-file containing the given driver can be"
 			+ "found from the CLASSPATH when starting robot. Furthermore it must be"
-			+ "noted that the connection string is database-specific and must be valid of course.\n\n" + "Example: \n"
+			+ "noted that the connection string is database-specific and must be valid of course.\n\n" 
+			+ "Example: \n"
 			+ "| Connect To Database | com.mysql.jdbc.Driver | jdbc:mysql://my.host.name/myinstance | UserName | ThePassword |")
-	@ArgumentNames({ "Driver class name", "Connection string", "Database username", "Database password" })
+	@ArgumentNames({"Driver class name", "Connection string","Database username", "Database password"})
 	public void connectToDatabase(String driverClassName, String connectString, String dbUser, String dbPassword)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
@@ -58,7 +59,8 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Releases the existing connection to the database. In addition this"
-			+ "keyword will log any SQLWarnings that might have been occurred on the connection.\n" + "Example:\n"
+			+ "keyword will log any SQLWarnings that might have been occurred on the connection.\n"
+			+ "Example:\n"
 			+ "| Disconnect from Database |")
 	public void disconnectFromDatabase() throws SQLException {
 		System.out.println("SQL Warnings on this connection: " + getConnection().getWarnings());
@@ -67,9 +69,10 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Checks that a table with the given name exists. If the table does not exist the test will fail.\n\n"
-			+ "*NOTE*: Some database expect the table names to be written all in upper case letters to be found.\n\n"
-			+ "Example: \n " + "| Table Must Exist | MySampleTable |")
-	@ArgumentNames({ "Table name" })
+			+"*NOTE*: Some database expect the table names to be written all in upper case letters to be found.\n\n"
+			+"Example: \n "
+			+"| Table Must Exist | MySampleTable |")
+	@ArgumentNames({"Table name"})
 	public void tableMustExist(String tableName) throws SQLException, DatabaseLibraryException {
 
 		DatabaseMetaData dbm = getConnection().getMetaData();
@@ -84,19 +87,21 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Checks that the given table has no rows. It is a convenience way of using "
-			+ "the 'Table Must Contain Number Of Rows' with zero for the amount of rows.\n\n" + "Example: \n"
-			+ "| Table Must Be Empty | MySampleTable |")
-	@ArgumentNames({ "Table name" })
+			+"the 'Table Must Contain Number Of Rows' with zero for the amount of rows.\n\n"
+			+"Example: \n"
+			+"| Table Must Be Empty | MySampleTable |")
+	@ArgumentNames({"Table name"})
 	public void tableMustBeEmpty(String tableName) throws SQLException, DatabaseLibraryException {
 		tableMustContainNumberOfRows(tableName, "0");
 	}
 
 	@RobotKeyword("Deletes the entire content of the given database table. This keyword is"
-			+ "useful to start tests in a clean state. Use this keyword with care as"
-			+ "accidently execution of this keyword in a productive system will cause"
-			+ "heavy loss of data. There will be no rollback possible.\n\n" + "Example: \n"
+			+"useful to start tests in a clean state. Use this keyword with care as"
+			+"accidently execution of this keyword in a productive system will cause"
+			+"heavy loss of data. There will be no rollback possible.\n\n"
+			+"Example: \n"
 			+ "| Delete All Rows From Table | MySampleTable |")
-	@ArgumentNames({ "Table name" })
+	@ArgumentNames({"Table name"})
 	public void deleteAllRowsFromTable(String tableName) throws SQLException {
 		String sql = "delete from " + tableName;
 
@@ -109,10 +114,11 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword checks that a given table contains a given amount of rows. "
-			+ "For the example this means that the table \"MySampleTable\" must contain "
-			+ " exactly 14 rows, otherwise the teststep will fail.\n\n" + " Example: \n"
-			+ "| Table Must Contain Number Of Rows | MySampleTable | 14 |")
-	@ArgumentNames({ "Table name", "Amount of rows expected" })
+	 +"For the example this means that the table \"MySampleTable\" must contain "
+	 +" exactly 14 rows, otherwise the teststep will fail.\n\n"
+	 +" Example: \n"
+	 +"| Table Must Contain Number Of Rows | MySampleTable | 14 |")
+	@ArgumentNames({"Table name", "Amount of rows expected"})
 	public void tableMustContainNumberOfRows(String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
@@ -125,10 +131,12 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword checks that a given table contains more than the given "
-			+ "amount of rows. For the example this means that the table \"MySampleTable\""
-			+ "must contain 100 or more rows, otherwise the teststep will fail. " + "\n\n" + "Example: \n"
-			+ "| Table Must Contain More Than Number Of Rows | MySampleTable | 99 | ")
-	@ArgumentNames({ "Table name", "Number of rows too low" })
+			+"amount of rows. For the example this means that the table \"MySampleTable\""
+			+"must contain 100 or more rows, otherwise the teststep will fail. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Table Must Contain More Than Number Of Rows | MySampleTable | 99 | ")
+	@ArgumentNames({"Table name", "Number of rows too low"})
 	public void tableMustContainMoreThanNumberOfRows(String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
@@ -141,10 +149,13 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword checks that a given table contains less than the given "
-			+ "amount of rows. For the example this means that the table \"MySampleTable\"\n\n"
-			+ "must contain anything between 0 and 1000 rows, otherwise the teststep " + "will fail. " + "\n\n"
-			+ "Example: \n" + "| Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 | ")
-	@ArgumentNames({ "Table name", "Number of rows too high" })
+			+"amount of rows. For the example this means that the table \"MySampleTable\"\n\n"
+			+"must contain anything between 0 and 1000 rows, otherwise the teststep "
+			+"will fail. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Table Must Contain Less Than Number Of Rows | MySampleTable | 1001 | ")
+	@ArgumentNames({"Table name","Number of rows too high"})
 	public void tableMustContainLessThanNumberOfRows(String tableName, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
@@ -156,9 +167,12 @@ public class DatabaseLibrary {
 		}
 	}
 
-	@RobotKeyword("This keyword checks that two given database tables have the same amount " + "of rows. " + "\n\n"
-			+ "Example: \n" + "| Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable | ")
-	@ArgumentNames({ "First table name", "Second table name" })
+	@RobotKeyword("This keyword checks that two given database tables have the same amount "
+			+"of rows. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Tables Must Contain Same Amount Of Rows | MySampleTable | MyCompareTable | ")
+	@ArgumentNames({"First table name", "Second table name"})
 	public void tablesMustContainSameAmountOfRows(String firstTableName, String secondTableName)
 			throws SQLException, DatabaseLibraryException {
 
@@ -172,16 +186,17 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword can be used to check for proper content inside a specific "
-			+ "row in a database table. For this it is possible to give a "
-			+ "comma-separated list of column names in the first parameter and a "
-			+ "pipe-separated list of values in the second parameter. Then the name of "
-			+ "the table and the rownum to check must be passed to this keyword. The "
-			+ "corresponding values are then read from that row in the given table and "
-			+ "compared to the expected values. If all values match the teststep will "
-			+ "pass, otherwise it will fail. " + "\n\n" + "Example: \n"
-			+ "| Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 | ")
-	@ArgumentNames({ "Column names (comma separated)", "Expected values (pipe separated)", "Table name",
-			"Number of row to check" })
+			+"row in a database table. For this it is possible to give a "
+			+"comma-separated list of column names in the first parameter and a "
+			+"pipe-separated list of values in the second parameter. Then the name of "
+			+"the table and the rownum to check must be passed to this keyword. The "
+			+"corresponding values are then read from that row in the given table and "
+			+"compared to the expected values. If all values match the teststep will "
+			+"pass, otherwise it will fail. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Check Content for Row Identified by Rownum | Name,EMail | John Doe|john.doe@x-files | MySampleTable | 4 | ")
+	@ArgumentNames({"Column names (comma separated)", "Expected values (pipe separated)", "Table name", "Number of row to check"})
 	public void checkContentForRowIdentifiedByRownum(String columnNames, String expectedValues, String tableName,
 			String rowNumValue) throws SQLException, DatabaseLibraryException {
 
@@ -233,18 +248,20 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword can be used to check for proper content inside a specific "
-			+ "row in a database table. For this it is possible to give a "
-			+ "comma-separated list of column names in the first parameter and a "
-			+ "pipe-separated list of values in the second parameter. Then the name of "
-			+ "the table and a statement used in the where-clause to identify a concrete "
-			+ "row. The corresponding values are then read from the row identified this "
-			+ "way and compared to the expected values. If all values match the teststep "
-			+ "will pass, otherwise it will fail. " + "\n\n"
-			+ "If the where-clause will select more or less than exactly one row the " + "test will fail. " + "\n\n"
-			+ "Example: \n"
-			+ "| Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 | ")
-	@ArgumentNames({ "Column names (comma separated)", "Expected values (pipe separated)", "Table name",
-			"Where clause to identify the row" })
+			+"row in a database table. For this it is possible to give a "
+			+"comma-separated list of column names in the first parameter and a "
+			+"pipe-separated list of values in the second parameter. Then the name of "
+			+"the table and a statement used in the where-clause to identify a concrete "
+			+"row. The corresponding values are then read from the row identified this "
+			+"way and compared to the expected values. If all values match the teststep "
+			+"will pass, otherwise it will fail. "
+			+"\n\n"
+			+"If the where-clause will select more or less than exactly one row the "
+			+"test will fail. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Check Content for Row Identified by WhereClause | Name,EMail | John Doe|john.doe@x-files | MySampleTable | Postings=14 | ")
+	@ArgumentNames({"Column names (comma separated)", "Expected values (pipe separated)", "Table name", "Where clause to identify the row"})
 	public void checkContentForRowIdentifiedByWhereClause(String columnNames, String expectedValues, String tableName,
 			String whereClause) throws SQLException, DatabaseLibraryException {
 
@@ -299,11 +316,13 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Reads a single value from the given table and column based on the "
-			+ "where-clause passed to the test. If the where-clause identifies more or "
-			+ "less than exactly one row in that table this will result in an error for "
-			+ "this teststep. Otherwise the selected value will be returned. " + "\n\n" + "Example: \n"
-			+ "| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' | ")
-	@ArgumentNames({ "Table name", "Column to get", "Where clause to identify the row" })
+			+"where-clause passed to the test. If the where-clause identifies more or "
+			+"less than exactly one row in that table this will result in an error for "
+			+"this teststep. Otherwise the selected value will be returned. "
+			+"\n\n"
+			+"Example: \n"
+			+"| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' | ")
+	@ArgumentNames({"Table name", "Column to get","Where clause to identify the row"})
 	public String readSingleValueFromTable(String tableName, String columnName, String whereClause)
 			throws SQLException, DatabaseLibraryException {
 
@@ -332,12 +351,15 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Can be used to check that the database connection used for executing "
-			+ "tests has the proper transaction isolation level. The string parameter "
-			+ "accepts the following values in a case-insensitive manner: "
-			+ "TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, "
-			+ "TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or " + "TRANSACTION_NONE. " + "\n\n"
-			+ "Example: \n" + "| Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED | ")
-	@ArgumentNames({ "Isolation level" })
+			+"tests has the proper transaction isolation level. The string parameter "
+			+"accepts the following values in a case-insensitive manner: "
+			+"TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, "
+			+"TRANSACTION_REPEATABLE_READ, TRANSACTION_SERIALIZABLE or "
+			+"TRANSACTION_NONE. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Transaction Isolation Level Must Be | TRANSACTION_READ_COMMITTED | ")
+	@ArgumentNames({"Isolation level"})
 	public void transactionIsolationLevelMustBe(String levelName) throws SQLException, DatabaseLibraryException {
 
 		String transactionName = getTransactionIsolationLevel();
@@ -350,11 +372,13 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Returns a String value that contains the name of the transaction "
-			+ "isolation level of the connection that is used for executing the tests. "
-			+ "Possible return values are: TRANSACTION_READ_UNCOMMITTED, "
-			+ "TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, "
-			+ "TRANSACTION_SERIALIZABLE or TRANSACTION_NONE. " + "\n\n" + "Example: \n"
-			+ "| ${TI_LEVEL}= | Get Transaction Isolation Level | ")
+			+"isolation level of the connection that is used for executing the tests. "
+			+"Possible return values are: TRANSACTION_READ_UNCOMMITTED, "
+			+"TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ, "
+			+"TRANSACTION_SERIALIZABLE or TRANSACTION_NONE. "
+			+"\n\n"
+			+"Example: \n"
+			+"| ${TI_LEVEL}= | Get Transaction Isolation Level | ")
 	public String getTransactionIsolationLevel() throws SQLException {
 
 		String ret = "";
@@ -388,12 +412,16 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Checks that the primary key columns of a given table match the columns "
-			+ "given as a comma-separated list. Note that the given list must be ordered "
-			+ "by the name of the columns. Upper and lower case for the columns as such "
-			+ "is ignored by comparing the values after converting both to lower case. " + "\n\n"
-			+ "*NOTE*: Some database expect the table names to be written all in upper " + "case letters to be found. "
-			+ "\n\n" + "Example: \n" + "| Check Primary Key Columns For Table | MySampleTable | Id,Name |")
-	@ArgumentNames({ "Table name", "Comma separated list of primary key columns to check" })
+			+"given as a comma-separated list. Note that the given list must be ordered "
+			+"by the name of the columns. Upper and lower case for the columns as such "
+			+"is ignored by comparing the values after converting both to lower case. "
+			+"\n\n"
+			+"*NOTE*: Some database expect the table names to be written all in upper "
+			+"case letters to be found. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Check Primary Key Columns For Table | MySampleTable | Id,Name |")
+	@ArgumentNames({"Table name", "Comma separated list of primary key columns to check"})
 	public void checkPrimaryKeyColumnsForTable(String tableName, String columnList)
 			throws SQLException, DatabaseLibraryException {
 
@@ -408,10 +436,14 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Returns a comma-separated list of the primary keys defined for the given "
-			+ "table. The list if ordered by the name of the columns. " + "\n\n"
-			+ "*NOTE*: Some database expect the table names to be written all in upper " + "case letters to be found. "
-			+ "\n\n" + "Example: \n" + "| ${KEYS}= | Get Primary Key Columns For Table | MySampleTable | ")
-	@ArgumentNames({ "Table name" })
+			+"table. The list if ordered by the name of the columns. "
+			+"\n\n"
+			+"*NOTE*: Some database expect the table names to be written all in upper "
+			+"case letters to be found. "
+			+"\n\n"
+			+"Example: \n"
+			+"| ${KEYS}= | Get Primary Key Columns For Table | MySampleTable | ")
+	@ArgumentNames({"Table name"})
 	public String getPrimaryKeyColumnsForTable(String tableName) throws SQLException {
 
 		String ret = "";
@@ -435,8 +467,7 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the given SQL without any further modifications. The given SQL "
-			+ "must be valid for the database that is used. The main purpose of this "
-			+ "keyword is building some contents in the database used for later testing. " + "\n\n"
+			+ "must be valid for the database that is used. Results are returned as a list of dictionaries" + "\n\n"
 			+ "*NOTE*: Use this method with care as you might cause damage to your "
 			+ "database, especially when using this in a productive environment. " + "\n\n" + "Example: \n"
 			+ "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) | ")
@@ -466,21 +497,27 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the SQL statements contained in the given file without any "
-			+ "further modifications. The given SQL must be valid for the database that "
-			+ "is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
-			+ "can for example be used to setup database tables from some SQL install " + "script. " + "\n\n"
-			+ "Single SQL statements in the file can be spread over multiple lines, but "
-			+ "must be terminated with a semicolon \";\". A new statement must always "
-			+ "start in a new line and not in the same line where the previous statement "
-			+ "was terminated by a \";\". " + "\n\n"
-			+ "In case there is a problem in executing any of the SQL statements from "
-			+ "the file the execution is terminated and the operation is rolled back. " + "\n\n"
-			+ "*NOTE*: Use this method with care as you might cause damage to your "
-			+ "database, especially when using this in a productive environment. \n\n"
-			+ "*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
-			+ "other way; this library is not doing the transfer." + "\n\n" + "Example: \n"
-			+ "| Execute SQL from File | myFile.sql | ")
-	@ArgumentNames({ "File containing SQL commands to execute" })
+			+"further modifications. The given SQL must be valid for the database that "
+			+"is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
+			+"can for example be used to setup database tables from some SQL install "
+			+"script. "
+			+"\n\n"
+			+"Single SQL statements in the file can be spread over multiple lines, but "
+			+"must be terminated with a semicolon \";\". A new statement must always "
+			+"start in a new line and not in the same line where the previous statement "
+			+"was terminated by a \";\". "
+			+"\n\n"
+			+"In case there is a problem in executing any of the SQL statements from "
+			+"the file the execution is terminated and the operation is rolled back. "
+			+"\n\n"
+			+"*NOTE*: Use this method with care as you might cause damage to your "
+			+"database, especially when using this in a productive environment. \n\n"
+			+"*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
+			+"\n\n"
+			+"Example: \n"
+			+"| Execute SQL from File | myFile.sql | ")
+	@ArgumentNames({"File containing SQL commands to execute"})
 	public void executeSqlFromFile(String fileName) throws SQLException, IOException, DatabaseLibraryException {
 
 		getConnection().setAutoCommit(false);
@@ -527,21 +564,27 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the SQL statements contained in the given file without any "
-			+ "further modifications. The given SQL must be valid for the database that "
-			+ "is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
-			+ "can for example be used to setup database tables from some SQL install " + "script. " + "\n\n"
-			+ "Single SQL statements in the file can be spread over multiple lines, but "
-			+ "must be terminated with a semicolon \";\". A new statement must always "
-			+ "start in a new line and not in the same line where the previous statement "
-			+ "was terminated by a \";\". " + "\n\n"
-			+ "Any errors that might happen during execution of SQL statements are "
-			+ "logged to the Robot Log-file, but otherwise ignored. " + "\n\n"
-			+ "*NOTE*: Use this method with care as you might cause damage to your "
-			+ "database, especially when using this in a productive environment. \n\n"
-			+ "*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
-			+ "other way; this library is not doing the transfer." + "\n\n" + "Example: \n"
-			+ "| Execute SQL from File | myFile.sql | ")
-	@ArgumentNames({ "File containing SQL commands to execute" })
+			+"further modifications. The given SQL must be valid for the database that "
+			+"is used. Any lines prefixed with \"REM\" or \"#\" are ignored. This keyword "
+			+"can for example be used to setup database tables from some SQL install "
+			+"script. "
+			+"\n\n"
+			+"Single SQL statements in the file can be spread over multiple lines, but "
+			+"must be terminated with a semicolon \";\". A new statement must always "
+			+"start in a new line and not in the same line where the previous statement "
+			+"was terminated by a \";\". "
+			+"\n\n"
+			+"Any errors that might happen during execution of SQL statements are "
+			+"logged to the Robot Log-file, but otherwise ignored. "
+			+"\n\n"
+			+"*NOTE*: Use this method with care as you might cause damage to your "
+			+"database, especially when using this in a productive environment. \n\n"
+			+"*NOTE2*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
+			+"\n\n"
+			+"Example: \n"
+			+"| Execute SQL from File | myFile.sql | ")
+	@ArgumentNames({"File containing SQL commands to execute"})
 	public void executeSqlFromFileIgnoreErrors(String fileName)
 			throws SQLException, IOException, DatabaseLibraryException {
 
@@ -587,11 +630,15 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword checks that a given table contains a given amount of rows "
-			+ "matching a given WHERE clause. " + "\n\n"
-			+ "For the example this means that the table \"MySampleTable\" must contain "
-			+ "exactly 2 rows matching the given WHERE, otherwise the teststep will " + "fail. " + "\n\n"
-			+ "Example: \n" + "| Verify Number Of Rows Matching Where | MySampleTable | email=x@y.net | 2 | ")
-	@ArgumentNames({ "Table to check", "Where clause", "Expected number of rows" })
+			+"matching a given WHERE clause. "
+			+"\n\n"
+			+"For the example this means that the table \"MySampleTable\" must contain "
+			+"exactly 2 rows matching the given WHERE, otherwise the teststep will "
+			+"fail. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Verify Number Of Rows Matching Where | MySampleTable | email=x@y.net | 2 | ")
+	@ArgumentNames({"Table to check", "Where clause", "Expected number of rows"})
 	public void verifyNumberOfRowsMatchingWhere(String tableName, String where, String rowNumValue)
 			throws SQLException, DatabaseLibraryException {
 
@@ -604,11 +651,14 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("This keyword can be used to check the inexistence of content inside a "
-			+ "specific row in a database table defined by a where-clause. This can be "
-			+ "used to validate an exclusion of specific data from a table. " + "\n\n" + "Example: \n"
-			+ "| Row Should Not Exist In Table | MySampleTable | Name='John Doe' | " + "\n\n"
-			+ "This keyword was introduced in version 1.1. ")
-	@ArgumentNames({ "Table to check", "Where clause" })
+			+"specific row in a database table defined by a where-clause. This can be "
+			+"used to validate an exclusion of specific data from a table. "
+			+"\n\n"
+			+"Example: \n"
+			+"| Row Should Not Exist In Table | MySampleTable | Name='John Doe' | "
+			+"\n\n"
+			+"This keyword was introduced in version 1.1. ")
+	@ArgumentNames({"Table to check", "Where clause"})
 	public void rowShouldNotExistInTable(String tableName, String whereClause)
 			throws SQLException, DatabaseLibraryException {
 
@@ -629,13 +679,16 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the given SQL without any further modifications and stores the "
-			+ "result in a file. The SQL query must be valid for the database that is "
-			+ "used. The main purpose of this keyword is to generate expected result "
-			+ "sets for use with keyword compareQueryResultToFile " + "\n\n"
-			+ "*NOTE*: If using keyword remotely, file need to be trasfered to server some "
-			+ "other way; this library is not doing the transfer." + "\n\n" + "Example: \n"
-			+ "| Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
-	@ArgumentNames({ "Query to execute", "File to save results" })
+			+"result in a file. The SQL query must be valid for the database that is "
+			+"used. The main purpose of this keyword is to generate expected result "
+			+"sets for use with keyword compareQueryResultToFile "
+			+"\n\n"
+			+"*NOTE*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
+			+"\n\n"
+			+"Example: \n"
+			+"| Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
+	@ArgumentNames({"Query to execute", "File to save results"})
 	public void storeQueryResultToFile(String sqlString, String fileName) throws SQLException, IOException {
 
 		Statement stmt = getConnection().createStatement();
@@ -662,15 +715,21 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the given SQL compares the result to expected results stored in "
-			+ "a file. Results are stored as strings separated with pipes ('|') with a "
-			+ "pipe following the last column. Rows are separated with a newline. " + "\n\n"
-			+ "To ensure compares work correctly The SQL query should a) specify an "
-			+ "order b) convert non-string fields (especially dates) to a specific " + "format " + "\n\n"
-			+ "storeQueryResultToFile can be used to generate expected result files " + "\n\n"
-			+ "*NOTE*: If using keyword remotely, file need to be trasfered to server some "
-			+ "other way; this library is not doing the transfer." + "\n\n" + "Example: \n"
-			+ "| Compare Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
-	@ArgumentNames({ "Query to execute", "File to compare results with" })
+			+"a file. Results are stored as strings separated with pipes ('|') with a "
+			+"pipe following the last column. Rows are separated with a newline. "
+			+"\n\n"
+			+"To ensure compares work correctly The SQL query should a) specify an "
+			+"order b) convert non-string fields (especially dates) to a specific "
+			+"format "
+			+"\n\n"
+			+"storeQueryResultToFile can be used to generate expected result files "
+			+"\n\n"
+			+"*NOTE*: If using keyword remotely, file need to be trasfered to server some "
+			+"other way; this library is not doing the transfer."
+			+"\n\n"
+			+"Example: \n"
+			+"| Compare Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
+	@ArgumentNames({"Query to execute", "File to compare results with"})
 	public void compareQueryResultToFile(String sqlString, String fileName)
 			throws SQLException, DatabaseLibraryException, FileNotFoundException {
 
