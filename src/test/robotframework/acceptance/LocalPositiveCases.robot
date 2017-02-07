@@ -38,7 +38,23 @@ Content Check
     Check Content for Row Identified by WhereClause    Id,Name    2|Darth Vader    DemoTable    id=2
     ${VALUE}=    Read Single Value From Table    DemoTable    Name    id=1
     Log    ${VALUE}
+    
+Content Check with Execute SQL
+    [Documentation]    Checks that query execution returns correct amount of results.
+    ${data}    Execute SQL    Select * from DemoTable    
+    Log    ${data}
+    ${value}    Get From Dictionary    ${data[0]}    NAME
+    Should Be Equal As Strings    ${value}    Donny Darko
+    ${length}    Get Length    ${data}
+    Should Be Equal As Integers    ${length}    2
 
+Empty results with Execute SQL
+    [Documentation]    Checks that query execution works when there's 0 lines returned.
+    ${data}    Execute SQL    Select * from DemoTable where NAME='not found'
+    Log    ${data}
+    ${length}    Get Length    ${data}
+    Should Be Equal As Integers    ${length}    0
+    
 Delete Rows From Database
     [Documentation]    Delete all rows from the database.
     Table Must Contain Number of Rows    DemoTable    2
