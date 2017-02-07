@@ -14,8 +14,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
@@ -465,23 +467,33 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Executes the given SQL without any further modifications. The given SQL "
-			+"must be valid for the database that is used. The main purpose of this "
-			+"keyword is building some contents in the database used for later testing. "
-			+"\n\n"
-			+"*NOTE*: Use this method with care as you might cause damage to your "
-			+"database, especially when using this in a productive environment. "
-			+"\n\n"
-			+"Example: \n"
-			+"| Execute SQL | CREATE TABLE MyTable (Num INTEGER) | ")
-	@ArgumentNames({"SQL String to execute"})
-	public void executeSql(String sqlString) throws SQLException {
-
+			+ "must be valid for the database that is used. Results are returned as a list of dictionaries" + "\n\n"
+			+ "*NOTE*: Use this method with care as you might cause damage to your "
+			+ "database, especially when using this in a productive environment. " + "\n\n" + "Example: \n"
+			+ "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) | ")
+	@ArgumentNames({ "SQL String to execute" })
+	public List<HashMap<String, Object>> executeSql(String sqlString) throws SQLException {
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 		Statement stmt = getConnection().createStatement();
 		try {
 			stmt.execute(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			if (rs != null) {
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int numberOfColumns = rsmd.getColumnCount();
+				while (rs.next()) {
+					HashMap<String, Object> row = new HashMap<String, Object>(numberOfColumns);
+					for (int i = 1; i <= numberOfColumns; ++i) {
+						row.put(rsmd.getColumnName(i), rs.getObject(i));
+					}
+					list.add(row);
+				}
+			}
 		} finally {
 			stmt.close();
 		}
+
+		return list;
 	}
 
 	@RobotKeyword("Executes the SQL statements contained in the given file without any "

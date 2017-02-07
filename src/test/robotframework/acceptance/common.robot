@@ -2,6 +2,7 @@
 Library           DatabaseLibrary
 Library           Process
 Library           DateTime
+Library           Collections
 
 *** Keywords ***
 Start H2 server
