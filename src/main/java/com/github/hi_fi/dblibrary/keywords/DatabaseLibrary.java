@@ -38,7 +38,7 @@ public class DatabaseLibrary {
 	@RobotKeyword("Activates the databaseconnection with given alias. \n"
 			+ "Please note that connection has to be opened earlier.\n\n" + "Example: \n"
 			+ "| Activate Database Connection | ownAlias |")
-	@ArgumentNames({ "Database alias" })
+	@ArgumentNames({ "Database alias=default" })
 	public void activateDatabaseConnection(String... aliasParam) {
 		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
 		if (DatabaseLibrary.connectionMap.containsKey(alias)) {
@@ -50,11 +50,11 @@ public class DatabaseLibrary {
 	}
 
 	@RobotKeyword("Establish the connection to the database. This is mandatory before any of"
-			+ "the other keywords can be used and should be ideally done during the"
-			+ "suite setup phase. To avoid problems ensure to close the connection again"
+			+ "the other keywords can be used and should be ideally done during the "
+			+ "suite setup phase. To avoid problems ensure to close the connection again "
 			+ "using the disconnect-keyword.\n\n"
-			+ "It must be ensured that the JAR-file containing the given driver can be"
-			+ "found from the CLASSPATH when starting robot. Furthermore it must be"
+			+ "It must be ensured that the JAR-file containing the given driver can be "
+			+ "found from the CLASSPATH when starting robot. Furthermore it must be "
 			+ "noted that the connection string is database-specific and must be valid of course.\n\n"
 			+ "If alias is given, connection can be later referred with that. If alias was in use, existing connection "
 			+ "is replaced with new one\n\n" + "" + "Example: \n"
@@ -77,7 +77,7 @@ public class DatabaseLibrary {
 		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
 		Connection disconnectingConnection = this.getConnection(alias);
 
-		System.out.println("SQL Warnings on this connection: " + disconnectingConnection.getWarnings());
+		System.out.println(String.format("SQL Warnings on this connection (%s): %s", alias, disconnectingConnection.getWarnings()));
 		disconnectingConnection.close();
 		DatabaseLibrary.connectionMap.remove(alias);
 		if (alias.equals(DatabaseLibrary.currentConnectionAlias)) {
