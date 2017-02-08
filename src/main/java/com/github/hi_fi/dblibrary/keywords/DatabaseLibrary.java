@@ -42,7 +42,7 @@ public class DatabaseLibrary {
 	public void activateDatabaseConnection(String... aliasParam) {
 		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
 		if (DatabaseLibrary.connectionMap.containsKey(alias)) {
-			this.currentConnectionAlias = alias;
+			DatabaseLibrary.currentConnectionAlias = alias;
 		} else {
 			throw new IllegalStateException(String.format(
 					"No connection open with alias %s. Did you forget to run 'Connect To Database' before?", alias));
@@ -79,7 +79,7 @@ public class DatabaseLibrary {
 
 		System.out.println("SQL Warnings on this connection: " + disconnectingConnection.getWarnings());
 		disconnectingConnection.close();
-		this.connectionMap.remove(alias);
+		DatabaseLibrary.connectionMap.remove(alias);
 		if (alias.equals(DatabaseLibrary.currentConnectionAlias)) {
 			DatabaseLibrary.currentConnectionAlias = "";
 		}
@@ -740,6 +740,7 @@ public class DatabaseLibrary {
 
 	private void setConnection(Connection connection, String alias) {
 		DatabaseLibrary.connectionMap.put(alias, connection);
+		DatabaseLibrary.currentConnectionAlias = alias;
 	}
 
 	private Connection getConnection() {
