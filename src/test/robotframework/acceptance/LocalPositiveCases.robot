@@ -18,6 +18,10 @@ Basic Checks
     ...    H2 creates all tables with uppercase, so in some keywors it's needed to be added as DEMOTABLE.
     Table Must Exist    DEMOTABLE
     Table Must Be Empty    DEMOTABLE
+    Active Database Connection    secondConnection
+    Table Must Exist    DEMOTABLE
+    Table Must Be Empty    DEMOTABLE
+    Active Database Connection
     Check Primary Key Columns For Table    DEMOTABLE    Id
     ${TI_LEVEL}=    Get Transaction Isolation Level
     Log    ${TI_LEVEL}
