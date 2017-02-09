@@ -18,10 +18,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywords;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 @RobotKeywords
 public class DatabaseLibrary {
@@ -737,6 +753,50 @@ public class DatabaseLibrary {
 				throw new DatabaseLibraryException(diffs);
 		}
 	}
+	
+	@RobotKeyword("Exports the data from the given table into a file that is stored at the "
+			+ "given location. The where-clause can (and should) be used to narrow the "
+			+ "amount of rows that is exported this way. The file is stored in some "
+			+ "simple XML-format and can be imported again to the database using the "
+			+ "\"Import Data From File\" keyword. This way it is possible to store a set "
+			+ "of testdata permanently retrieving it for example from some Live- or "
+			+ "Demosystem. This keyword will probably have some issues if millions of "
+			+ "rows are exported/imported using it. "
+			+ "\n\n"
+			+ "The keyword returns the amount of rows written to the XML-file. "
+			+ "\n\n"
+			+ "Example: | ${ROWSEXPORTED}= | MySampleTable | /tmp/mysampletable.xml | Timestamp > sysdate-50 |")
+	@ArgumentNames({"Table name", "Export file path (including name)", "Where clause=''"})
+	public int exportDataFromTable(String tableName, String filePath, String... whereClause) throws SQLException, DatabaseLibraryException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+		this.tableMustExist(tableName);
+		String query = "Select * from "+tableName;
+		if (whereClause.length > 0) {
+			query += " where "+whereClause[0];
+		}
+		List<HashMap<String, Object>> data = this.executeSql(query);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder        = factory.newDocumentBuilder();
+		Document doc                   = builder.newDocument();
+		Element results = doc.createElement("Results");
+		doc.appendChild(results);
+
+		for (HashMap<String, Object> hashMap : data) {
+			Element row = doc.createElement("Row");
+			 results.appendChild(row);
+			for (Entry<String, Object> entry : hashMap.entrySet()) {
+				   Element node      = doc.createElement(entry.getKey());
+				   node.appendChild(doc.createTextNode(entry.getValue().toString()));
+				   row.appendChild(node);
+			}
+		}
+		
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		Result output = new StreamResult(new File(filePath));
+		Source input = new DOMSource(doc);
+
+		transformer.transform(input, output);
+        return data.size();
+    }
 
 	private void setConnection(Connection connection, String alias) {
 		DatabaseLibrary.connectionMap.put(alias, connection);
