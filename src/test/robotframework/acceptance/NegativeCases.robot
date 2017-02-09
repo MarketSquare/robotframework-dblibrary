@@ -9,3 +9,6 @@ Connection to non-existent database
 
 Query against non-existing table
     Run Keyword And Expect Error    *    Execute SQL    Select * from user
+
+Try to activate non-existing connection
+    Run Keyword And Expect Error    *    Activate Database Connection    non_existent
