@@ -27,7 +27,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -39,6 +38,8 @@ import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywords;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 @RobotKeywords
 public class DatabaseLibrary {
@@ -781,8 +782,8 @@ public class DatabaseLibrary {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document doc = builder.newDocument();
 		Element export = doc.createElement("Export");
+		export.setAttribute("table", tableName);
 		doc.appendChild(export);
-		Element columns = doc.createElement("Columns");
 		Element results = doc.createElement("Rows");
 
 		int rowNumber = 0;
@@ -790,18 +791,12 @@ public class DatabaseLibrary {
 			Element row = doc.createElement("Row");
 			results.appendChild(row);
 			for (Entry<String, Object> entry : hashMap.entrySet()) {
-				if (rowNumber == 0) {
-					Element column = doc.createElement("Column");
-					column.appendChild(doc.createTextNode(entry.getKey()));
-					columns.appendChild(column);
-				}
 				Element node = doc.createElement(entry.getKey());
 				node.appendChild(doc.createTextNode(entry.getValue().toString()));
 				row.appendChild(node);
 			}
 			rowNumber++;
 		}
-		export.appendChild(columns);
 		export.appendChild(results);
 
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -812,6 +807,23 @@ public class DatabaseLibrary {
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 		transformer.transform(input, output);
 		return rowNumber;
+	}
+
+	@RobotKeyword("This keyword reads data from a XML-file and stores the corresponding data "
+			+ "to the database. The file must have been created using the "
+			+ "\"Export Data From Table\" keyword or it must be created manually in the "
+			+ "exact format. The XML-file contains not only the data as such, but also "
+			+ "the name of the schema and table from which the data was exported. The "
+			+ "same information is used for the import. " + "\n\n"
+			+ "The keyword returns the amount of rows that have been successfully stored " + "to the database table. "
+			+ " " + "Example: | ${ROWSIMPORTED}= | /tmp/mysampletable.xml | ")
+	public int importDataFromFile(String filePath) throws ParserConfigurationException, SAXException, IOException {
+		File fXmlFile = new File(filePath);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(fXmlFile);
+		NodeList rows = doc.getElementsByTagName("Row");
+		return 0;
 	}
 
 	private void setConnection(Connection connection, String alias) {
