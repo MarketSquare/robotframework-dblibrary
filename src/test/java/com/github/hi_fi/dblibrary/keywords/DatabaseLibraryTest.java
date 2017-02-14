@@ -20,7 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.github.hi_fi.dblibrary.keywords.DatabaseLibrary;
+import com.github.hi_fi.dblibrary.keywords.DatabaseConnection;
 import com.github.hi_fi.dblibrary.keywords.DatabaseLibraryException;
 
 /**
@@ -33,7 +33,7 @@ public class DatabaseLibraryTest {
 	private static final String H2_USER = "sa";
 	private static final String H2_PASSWORD = "";
 
-	private DatabaseLibrary databaseLibrary;
+	private DatabaseConnection databaseLibrary;
 	
 
 	// ========================================================
@@ -102,7 +102,7 @@ public class DatabaseLibraryTest {
 	}
 	
 	private void initDatabaseLibrary() throws Exception {
-		databaseLibrary = new DatabaseLibrary();
+		databaseLibrary = new DatabaseConnection();
 		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
 				H2_URL, H2_USER, H2_PASSWORD);
 	}	

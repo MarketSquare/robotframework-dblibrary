@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.hi_fi.dblibrary.keywords.DatabaseLibrary;
+import com.github.hi_fi.dblibrary.keywords.DatabaseConnection;
 
 /**
  * Tests related to connecting to the database
@@ -19,11 +19,11 @@ public class DatabaseLibraryConnectionTest {
 	private static final String H2_USER = "sa";
 	private static final String H2_PASSWORD = "";
 
-	private DatabaseLibrary databaseLibrary;
+	private DatabaseConnection databaseLibrary;
 
 	@Before
 	public void setUpTest() throws Exception {
-		databaseLibrary = new DatabaseLibrary();
+		databaseLibrary = new DatabaseConnection();
 	}
 	
 	// ========================================================
