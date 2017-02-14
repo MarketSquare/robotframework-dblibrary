@@ -1,9 +1,11 @@
 package com.github.hi_fi.dblibrary.keywords;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -185,5 +187,38 @@ public class FileHandling {
 		query += String.join(", ", insertList);
 		queryRunner.executeSql(query);
 		return insertList.size();
+	}
+	
+	@RobotKeyword("Executes the given SQL without any further modifications and stores the "
+			+ "result in a file. The SQL query must be valid for the database that is "
+			+ "used. The main purpose of this keyword is to generate expected result "
+			+ "sets for use with keyword compareQueryResultToFile " + "\n\n"
+			+ "*NOTE*: If using keyword remotely, file need to be trasfered to server some "
+			+ "other way; this library is not doing the transfer." + "\n\n" + "Example: \n"
+			+ "| Store Query Result To File | Select phone, email from addresses where last_name = 'Johnson' | query_result.txt | ")
+	@ArgumentNames({ "Query to execute", "File to save results" })
+	public void storeQueryResultToFile(String sqlString, String fileName) throws SQLException, IOException {
+
+		Statement stmt = DatabaseConnection.getConnection().createStatement();
+		try {
+			stmt.execute(sqlString);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int numberOfColumns = rsmd.getColumnCount();
+			FileWriter fstream = new FileWriter(fileName);
+			BufferedWriter out = new BufferedWriter(fstream);
+			while (rs.next()) {
+				for (int i = 1; i <= numberOfColumns; i++) {
+					rs.getString(i);
+					out.write(rs.getString(i) + '|');
+				}
+				out.write("\n");
+			}
+			out.close();
+		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no
+			// rs.close()
+			stmt.close();
+		}
 	}
 }

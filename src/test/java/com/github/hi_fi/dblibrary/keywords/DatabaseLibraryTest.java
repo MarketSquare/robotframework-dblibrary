@@ -1,5 +1,6 @@
 package com.github.hi_fi.dblibrary.keywords;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.junit.Assert;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -28,12 +29,9 @@ import com.github.hi_fi.dblibrary.keywords.DatabaseLibraryException;
  */
 public class DatabaseLibraryTest {
 
-	private static final String H2_DRIVER_CLASSNAME = "org.h2.Driver";
-	private static final String H2_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-	private static final String H2_USER = "sa";
-	private static final String H2_PASSWORD = "";
-
 	private DatabaseConnection databaseLibrary;
+	private static Assert asserter;
+	private static ConnectionHelper ch;
 	
 
 	// ========================================================
@@ -43,24 +41,15 @@ public class DatabaseLibraryTest {
 	// ========================================================
 
 	@BeforeClass
-	public static void setUp() throws Exception {
-		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
-		Connection con = DriverManager.getConnection(H2_URL,
-				H2_USER, H2_PASSWORD);
-
-		Statement stmt = con.createStatement();
-		stmt
-				.execute("CREATE TABLE MySampleTable (Id Integer NOT NULL, Name VARCHAR(256), "
-						+ "EMail VARCHAR(256), "
-						+ "Postings Integer, State Integer, LastPosting Timestamp)");
-		stmt.execute("CREATE TABLE EmptyTable (Id Integer, Name VARCHAR(256))");
-		stmt.execute("CREATE TABLE ReferenceTable (Num Integer)");
-
-		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyUniqKey UNIQUE (Id)");
-		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyPrimKey PRIMARY KEY (Id)");
-		
-		stmt.close();
-		con.close();
+	public static void setUpBeforeClass() throws Exception {
+		asserter = new Assert();
+		ch = new ConnectionHelper();
+		ch.createTestDB();
+	}
+	
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ch.deleteTestDB();
 	}
 
 	// ========================================================
@@ -68,75 +57,11 @@ public class DatabaseLibraryTest {
 	// Setup and Teardown on method-level
 	//
 	// ========================================================
-
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
 	
 	@Before
 	public void setUpTest() throws Exception {
-		initTestTables();
-		initDatabaseLibrary();
-	}
-	
-	public void initTestTables() throws Exception {
-		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
-		Connection con = DriverManager.getConnection(H2_URL,
-				H2_USER, H2_PASSWORD);
-
-		Statement stmt = con.createStatement();
-		stmt.execute("DELETE FROM MySampleTable");
-		stmt.execute("DELETE FROM EmptyTable");
-		stmt.execute("DELETE FROM ReferenceTable");
-		stmt
-				.executeUpdate("INSERT INTO MySampleTable VALUES(1, 'Donny Darko', "
-						+ "'donny.darko@robot.org', 1001, 1, '2010-02-26 12:42:58.0000')");
-		stmt
-				.executeUpdate("INSERT INTO MySampleTable VALUES(2, 'Darth Vader', "
-						+ "'darth.vader@starwars.universe', 123, 2, '2010-02-27 11:41:45.0000')");
-
-		stmt.executeUpdate("INSERT INTO ReferenceTable VALUES(1)");
-		stmt.executeUpdate("INSERT INTO ReferenceTable VALUES(2)");
-
-		stmt.close();
-		con.close();
-	}
-	
-	private void initDatabaseLibrary() throws Exception {
-		databaseLibrary = new DatabaseConnection();
-		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
-				H2_URL, H2_USER, H2_PASSWORD);
-	}	
-	
-	// ========================================================
-	//
-	// Check Table Must be Empty
-	//
-	// ========================================================
-
-	@Test
-	public void checktable_must_be_empty_OnEmptyTable() throws Exception {
-		databaseLibrary.tableMustBeEmpty("EmptyTable");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_be_empty_OnTableNotEmpty() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustBeEmpty("MySampleTable");
-	}
-
-	// ========================================================
-	//
-	// Check Table must Exists
-	//
-	// ========================================================
-
-	@Test
-	public void checkTableMustExist_ThatExists() throws Exception {
-		databaseLibrary.tableMustExist("EMPTYTABLE");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checkTableMustExist_ThatDoesNotExist() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustExist("WRONG_NAME");
+		ch.initTestTables();
+		databaseLibrary = ch.initDatabaseLibrary();
 	}
 
 	// ========================================================
@@ -149,94 +74,12 @@ public class DatabaseLibraryTest {
 	public void checkdelete_all_rows_from_table() throws Exception {
 		try {
 			// Check first that table is not empty
-			databaseLibrary.tableMustBeEmpty("MySampleTable");
+			asserter.tableMustBeEmpty("MySampleTable");
 			fail();
 		} catch (DatabaseLibraryException e) {
 			databaseLibrary.deleteAllRowsFromTable("MySampleTable");
-			databaseLibrary.tableMustBeEmpty("MySampleTable");
+			asserter.tableMustBeEmpty("MySampleTable");
 		}
-	}
-
-	// ========================================================
-	//
-	// Check Table Must contain number of rows
-	//
-	// ========================================================
-
-	@Test
-	public void checktable_must_contain_number_of_rows() throws Exception {
-		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "2");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_contain_number_of_rows_WrongNumber() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustContainNumberOfRows("MySampleTable", "5");
-	}
-
-	// ========================================================
-	//
-	// Check Table Must contain more than number of rows
-	//
-	// ========================================================
-
-	@Test
-	public void checktable_must_contain_more_than_number_of_rows() throws Exception {
-		databaseLibrary.tableMustContainMoreThanNumberOfRows(
-				"MySampleTable", "1");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_contain_more_than_number_of_rows_SameNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustContainMoreThanNumberOfRows(
-				"MySampleTable", "2");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_contain_more_than_number_of_rows_MoreNumbers() throws Exception {
-		databaseLibrary.tableMustContainMoreThanNumberOfRows(
-				"MySampleTable", "200");
-	}
-
-	// ========================================================
-	//
-	// Check Table Must contain less than number of rows
-	//
-	// ========================================================
-
-	@Test
-	public void checktable_must_contain_less_than_number_of_rows() throws Exception {
-		databaseLibrary.tableMustContainLessThanNumberOfRows(
-				"MySampleTable", "3");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_contain_less_than_number_of_rows_SameNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustContainLessThanNumberOfRows(
-				"MySampleTable", "2");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checktable_must_contain_less_than_number_of_rows_LessNumbers() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tableMustContainLessThanNumberOfRows(
-				"MySampleTable", "1");
-	}
-
-	// ========================================================
-	//
-	// Check Tables Must contain same amount of rows
-	//
-	// ========================================================
-
-	@Test
-	public void checkTablesMustContainSameAmountOfRows() throws Exception {
-		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
-				"ReferenceTable");
-	}
-
-	@Test(expected=DatabaseLibraryException.class)
-	public void checkTablesMustContainSameAmountOfRows_ButTheyDoNot() throws DatabaseLibraryException, Exception {
-		databaseLibrary.tablesMustContainSameAmountOfRows("MySampleTable",
-				"EmptyTable");
 	}
 
 	// ========================================================
@@ -315,7 +158,7 @@ public class DatabaseLibraryTest {
 		String level = databaseLibrary.getTransactionIsolationLevel();
 		System.out.println("Transaction Isolation Level: " + level);
 		
-		if ((level == null) || (level.equals(H2_PASSWORD))) {
+		if ((level == null) || (level.equals(ConnectionHelper.H2_PASSWORD))) {
 			fail("Empty Transaction Isolation Level");
 		}
 	}	
@@ -341,14 +184,14 @@ public class DatabaseLibraryTest {
 	public void checkReadSingleValueFromTable() throws Exception {
 		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=1");
 		System.out.println("Single Value Fetched: " + name);
-		Assert.assertEquals("Wrong value fetched", "Donny Darko", name);
+		assertEquals("Wrong value fetched", "Donny Darko", name);
 	}
 	
 	@Test
 	public void checkReadSingleValueFromTableReturnsEmptyStringIfNoMatch() throws SQLException, DatabaseLibraryException {
 		String name = databaseLibrary.readSingleValueFromTable("MySampleTable", "Name", "id=23");
 		System.out.println("Single Value Fetched: " + name);
-		Assert.assertEquals("Value found", "", name);
+		assertEquals("Value found", "", name);
 	}
 
 	
@@ -363,7 +206,7 @@ public class DatabaseLibraryTest {
 		String keys = databaseLibrary.getPrimaryKeyColumnsForTable("MYSAMPLETABLE");
 		System.out.println("Primary Keys: " + keys);
 		
-		if ((keys == null) || (keys.equals(H2_PASSWORD))) {
+		if ((keys == null) || (keys.equals(ConnectionHelper.H2_PASSWORD))) {
 			fail("Empty Primary Key");
 		}
 	}		
@@ -383,116 +226,6 @@ public class DatabaseLibraryTest {
 		databaseLibrary.checkPrimaryKeyColumnsForTable("WrongTable", "Id");
 	}
 	
-	
-	//
-	// Check Execute SQL
-	//
-	@Test
-	public void checkExecuteSQL() throws Exception {
-		databaseLibrary.executeSql("CREATE TABLE TestTable (Num Integer)");
-		databaseLibrary.tableMustExist("TESTTABLE");
-	}
-	
-	@Test
-	public void checkVerifyNumberOfRowsMatchingWhereSuccessOneMatch() throws Exception {
-		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='donny.darko@robot.org'", "1");
-	}
-	
-	@Test
-	public void checkVerifyNumberOfRowsMatchingWhereSuccessNoMatch() throws Exception {
-		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "EMail='batman@robot.org'", "0");
-	}
-	
-	@Test(expected=DatabaseLibraryException.class)
-	public void checkVerifyNumberOfRowsMatchingWhereFailure() throws DatabaseLibraryException, Exception {
-		databaseLibrary.verifyNumberOfRowsMatchingWhere("MySampleTable", "Postings > 0", "1");
-	}
-
-	// ========================================================
-	//
-	// Store Query Result To File
-	//
-	// ========================================================
-	
-	@Test 
-	public void checkStoreQueryResultToFile() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";
-		databaseLibrary.storeQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	    FileReader fr = new FileReader(myFileName); 
-	    BufferedReader br = new BufferedReader(fr);
-	    Assert.assertEquals("Wrong value written to file","Donny Darko|donny.darko@robot.org|",br.readLine());
-	    Assert.assertEquals("Wrong value written to file","Darth Vader|darth.vader@starwars.universe|",br.readLine());
-	    Assert.assertEquals("File is longer than expected",false, br.ready());
-	}
-
-	// ========================================================
-	//
-	// Compare Query Result To File
-	//
-	// ========================================================
-	
-	@Test 
-	public void checkCompareQueryResultToFileWhereFileMatches() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
-		FileWriter fstream = new FileWriter(myFileName);
-	    BufferedWriter out = new BufferedWriter(fstream);
-	    out.write("Donny Darko|donny.darko@robot.org|\n");
-	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
-	    out.close();
-		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	}
-
-	@Test (expected=DatabaseLibraryException.class)
-	public void checkCompareQueryResultToFileWhereFileHasTooFewRows() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
-		FileWriter fstream = new FileWriter(myFileName);
-	    BufferedWriter out = new BufferedWriter(fstream);
-	    out.write("Donny Darko|donny.darko@robot.org|\n");
-	    out.close();
-		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	}
-
-	@Test (expected=DatabaseLibraryException.class)
-	public void checkCompareQueryResultToFileWhereFileHasTooManyRows() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
-		FileWriter fstream = new FileWriter(myFileName);
-	    BufferedWriter out = new BufferedWriter(fstream);
-	    out.write("Donny Darko|donny.darko@robot.org|\n");
-	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
-	    out.write("Darth Vader|darth.vader@starwars.universe|\n");
-	    out.close();
-		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	}
-
-	@Test (expected=DatabaseLibraryException.class)
-	public void checkCompareQueryResultToFileWhereFileHasInvalidRow() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
-		FileWriter fstream = new FileWriter(myFileName);
-	    BufferedWriter out = new BufferedWriter(fstream);
-	    out.write("Donny Darko|donny.darko@robot.org|\n");
-	    out.write("Darth Vader|lukes.father@starwars.universe|\n");
-	    out.close();
-		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	}
-
-	@Test (expected=FileNotFoundException.class)
-	public void checkCompareQueryResultToFileWhereFileNotFound() throws Exception {
-		folder.getRoot();
-		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.txt";	
-		databaseLibrary.compareQueryResultToFile("select name, email from mySampleTable order by Id", 
-				myFileName);
-	}
-	
 	// Tests for "Row Should Not Exist In Table"
 	@Test
 	public void checkRowShouldNotExistInTable() throws SQLException, DatabaseLibraryException {
@@ -505,7 +238,7 @@ public class DatabaseLibraryTest {
 			databaseLibrary.rowShouldNotExistInTable("MySampleTable", "Name='Darth Vader'");
 			fail();
 		} catch(DatabaseLibraryException e) {
-			Assert.assertEquals("Row exists (but should not) for where-clause: Name='Darth Vader' in table: MySampleTable", e.getMessage());
+			assertEquals("Row exists (but should not) for where-clause: Name='Darth Vader' in table: MySampleTable", e.getMessage());
 		}
 	}
 
