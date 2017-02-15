@@ -18,6 +18,24 @@ import org.robotframework.javalib.annotation.RobotKeywords;
 
 @RobotKeywords
 public class Query {
+	
+	@RobotKeyword("Deletes the entire content of the given database table. This keyword is"
+			+ "useful to start tests in a clean state. Use this keyword with care as"
+			+ "accidently execution of this keyword in a productive system will cause"
+			+ "heavy loss of data. There will be no rollback possible.\n\n" + "Example: \n"
+			+ "| Delete All Rows From Table | MySampleTable |")
+	@ArgumentNames({ "Table name" })
+	public void deleteAllRowsFromTable(String tableName) throws SQLException {
+		String sql = "delete from " + tableName;
+
+		Statement stmt = DatabaseConnection.getConnection().createStatement();
+		try {
+			stmt.execute(sql);
+		} finally {
+			stmt.close();
+		}
+	}
+	
 	@RobotKeyword("Executes the given SQL without any further modifications. The given SQL "
 			+ "must be valid for the database that is used. Results are returned as a list of dictionaries" + "\n\n"
 			+ "*NOTE*: Use this method with care as you might cause damage to your "
@@ -169,5 +187,37 @@ public class Query {
 		br.close();
 	}
 
+	@RobotKeyword("Reads a single value from the given table and column based on the "
+			+ "where-clause passed to the test. If the where-clause identifies more or "
+			+ "less than exactly one row in that table this will result in an error for "
+			+ "this teststep. Otherwise the selected value will be returned. " + "\n\n" + "Example: \n"
+			+ "| ${VALUE}= | Read single Value from Table | MySampleTable | EMail | Name='John Doe' | ")
+	@ArgumentNames({ "Table name", "Column to get", "Where clause to identify the row" })
+	public String readSingleValueFromTable(String tableName, String columnName, String whereClause)
+			throws SQLException, DatabaseLibraryException {
+
+		String ret = "";
+
+		String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
+		Statement stmt = DatabaseConnection.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		try {
+			stmt.executeQuery(sql);
+			ResultSet rs = (ResultSet) stmt.getResultSet();
+
+			if (rs.first()) {
+				ret = rs.getString(columnName);
+			}
+
+			if (rs.next()) {
+				throw new DatabaseLibraryException("More than one value fetched for: " + sql);
+			}
+		} finally {
+			// stmt.close() automatically takes care of its ResultSet, so no
+			// rs.close()
+			stmt.close();
+		}
+
+		return ret;
+	}
 
 }
