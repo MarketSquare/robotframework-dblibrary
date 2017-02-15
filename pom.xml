@@ -74,6 +74,11 @@
 			<artifactId>javalib-core</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -292,6 +297,20 @@
 					<target>1.5</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.19.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<phase>test</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.robotframework</groupId>

@@ -7,23 +7,20 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.hi_fi.dblibrary.keywords.DatabaseLibrary;
+import com.github.hi_fi.dblibrary.keywords.DatabaseConnection;
 
 /**
  * Tests related to connecting to the database
  */
-public class DatabaseLibraryConnectionTest {
+public class DatabaseLibraryConnectionIT {
 
-	private static final String H2_DRIVER_CLASSNAME = "org.h2.Driver";
-	private static final String H2_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-	private static final String H2_USER = "sa";
-	private static final String H2_PASSWORD = "";
-
-	private DatabaseLibrary databaseLibrary;
+	private DatabaseConnection databaseConnection;
+	private Assert asserter;
 
 	@Before
 	public void setUpTest() throws Exception {
-		databaseLibrary = new DatabaseLibrary();
+		databaseConnection = new DatabaseConnection();
+		asserter = new Assert();
 	}
 	
 	// ========================================================
@@ -34,15 +31,15 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkConnectToDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
-				H2_URL, H2_USER, H2_PASSWORD);
+		databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
+				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD);
 	}
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
 		try {
-			databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
-					H2_URL, "xyz", H2_PASSWORD);
+			databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
+					ConnectionHelper.H2_URL, "xyz", ConnectionHelper.H2_PASSWORD);
 		} catch (SQLException e) {
 			if (!e.getMessage().contains("Wrong user name or password")) {
 				e.printStackTrace();
@@ -56,14 +53,14 @@ public class DatabaseLibraryConnectionTest {
 
 	@Test
 	public void checkDisconnectFromDatabase() throws Exception {
-		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
-				H2_URL, H2_USER, H2_PASSWORD);
-		databaseLibrary.disconnectFromDatabase();
+		databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
+				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD);
+		databaseConnection.disconnectFromDatabase();
 	}
 
 	@Test(expected=IllegalStateException.class)
 	public void checkIllegalStateExceptionWithoutConnect() throws Exception {
-		databaseLibrary.tableMustBeEmpty("NoConnection");
+		asserter.tableMustBeEmpty("NoConnection");
 	}
 
 }

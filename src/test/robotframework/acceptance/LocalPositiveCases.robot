@@ -58,13 +58,18 @@ Empty results with Execute SQL
     Log    ${data}
     ${length}    Get Length    ${data}
     Should Be Equal As Integers    ${length}    0
-    
-Delete Rows From Database
-    [Documentation]    Delete all rows from the database.
+
+Export And Import Table Content To XML
+    [Documentation]    Exports and imports table's data. 
     Table Must Contain Number of Rows    DemoTable    2
+    ${rows}    Export Data From Table    DEMOTABLE    testFile.xml
+    Should Be Equal As Integers    ${rows}    2
     Delete all Rows From Table    DemoTable
     Table Must Contain Number of Rows    DemoTable    0
-
+    ${rows}    Import Data From File    testFile.xml
+    Should Be Equal As Integers    ${rows}    2
+    Table Must Contain Number of Rows    DemoTable    2
+    
 Drop Test Table
     [Documentation]    Clean up by dropping the DemoTable again.
     Execute SQL    DROP TABLE DemoTable
