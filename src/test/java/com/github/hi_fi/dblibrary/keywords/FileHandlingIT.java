@@ -15,7 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class FileHandlingTest {
+public class FileHandlingIT {
 
 	private FileHandling fileHandling = new FileHandling();
 	private Assert asserter = new Assert(); 
@@ -121,8 +121,12 @@ public class FileHandlingTest {
 				myFileName);
 	    FileReader fr = new FileReader(myFileName); 
 	    BufferedReader br = new BufferedReader(fr);
+	    try {
 	    assertEquals("Wrong value written to file","Donny Darko|donny.darko@robot.org|",br.readLine());
 	    assertEquals("Wrong value written to file","Darth Vader|darth.vader@starwars.universe|",br.readLine());
 	    assertEquals("File is longer than expected",false, br.ready());
+	    } finally {
+	    	br.close();
+	    }
 	}
 }

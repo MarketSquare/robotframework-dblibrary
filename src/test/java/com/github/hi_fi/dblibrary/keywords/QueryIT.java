@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class QueryTest {
+public class QueryIT {
 
 	private Query query = new Query();
 	private Assert asserter = new Assert(); 

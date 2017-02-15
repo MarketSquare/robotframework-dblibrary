@@ -12,7 +12,7 @@ import com.github.hi_fi.dblibrary.keywords.DatabaseConnection;
 /**
  * Tests related to connecting to the database
  */
-public class DatabaseLibraryConnectionTest {
+public class DatabaseLibraryConnectionIT {
 
 	private DatabaseConnection databaseConnection;
 	private Assert asserter;

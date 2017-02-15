@@ -1,13 +1,9 @@
 package com.github.hi_fi.dblibrary.keywords;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -18,7 +14,6 @@ import org.robotframework.javalib.annotation.RobotKeywords;
 
 @RobotKeywords
 public class DatabaseConnection {
-	public static final String ROBOT_LIBRARY_SCOPE = "GLOBAL";
 
 	private static String defaultAlias = "default";
 	private static String currentConnectionAlias = "";

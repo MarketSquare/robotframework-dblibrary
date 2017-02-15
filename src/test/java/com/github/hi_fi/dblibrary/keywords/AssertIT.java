@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class AssertTest {
+public class AssertIT {
 
 
 	private Assert asserter;

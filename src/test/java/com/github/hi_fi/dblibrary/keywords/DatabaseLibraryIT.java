@@ -27,7 +27,7 @@ import com.github.hi_fi.dblibrary.keywords.DatabaseLibraryException;
 /**
  * Tests that use a database connection
  */
-public class DatabaseLibraryTest {
+public class DatabaseLibraryIT {
 
 	private DatabaseConnection databaseLibrary;
 	private static Assert asserter;
