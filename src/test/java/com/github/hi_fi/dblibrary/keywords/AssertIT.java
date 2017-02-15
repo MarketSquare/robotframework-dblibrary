@@ -1,13 +1,15 @@
 package com.github.hi_fi.dblibrary.keywords;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AssertIT {
 
 
-	private Assert asserter;
+	private Assert asserter = new Assert();
+	private static ConnectionHelper ch = new ConnectionHelper();
 	
 
 	// ========================================================
@@ -18,13 +20,19 @@ public class AssertIT {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		new ConnectionHelper().createTestDB();
-		new ConnectionHelper().initDatabaseLibrary();
+		ch.createTestDB();
+		ch.initDatabaseLibrary();
 	}
 	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		new ConnectionHelper().deleteTestDB();
+		ch.deleteTestDB();
+	}
+	
+	@Before
+	public void setUpTest() throws Exception {
+		ch.initTestTables();
+		ch.initDatabaseLibrary();
 	}
 
 	// ========================================================

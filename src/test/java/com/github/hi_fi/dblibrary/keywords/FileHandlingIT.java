@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,8 +18,8 @@ import org.junit.rules.TemporaryFolder;
 
 public class FileHandlingIT {
 
-	private FileHandling fileHandling = new FileHandling();
-	private Assert asserter = new Assert(); 
+	private FileHandling fileHandling = new FileHandling(); 
+	private static ConnectionHelper ch = new ConnectionHelper();
 	
 
 	// ========================================================
@@ -29,13 +30,18 @@ public class FileHandlingIT {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		new ConnectionHelper().createTestDB();
-		new ConnectionHelper().initDatabaseLibrary();
+		ch.createTestDB();
 	}
 	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		new ConnectionHelper().deleteTestDB();
+		ch.deleteTestDB();
+	}
+	
+	@Before
+	public void setUpTest() throws Exception {
+		ch.initTestTables();
+		ch.initDatabaseLibrary();
 	}
 	
 	@Rule
