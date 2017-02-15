@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.robotframework.javalib.annotation.ArgumentNames;
 import org.robotframework.javalib.annotation.RobotKeyword;
 import org.robotframework.javalib.annotation.RobotKeywords;
@@ -182,9 +183,9 @@ public class FileHandling {
 					dataList.add(rowData.item(dataIndex).getTextContent());
 				}
 			}
-			insertList.add("('"+String.join("', '", dataList)+"')");
+			insertList.add("('"+StringUtils.join(dataList, "', '")+"')");
 		}
-		query += String.join(", ", insertList);
+		query += StringUtils.join(insertList, ", ");
 		queryRunner.executeSql(query);
 		return insertList.size();
 	}
