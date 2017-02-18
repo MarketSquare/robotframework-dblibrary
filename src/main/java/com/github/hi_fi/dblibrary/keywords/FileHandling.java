@@ -23,6 +23,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -127,34 +128,7 @@ public class FileHandling {
 			query += " where " + whereClause[0];
 		}
 		List<HashMap<String, Object>> data = queryRunner.executeSql(query);
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.newDocument();
-		Element export = doc.createElement("Export");
-		export.setAttribute("table", tableName);
-		doc.appendChild(export);
-		Element results = doc.createElement("Rows");
-
-		int rowNumber = 0;
-		for (HashMap<String, Object> hashMap : data) {
-			Element row = doc.createElement("Row");
-			results.appendChild(row);
-			for (Entry<String, Object> entry : hashMap.entrySet()) {
-				Element node = doc.createElement(entry.getKey());
-				node.appendChild(doc.createTextNode(entry.getValue().toString()));
-				row.appendChild(node);
-			}
-			rowNumber++;
-		}
-		export.appendChild(results);
-
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		Result output = new StreamResult(new File(filePath));
-		Source input = new DOMSource(doc);
-
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-		transformer.transform(input, output);
+		int rowNumber = writeQueryResultsToFile(tableName, filePath, data);
 		return rowNumber;
 	}
 	
@@ -167,10 +141,7 @@ public class FileHandling {
 			+ "The keyword returns the amount of rows that have been successfully stored " + "to the database table. "
 			+ " " + "Example: | ${ROWSIMPORTED}= | /tmp/mysampletable.xml | ")
 	public int importDataFromFile(String filePath) throws ParserConfigurationException, SAXException, IOException, SQLException {
-		File fXmlFile = new File(filePath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(fXmlFile);
+		Document doc = this.parseXMLDocumentFromFile(filePath);
 		String table = ((Element) doc.getElementsByTagName("Export").item(0)).getAttribute("table");
 		NodeList rows = doc.getElementsByTagName("Row");
 		String query = "INSERT INTO "+table+" VALUES ";
@@ -221,5 +192,46 @@ public class FileHandling {
 			// rs.close()
 			stmt.close();
 		}
+	}
+	
+	private Document parseXMLDocumentFromFile(String pathToFile) throws ParserConfigurationException, SAXException, IOException {
+		File fXmlFile = new File(pathToFile);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		return dBuilder.parse(fXmlFile);
+	}
+	
+	private int writeQueryResultsToFile(String tableName, String filePath, List<HashMap<String, Object>> data)
+			throws ParserConfigurationException, TransformerConfigurationException,
+			TransformerFactoryConfigurationError, TransformerException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document doc = builder.newDocument();
+		Element export = doc.createElement("Export");
+		export.setAttribute("table", tableName);
+		doc.appendChild(export);
+		Element results = doc.createElement("Rows");
+
+		int rowNumber = 0;
+		for (HashMap<String, Object> hashMap : data) {
+			Element row = doc.createElement("Row");
+			results.appendChild(row);
+			for (Entry<String, Object> entry : hashMap.entrySet()) {
+				Element node = doc.createElement(entry.getKey());
+				node.appendChild(doc.createTextNode(entry.getValue().toString()));
+				row.appendChild(node);
+			}
+			rowNumber++;
+		}
+		export.appendChild(results);
+
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		Result output = new StreamResult(new File(filePath));
+		Source input = new DOMSource(doc);
+
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		transformer.transform(input, output);
+		return rowNumber;
 	}
 }
