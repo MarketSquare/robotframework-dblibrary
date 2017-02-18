@@ -228,7 +228,7 @@
 				<plugin>
 					<groupId>org.robotframework</groupId>
 					<artifactId>robotframework-maven-plugin</artifactId>
-					<version>1.4.6</version>
+					<version>1.4.7</version>
 					<executions>
 						<execution>
 							<id>html</id>
@@ -370,4 +370,8 @@
 
 		</plugins>
 	</build>
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/Hi-Fi/robotframework-dblibrary</url>
+	</ciManagement>
 </project>
