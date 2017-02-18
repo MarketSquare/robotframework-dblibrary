@@ -370,4 +370,8 @@
 
 		</plugins>
 	</build>
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/Hi-Fi/robotframework-dblibrary</url>
+	</ciManagement>
 </project>

@@ -23,7 +23,7 @@ public class DatabaseConnection {
 	public DatabaseConnection() {
 	}
 
-	@RobotKeyword("Activates the databaseconnection with given alias. \n"
+	@RobotKeyword("Activates the database connection with given alias. \n"
 			+ "Please note that connection has to be opened earlier.\n\n" + "Example: \n"
 			+ "| Activate Database Connection | ownAlias |")
 	@ArgumentNames({ "Database alias=default" })
