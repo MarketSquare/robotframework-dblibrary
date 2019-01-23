@@ -103,6 +103,9 @@ public class Query {
 			}
 
 			// Add the line to the current SQL statement
+			if (sql.length() > 0) {
+				sql += " ";
+			}
 			sql += line;
 
 			// Check if SQL statement is complete, if yes execute
@@ -165,6 +168,9 @@ public class Query {
 			}
 
 			// Add the line to the current SQL statement
+			if (sql.length() > 0) {
+				sql += " ";
+			}
 			sql += line;
 
 			// Check if SQL statement is complete, if yes execute
