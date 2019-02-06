@@ -98,7 +98,7 @@ public class Query {
 			if (line.toLowerCase().startsWith("rem")) {
 				continue;
 			}
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.startsWith("--")) {
 				continue;
 			}
 
@@ -163,7 +163,7 @@ public class Query {
 			if (line.toLowerCase().startsWith("rem")) {
 				continue;
 			}
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.startsWith("--")) {
 				continue;
 			}
 
