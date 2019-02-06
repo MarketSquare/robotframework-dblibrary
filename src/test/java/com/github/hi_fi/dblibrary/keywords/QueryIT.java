@@ -89,6 +89,19 @@ public class QueryIT {
 	}
 
 	@Test
+	public void checkExecuteSQLFromFileMultiLineComment() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.sql";
+		FileWriter fstream = new FileWriter(myFileName);
+		BufferedWriter out = new BufferedWriter(fstream);
+		out.write("-- Comment\n");
+		out.write("CREATE TABLE TestTableESFFMLC;\n");
+		out.close();
+		query.executeSqlFromFile(myFileName);
+		asserter.tableMustExist("TESTTABLEESFFMLC");
+	}
+
+	@Test
 	public void checkExecuteSQLFromFileIgnoreErrorsSingleLine() throws Exception {
 		folder.getRoot();
 		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.sql";
@@ -113,6 +126,19 @@ public class QueryIT {
 		query.executeSqlFromFileIgnoreErrors(myFileName);
 		asserter.tableMustExist("TESTTABLEESFFIEML");
 		asserter.checkContentForRowIdentifiedByWhereClause("Num", "42", "TESTTABLEESFFIEML", "Num=42");
+	}
+
+	@Test
+	public void checkExecuteSQLFromFileIgnoreErrorsMultiLineComment() throws Exception {
+		folder.getRoot();
+		String myFileName = folder.getRoot().getPath() + File.separator + "myFile.sql";
+		FileWriter fstream = new FileWriter(myFileName);
+		BufferedWriter out = new BufferedWriter(fstream);
+		out.write("-- Comment\n");
+		out.write("CREATE TABLE TestTableESFFIEMLC;\n");
+		out.close();
+		query.executeSqlFromFileIgnoreErrors(myFileName);
+		asserter.tableMustExist("TESTTABLEESFFIEMLC");
 	}
 
 	// ========================================================
