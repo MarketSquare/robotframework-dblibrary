@@ -98,11 +98,14 @@ public class Query {
 			if (line.toLowerCase().startsWith("rem")) {
 				continue;
 			}
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.startsWith("--")) {
 				continue;
 			}
 
 			// Add the line to the current SQL statement
+			if (sql.length() > 0) {
+				sql += " ";
+			}
 			sql += line;
 
 			// Check if SQL statement is complete, if yes execute
@@ -160,11 +163,14 @@ public class Query {
 			if (line.toLowerCase().startsWith("rem")) {
 				continue;
 			}
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.startsWith("--")) {
 				continue;
 			}
 
 			// Add the line to the current SQL statement
+			if (sql.length() > 0) {
+				sql += " ";
+			}
 			sql += line;
 
 			// Check if SQL statement is complete, if yes execute
