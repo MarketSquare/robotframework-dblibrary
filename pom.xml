@@ -221,7 +221,7 @@
 				<plugin>
 					<groupId>org.robotframework</groupId>
 					<artifactId>robotframework-maven-plugin</artifactId>
-					<version>1.5.1</version>
+					<version>1.4.6</version>
 					<executions>
 						<execution>
 							<id>html</id>
