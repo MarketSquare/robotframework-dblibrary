@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -129,7 +130,7 @@ public class FileHandling {
 		if (whereClause.length > 0) {
 			query += " where " + whereClause[0];
 		}
-		List<HashMap<String, Object>> data = queryRunner.executeSql(query);
+		List<LinkedHashMap<String, Object>> data = queryRunner.executeSql(query);
 		return writeQueryResultsToFile(tableName, filePath, data);
 	}
 	
@@ -205,7 +206,7 @@ public class FileHandling {
 		return dBuilder.parse(fXmlFile);
 	}
 	
-	private int writeQueryResultsToFile(String tableName, String filePath, List<HashMap<String, Object>> data)
+	private int writeQueryResultsToFile(String tableName, String filePath, List<LinkedHashMap<String, Object>> data)
 			throws ParserConfigurationException, TransformerConfigurationException,
 			TransformerFactoryConfigurationError, TransformerException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

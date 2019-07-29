@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.robotframework.javalib.annotation.ArgumentNames;
@@ -42,8 +42,8 @@ public class Query {
 			+ "database, especially when using this in a productive environment. " + "\n\n" + "Example: \n"
 			+ "| Execute SQL | CREATE TABLE MyTable (Num INTEGER) | ")
 	@ArgumentNames({ "SQL String to execute" })
-	public List<HashMap<String, Object>> executeSql(String sqlString) throws SQLException {
-		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+	public List<LinkedHashMap<String, Object>> executeSql(String sqlString) throws SQLException {
+		ArrayList<LinkedHashMap<String, Object>> list = new ArrayList<LinkedHashMap<String, Object>>();
 		Statement stmt = DatabaseConnection.getConnection().createStatement();
 		try {
 			stmt.execute(sqlString);
@@ -52,7 +52,7 @@ public class Query {
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int numberOfColumns = rsmd.getColumnCount();
 				while (rs.next()) {
-					HashMap<String, Object> row = new HashMap<String, Object>(numberOfColumns);
+				    LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>(numberOfColumns);
 					for (int i = 1; i <= numberOfColumns; ++i) {
 						row.put(rsmd.getColumnName(i), rs.getObject(i));
 					}

@@ -14,17 +14,3 @@ Stop H2 server
     Disconnect From Database    secondConnection
     Disconnect From Database
     Run Process    java    -cp    ${maven.test.classpath}    org.h2.tools.Server    -tcpShutdown    tcp://localhost:9092
-
-Start Remote and H2 server
-    Start remote server
-    Import Library    Remote    http://127.0.0.1:62022/    WITH NAME    RemoteDatabaseLibrary
-    Set Library Search Order    RemoteDatabaseLibrary    DatabaseLibrary
-    Start H2 Server
-
-Stop Remote and H2 server
-    Stop H2 Server
-    Set Library Search Order    DatabaseLibrary    RemoteDatabaseLibrary
-
-Start remote server
-    ${process}    Start Process    java    -cp    ${maven.test.classpath}    org.robotframework.remoteserver.RemoteServer    --library
-    ...    DatabaseLibrary:/    --port    62022
