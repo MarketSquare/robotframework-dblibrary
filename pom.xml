@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.hi-fi</groupId>
 	<artifactId>robotframework-dblibrary</artifactId>
-	<version>3.1.3</version>
+	<version>3.1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>robotframework-dblibrary</name>
