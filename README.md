@@ -4,9 +4,9 @@ Introduction
 The Robot Framework Database Library is a library which provides common functionality for testing database contents.
 
 * More information about this library can be found in the
-  [Keyword Documentation](https://repo1.maven.org/maven2/com/github/hi-fi/robotframework-dblibrary/3.1.2/robotframework-dblibrary-3.1.2.html).
+  [Keyword Documentation](https://repo1.maven.org/maven2/com/github/hi-fi/robotframework-dblibrary/3.1.3/robotframework-dblibrary-3.1.3.html).
 * For keyword completion in RIDE you can download this
-  [Library Specs](https://repo1.maven.org/maven2/com/github/hi-fi/robotframework-dblibrary/3.1.2/robotframework-dblibrary-3.1.2.xml)
+  [Library Specs](https://repo1.maven.org/maven2/com/github/hi-fi/robotframework-dblibrary/3.1.3/robotframework-dblibrary-3.1.3.xml)
   and place it in your PYTHONPATH.
 Usage
 -----
@@ -17,12 +17,12 @@ your pom.xml:
     <dependency>
         <groupId>com.github.hi-fi</groupId>
         <artifactId>robotframework-dblibrary</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3</version>
     </dependency>
     
 With Gradle, library can be use by importing it as a dependency in build.gradle:
 
-    runtime('com.github.hi-fi:robotframework-dblibrary:3.1.2')
+    runtime('com.github.hi-fi:robotframework-dblibrary:3.1.3')
     
 Library import in Robot tests can be done with:
 
@@ -36,4 +36,4 @@ Test build e.g. uses H2 driver, and it's inclusion can be seen from [pom-file](h
    
 Example
 -------
-Usage examples can be found at [Tests-folder](/src/test/robotframework/acceptance) for both local and remote usage.
+Usage examples can be found at [Tests-folder](/src/test/robotframework/acceptance) for local usage. Remote usage is similar, just importing library with Remote library.
