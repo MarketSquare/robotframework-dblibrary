@@ -15,7 +15,6 @@ import org.robotframework.javalib.annotation.RobotKeywords;
 @RobotKeywords
 public class DatabaseConnection {
 
-	private static String defaultAlias = "default";
 	private static String currentConnectionAlias = "";
 
 	private static Map<String, Connection> connectionMap = new HashMap<String, Connection>();
@@ -27,8 +26,7 @@ public class DatabaseConnection {
 			+ "Please note that connection has to be opened earlier.\n\n" + "Example: \n"
 			+ "| Activate Database Connection | ownAlias |")
 	@ArgumentNames({ "Database alias=default" })
-	public void activateDatabaseConnection(String... aliasParam) {
-		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
+	public void activateDatabaseConnection(String alias) {
 		if (DatabaseConnection.connectionMap.containsKey(alias)) {
 			DatabaseConnection.currentConnectionAlias = alias;
 		} else {
@@ -50,9 +48,8 @@ public class DatabaseConnection {
 	@ArgumentNames({ "Driver class name", "Connection string", "Database username", "Database password",
 			"Database alias=default" })
 	public void connectToDatabase(String driverClassName, String connectString, String dbUser, String dbPassword,
-			String... aliasParam)
+			String alias)
 			throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
 		Class.forName(driverClassName).newInstance();
 		setConnection(DriverManager.getConnection(connectString, dbUser, dbPassword), alias);
 	}
@@ -62,8 +59,7 @@ public class DatabaseConnection {
 			+ "If current connection is closed and there's still some open, you have to activate that manually.\n"
 			+ "Example:\n" + "| Disconnect from Database | default |")
 	@ArgumentNames({ "Database alias=default" })
-	public void disconnectFromDatabase(String... aliasParam) throws SQLException {
-		String alias = aliasParam.length > 0 ? aliasParam[0] : defaultAlias;
+	public void disconnectFromDatabase(String alias) throws SQLException {
 		Connection disconnectingConnection = getConnection(alias);
 
 		System.out.println(String.format("SQL Warnings on this connection (%s): %s", alias,

@@ -43,9 +43,9 @@ import org.xml.sax.SAXException;
 
 @RobotKeywords
 public class FileHandling {
-	
+
 	Query queryRunner;
-	
+
 	public FileHandling() {
 		queryRunner = new Query();
 	}
@@ -108,7 +108,7 @@ public class FileHandling {
 				throw new DatabaseLibraryException(diffs);
 		}
 	}
-	
+
 	@RobotKeyword("Exports the data from the given table into a file that is stored at the "
 			+ "given location. The where-clause can (and should) be used to narrow the "
 			+ "amount of rows that is exported this way. The file is stored in some "
@@ -121,19 +121,19 @@ public class FileHandling {
 			+ "other way; this library is not doing the transfer.\n\n"
 			+ "The keyword returns the amount of rows written to the XML-file. " + "\n\n"
 			+ "Example: | ${ROWSEXPORTED}= | MySampleTable | /tmp/mysampletable.xml | Timestamp > sysdate-50 |")
-	@ArgumentNames({ "Table name", "Export file path (including name)", "Where clause=''" })
-	public int exportDataFromTable(String tableName, String filePath, String... whereClause)
+	@ArgumentNames({ "Table name", "Export file path (including name)", "Where clause=" })
+	public int exportDataFromTable(String tableName, String filePath, String where)
 			throws SQLException, DatabaseLibraryException, ParserConfigurationException,
 			TransformerFactoryConfigurationError, TransformerException {
 		new Assert().tableMustExist(tableName);
 		String query = "Select * from " + tableName;
-		if (whereClause.length > 0) {
-			query += " where " + whereClause[0];
+		if (!StringUtils.isEmpty(where)) {
+			query += " where " + where;
 		}
 		List<LinkedHashMap<String, Object>> data = queryRunner.executeSql(query);
 		return writeQueryResultsToFile(tableName, filePath, data);
 	}
-	
+
 	@RobotKeyword("This keyword reads data from a XML-file and stores the corresponding data "
 			+ "to the database. The file must have been created using the "
 			+ "\"Export Data From Table\" keyword or it must be created manually in the "
@@ -165,7 +165,7 @@ public class FileHandling {
 		queryRunner.executeSql(query);
 		return insertList.size();
 	}
-	
+
 	@RobotKeyword("Executes the given SQL without any further modifications and stores the "
 			+ "result in a file. The SQL query must be valid for the database that is "
 			+ "used. The main purpose of this keyword is to generate expected result "
@@ -198,14 +198,14 @@ public class FileHandling {
 			stmt.close();
 		}
 	}
-	
+
 	private Document parseXMLDocumentFromFile(String pathToFile) throws ParserConfigurationException, SAXException, IOException {
 		File fXmlFile = new File(pathToFile);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		return dBuilder.parse(fXmlFile);
 	}
-	
+
 	private int writeQueryResultsToFile(String tableName, String filePath, List<LinkedHashMap<String, Object>> data)
 			throws ParserConfigurationException, TransformerConfigurationException,
 			TransformerFactoryConfigurationError, TransformerException {
