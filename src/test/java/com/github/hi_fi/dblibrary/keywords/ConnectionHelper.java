@@ -5,12 +5,12 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 
 public class ConnectionHelper {
-	
+
 	public static final String H2_DRIVER_CLASSNAME = "org.h2.Driver";
 	public static final String H2_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
 	public static final String H2_USER = "sa";
 	public static final String H2_PASSWORD = "";
-	
+
 	public void createTestDB() throws Exception {
 		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
 		Connection con = DriverManager.getConnection(H2_URL,
@@ -26,11 +26,11 @@ public class ConnectionHelper {
 
 		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyUniqKey UNIQUE (Id)");
 		stmt.execute("ALTER TABLE MySampleTable ADD CONSTRAINT MyPrimKey PRIMARY KEY (Id)");
-		
+
 		stmt.close();
 		con.close();
 	}
-	
+
 	public void deleteTestDB() throws Exception {
 		Class.forName(H2_DRIVER_CLASSNAME).newInstance();
 		Connection con = DriverManager.getConnection(H2_URL,
@@ -40,7 +40,7 @@ public class ConnectionHelper {
 		stmt.execute("DROP TABLE MySampleTable");
 		stmt.execute("DROP TABLE EmptyTable");
 		stmt.execute("DROP TABLE ReferenceTable");
-		
+
 		stmt.close();
 		con.close();
 	}
@@ -67,11 +67,11 @@ public class ConnectionHelper {
 		stmt.close();
 		con.close();
 	}
-	
+
 	public DatabaseConnection initDatabaseLibrary() throws Exception {
 		DatabaseConnection databaseLibrary = new DatabaseConnection();
 		databaseLibrary.connectToDatabase(H2_DRIVER_CLASSNAME,
-				H2_URL, H2_USER, H2_PASSWORD);
+				H2_URL, H2_USER, H2_PASSWORD, "defaultAlias");
 		return databaseLibrary;
-	}	
+	}
 }

@@ -22,24 +22,24 @@ public class DatabaseLibraryConnectionIT {
 		databaseConnection = new DatabaseConnection();
 		asserter = new Assert();
 	}
-	
+
 	// ========================================================
 	//
-	// Database Connection 
+	// Database Connection
 	//
 	// ========================================================
 
 	@Test
 	public void checkConnectToDatabase() throws Exception {
 		databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
-				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD);
+				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD, "defaultAlias");
 	}
 
 	@Test
 	public void checkConnectToDatabaseWithWrongUsername() {
 		try {
 			databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
-					ConnectionHelper.H2_URL, "xyz", ConnectionHelper.H2_PASSWORD);
+					ConnectionHelper.H2_URL, "xyz", ConnectionHelper.H2_PASSWORD, "defaultAlias");
 		} catch (SQLException e) {
 			if (!e.getMessage().contains("Wrong user name or password")) {
 				e.printStackTrace();
@@ -54,8 +54,8 @@ public class DatabaseLibraryConnectionIT {
 	@Test
 	public void checkDisconnectFromDatabase() throws Exception {
 		databaseConnection.connectToDatabase(ConnectionHelper.H2_DRIVER_CLASSNAME,
-				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD);
-		databaseConnection.disconnectFromDatabase();
+				ConnectionHelper.H2_URL, ConnectionHelper.H2_USER, ConnectionHelper.H2_PASSWORD, "defaultAlias");
+		databaseConnection.disconnectFromDatabase("defaultAlias");
 	}
 
 	@Test(expected=IllegalStateException.class)

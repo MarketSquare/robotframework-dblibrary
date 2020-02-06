@@ -18,7 +18,7 @@ import org.robotframework.javalib.annotation.RobotKeywords;
 
 @RobotKeywords
 public class Query {
-	
+
 	@RobotKeyword("Deletes the entire content of the given database table. This keyword is"
 			+ "useful to start tests in a clean state. Use this keyword with care as"
 			+ "accidently execution of this keyword in a productive system will cause"
@@ -35,7 +35,7 @@ public class Query {
 			stmt.close();
 		}
 	}
-	
+
 	@RobotKeyword("Executes the given SQL without any further modifications. The given SQL "
 			+ "must be valid for the database that is used. Results are returned as a list of dictionaries" + "\n\n"
 			+ "*NOTE*: Use this method with care as you might cause damage to your "
