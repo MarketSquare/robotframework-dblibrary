@@ -4,9 +4,9 @@ Introduction
 The Robot Framework Database Library is a library which provides common functionality for testing database contents.
 
 * More information about this library can be found in the
-  [Keyword Documentation](https://repo1.maven.org/maven2/com/github/marketsquare/robotframework-dblibrary/3.2.0/robotframework-dblibrary-3.2.0.html).
+  [Keyword Documentation](https://repo1.maven.org/maven2/com/github/marketsquare/robotframework-dblibrary/3.3.0/robotframework-dblibrary-3.3.0.html).
 * For keyword completion in RIDE you can download this
-  [Library Specs](https://repo1.maven.org/maven2/com/github/marketsquare/robotframework-dblibrary/3.2.0/robotframework-dblibrary-3.2.0.xml)
+  [Library Specs](https://repo1.maven.org/maven2/com/github/marketsquare/robotframework-dblibrary/3.3.0/robotframework-dblibrary-3.3.0.xml)
   and place it in your PYTHONPATH.
 Usage
 -----
@@ -17,12 +17,12 @@ your pom.xml:
     <dependency>
         <groupId>com.github.marketsquare</groupId>
         <artifactId>robotframework-dblibrary</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
     </dependency>
 
 With Gradle, library can be use by importing it as a dependency in build.gradle:
 
-    runtime('com.github.marketsquare:robotframework-dblibrary:3.2.0')
+    runtime('com.github.marketsquare:robotframework-dblibrary:3.3.0')
 
 Library import in Robot tests can be done with:
 
