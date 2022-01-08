@@ -1,6 +1,12 @@
 name: robotframework-dblibrary build
 
-on: [push, pull_request]
+on:
+  push: 
+    branches: 
+      - master
+      - develop
+    tags:
+  pull_request:
 
 jobs:
   build_and_test:
@@ -8,12 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
-        java-version: [ 8 ]
+        java-version: [ 8, 11 ]
         include:
           - os: ubuntu-latest
             install_dependencies: sudo apt-get -y -q install zip curl
           - os: windows-latest
-            install_dependencies: choco install curl zip -y --no-progress
+            install_dependencies: |
+              choco install curl
+              choco install zip
           - os: macos-latest
             install_dependencies: |
               brew install zip
@@ -24,8 +32,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v1.2.0
+        uses: actions/setup-java@v2.5.0
         with:
+          distribution: 'zulu'
           java-version: ${{ matrix.java-version }}
           java-package: jdk
       - name: Set up other dependencies
@@ -36,32 +45,41 @@ jobs:
       - name: Delete output.xml (on Win)
         run: |
           Get-ChildItem target/robotframework-reports -Include *output.xml -Recurse | Remove-Item
-          echo "::set-env name=REPORT_FILE::$(Get-ChildItem target/robotframework-reports -Include *report.html -Recurse -Name)"
+          echo "REPORT_FILE=$(Get-ChildItem target/robotframework-reports -Include *report.html -Recurse -Name)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         if: always() && runner.os == 'Windows'
 
       - name: Delete output.xml (on Unix-like)
         run: |
           find target/robotframework-reports -type f -name '*output.xml' -exec rm {} +
-          echo "::set-env name=REPORT_FILE::$(find target/robotframework-reports -type f -name '*report.html' | sed 's#.*/##')"
+          echo "REPORT_FILE=$(find target/robotframework-reports -type f -name '*report.html' | sed 's#.*/##')" >> $GITHUB_ENV
         if: always() && runner.os != 'Windows'
 
       - name: Archive acceptances test results
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2.3.1
         with:
           name: at-results-${{ matrix.os }}-${{ matrix.java-version }}
           path: target/robotframework-reports
         if: always() && job.status == 'failure'
 
-      - name: Upload results
+      - name: Upload results on *nix
         run: |
-          echo '<html><head><meta http-equiv = "refresh" content =" 0 ; url = /${{ env.REPORT_FILE }}"></head></html>' > target/robotframework-reports/index.html
+          echo '<html><head><meta http-equiv = "refresh" content =" 0 ; url = /${{ env.REPORT_FILE }}"></head></html>' > atest/results/index.html
           zip -r -j site.zip target/robotframework-reports > no_output 2>&1
           curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_TOKEN }}" --data-binary "@site.zip" https://api.netlify.com/api/v1/sites > response.json
-          echo "::set-env name=REPORT_URL::$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")"
-          echo "::set-env name=JOB_STATUS::$(python -c "print('${{ job.status }}'.lower())")"
-        if: always() && job.status == 'failure'
+          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" >> $GITHUB_ENV
+          echo "JOB_STATUS=$(python -c "print('${{ job.status }}'.lower())")" >> $GITHUB_ENV
+        if: always() && job.status == 'failure' && runner.os != 'Windows'
 
-      - uses: octokit/request-action@57ec46afcc4c58c813af3afe67e57ced1ea9f165
+      - name: Upload results on Windows
+        run: |
+          echo '<html><head><meta http-equiv = "refresh" content =" 0 ; url = /${{ env.REPORT_FILE }}"></head></html>' > atest/results/index.html
+          zip -r -j site.zip target/robotframework-reports > no_output 2>&1
+          curl -s -H "Content-Type: application/zip" -H "Authorization: Bearer ${{ secrets.NETLIFY_TOKEN }}" --data-binary "@site.zip" https://api.netlify.com/api/v1/sites > response.json
+          echo "REPORT_URL=$(cat response.json|python -c "import sys, json; print('https://' + json.load(sys.stdin)['subdomain'] + '.netlify.com')")" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "JOB_STATUS=$(python -c "print('${{ job.status }}'.lower())")" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        if: always() && job.status == 'failure' && runner.os == 'Windows'
+
+      - uses: octokit/request-action@7e93b91076fad3920c29d44eb2a6311d929db3dd
         name: Update status with Github Status API
         id: update_status
         with:
@@ -84,8 +102,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
-        uses: actions/setup-java@v1.2.0
+        uses: actions/setup-java@v2.5.0
         with:
+          distribution: 'zulu'
           java-version: 8
       - name: Release Maven package
         uses: samuelmeuli/action-maven-publish@1221d1fa792cab948a772c5e7c1f3abe84aec3bf
